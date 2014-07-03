@@ -1,0 +1,20 @@
+<div class="well well-sm"> <!-- Begin well. -->
+    <table class="table table-striped"> <!-- Begin table. -->
+        <thead>
+            <tr>
+                <h3>Contact List</h3>
+            </tr>
+            <br>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="(key, person) in contacts">
+                <td>{{$index}}</td>
+                <td><a ng-href="/#/view/{{key}}">{{person.firstname}} {{person.lastname}}</a></td>
+            </tr>
+        </tbody>
+    </table> <!-- End table. -->
+</div> <!-- End well. -->

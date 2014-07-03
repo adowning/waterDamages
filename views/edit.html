@@ -1,0 +1,40 @@
+<div class="well well-sm"> <!-- Begin well. -->
+   <h3 ng-show="contact.contactId">Update Contact</h3>
+   <h3 ng-show="!contact.contactId">New Contact</h3>
+
+   <!-- This is a responsive form. At small sizes the label will stack above its control. -->
+   <form name="contactForm" class="form-horizontal" role="form" ng-submit="save()">
+
+      <!-- First Name. -->
+      <div class="form-group">
+         <label for="firstname" class="control-label col-md-2">First Name:</label>
+
+         <div class="col-md-10">
+            <input type="text" id="firstname" ng-model="contact.firstname" class="form-control col-md-10" placeholder="First name" focus required>
+         </div>
+      </div>
+
+      <!-- Last Name. -->
+      <div class="form-group">
+         <label for="lastname" class="control-label col-md-2">Last Name:</label>
+         <div class="col-md-10">
+            <input type="text" id="lastname" ng-model="contact.lastname" class="form-control col-md-10" placeholder="Last name" required>
+         </div>
+      </div>
+
+      <!-- Buttons. -->
+      <div>
+         <span ng-show="contact.contactId">
+            <button class="btn btn-primary" ng-disabled="contactForm.$invalid">Save</button>
+         </span>
+
+         <!-- Show this button when contact._id is blank. This happens when adding. -->
+         <span ng-hide="contact.contactId">
+            <button class="btn btn-primary" ng-disabled="contactForm.$invalid">Add</button>
+         </span>
+
+         <!-- Show this button when contactId is blank. This happens when adding. -->
+         <button class="btn btn-danger" type="button" ng-click="remove()" ng-show="contact.contactId">Delete</button>
+      </div>
+   </form>
+</div> <!-- End well. -->

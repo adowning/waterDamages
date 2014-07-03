@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="phonebook">
+
+<head> <!-- Begin head. -->
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <!-- Bootstrap. -->
+   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+   <title>AngularJS Phonebook</title>
+</head> <!-- End head. -->
+
+<body> <!-- Begin body. -->
+   <div class="container"> <!-- Begin container. -->
+      <p></p>
+
+      <div class="navbar navbar-default" role="navigation"> <!-- Begin navbar. -->
+        <div class="container-fluid"> <!-- Begin container fluid. -->
+          <div class="navbar-header"> <!-- Begin navbar header. -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">AngularJS Phonebook</a>
+          </div> <!-- End navbar header. -->
+
+          <div class="navbar-collapse collapse"> <!-- Begin nav-collapse. -->
+            <ul class="nav navbar-nav">
+               <li id="menu-list">    <a href="/#/">Contact List</a></li>
+               <li id="menu-new">     <a href="/#/new">New Contact</a></li>
+               <li id="menu-loaddata"><a href="/#/load">Initialize Data</a></li>
+            </ul>
+          </div> <!-- End nav-collapse. -->
+        </div> <!-- End container fluid. -->
+      </div> <!-- End navbar. -->
+
+      <div class="row"> <!-- Begin row. -->
+         <div class="col-md-12">
+            <div ng-view></div> <!-- This is where Angular will swap in our templates. -->
+         </div>
+      </div> <!-- End row. -->
+
+   </div> <!-- End container. -->
+
+   <!-- Load JS files at bottom so page loads faster. -->
+<!--Jim updated the cdn links. Firebase setPriority wasn't working. I'm wondering if it was a newer feature not in the older libs-->
+   <script src="https://cdn.firebase.com/js/client/1.0.17/firebase.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-route.js"></script>
+   <script src="https://cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+   <!-- Load our application JavaScript files. -->
+   <script src="js/controllers.js"></script>
+   <script src="js/services.js"></script>
+
+</body> <!-- End body. -->
+</html>
