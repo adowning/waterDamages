@@ -43,7 +43,7 @@ app.config(["$routeProvider", function ($routeProvider) {
 }]);
 
 // Add your Firebase application URL here.
-app.constant('FBURL', 'https://jimshea.firebaseio.com/');
+app.constant('FBURL', 'https://xxx.firebaseio.com/');
 
 // Initial phonebook data.
 app.constant('PHONEBOOK',
