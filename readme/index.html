@@ -107,7 +107,9 @@
             After Node.js is installed, start the command-line and type the following command:<br><br>
             <code>$ npm install -g firebase-tools</code>
             <br><br>
-            This uses the Node.js npm package manager to download Firebase command line tools that will allow you to quickly initialize and deploy an application to Firebase. The <code>-g</code> switch instructs npm to install this module globally on your system, rather than for just a specific application. Note you may need to be root (OSX) for this command to work properly.
+            This uses the Node.js npm package manager to download Firebase command line tools that will allow you to quickly initialize and deploy an application to Firebase. The <code>-g</code> switch instructs npm to install this module globally on your system, rather than for just a specific application. Note you may need to be root for this command to work properly. If you're on a Mac, use the following command.
+            <br><br>
+            <code>$ sudo npm install -g firebase-tools</code>
             <br><br>
             Next goto the <a href="https://www.firebase.com/signup/" target="_blank">Firebase sign-up page</a> to create a Firebase account (See Figure 1.1). Firebase is a free hosting and database service that you can deploy applications to using their simple API.
             <br><br>
@@ -126,7 +128,7 @@
           <p>
             Next open the controllers.js file located in ~/AngularJS-Phonebook/js/. On line 40 - in the top half of the page - will see a line of the following form:
             <br><br>
-            <code>app.constant('FBURL', 'https://fire-ice-12453.firebaseio.com/');</code>
+            <code>app.constant('FBURL', 'https://Your-App-Name-Here.firebaseio.com/');</code>
             <br><br>
             Change the link to your datastore link (boxed in red in Figure 1.2 above):
             <br><br>
