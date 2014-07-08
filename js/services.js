@@ -17,14 +17,14 @@ angular.module('phonebook')
          updateNameById: function (id, first, last) {
             var contactRef = new Firebase(FBURL + id);
             contactRef.update({firstname:first, lastname:last});
-            contactRef.setPriority(last + " " + first);
+            contactRef.setPriority(last.toLowerCase() + " " + first.toLowerCase());
             $location.path("/view/" + id);
          },
          saveNewName: function (first, last) {
             var contactsRef = new Firebase(FBURL);
             var newContactRef = contactsRef.push();
 
-            newContactRef.setWithPriority({firstname:first, lastname:last}, last + " " + first);
+            newContactRef.setWithPriority({firstname:first, lastname:last}, last.toLowerCase() + " " + first.toLowerCase());
             $location.path("/view/" + newContactRef.name());
          },
          initializeData: function (data) {
@@ -38,7 +38,7 @@ angular.module('phonebook')
                var newContactRef = contactsRef.push();
                var first = element.firstname;
                var last = element.lastname;
-               newContactRef.setWithPriority({firstname:first, lastname:last}, last + " " + first);
+               newContactRef.setWithPriority({firstname:first, lastname:last}, last.toLowerCase() + " " + first.toLowerCase());
             });
             $location.path("/");
          }
