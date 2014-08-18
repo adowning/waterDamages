@@ -15,7 +15,7 @@
         <!--https://www.firebase.com/docs/angular/reference.html#ordered-data-and-arrays-->
             <tr ng-repeat="person in contacts | orderByPriority">
                 <td>{{$index}}</td>
-                <td><a ng-href="/#/view/{{person.$id}}">{{person.firstname}} {{person.lastname}}</a></td>
+                <td><a ng-href="#/view/{{person.$id}}">{{person.firstname}} {{person.lastname}}</a></td>
             </tr>
         </tbody>
     </table> <!-- End table. -->

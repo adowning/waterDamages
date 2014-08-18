@@ -3,9 +3,9 @@
 
 <head> <!-- Begin head. -->
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+   
    <!-- Bootstrap. -->
-   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+   <link rel="stylesheet" href="lib/bootstrap.min.css">
 
    <title>AngularJS Phonebook</title>
 </head> <!-- End head. -->
@@ -28,10 +28,9 @@
 
           <div class="navbar-collapse collapse"> <!-- Begin nav-collapse. -->
             <ul class="nav navbar-nav">
-               <li id="menu-list">    <a href="/#/">Contact List</a></li>
-               <li id="menu-new">     <a href="/#/new">New Contact</a></li>
-               <li id="menu-loaddata"><a href="/#/load">Initialize Data</a></li>
-               <li id="menu-readme">  <a href="/readme">Read me</a></li>
+               <li id="menu-list">    <a href="#/">Contact List</a></li>
+               <li id="menu-new">     <a href="#/new">New Contact</a></li>
+               <li id="menu-loaddata"><a href="#/load">Initialize Data</a></li>
             </ul>
           </div> <!-- End nav-collapse. -->
 
@@ -47,12 +46,12 @@
    </div> <!-- End container. -->
 
    <!-- Load JS files at bottom so page loads faster. -->
-   <script src="https://cdn.firebase.com/js/client/1.0.17/firebase.js"></script>
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.js"></script>
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-route.js"></script>
-   <script src="https://cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+   <script src="lib/firebase.js"></script>
+   <script src="lib/angular.js"></script>
+   <script src="lib/angular-route.js"></script>
+   <script src="lib/angularfire.min.js"></script>
+   <script src="lib/jquery.min.js"></script>
+   <script src="lib/bootstrap.min.js"></script>
 
    <!-- Load our application JavaScript files. -->
    <script src="js/controllers.js"></script>
