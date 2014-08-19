@@ -14,27 +14,27 @@ app.config(["$routeProvider", function ($routeProvider) {
    $routeProvider
       .when("/", {
          controller: "ListCtrl",
-         templateUrl: "views/list.html"
+         templateUrl: "./views/list.html"
       })
 
       .when("/edit/:contactId", {
          controller: "EditCtrl",
-         templateUrl: "views/edit.html"
+         templateUrl: "./views/edit.html"
       })
 
       .when("/view/:contactId", {
          controller: "ViewCtrl",
-         templateUrl: "views/view.html"
+         templateUrl: "./views/view.html"
       })
 
       .when("/new", {
          controller: "NewCtrl",
-         templateUrl: "views/edit.html"
+         templateUrl: "./views/edit.html"
       })
 
       .when("/load", {
          controller: "LoadCtrl",
-         templateUrl: "views/list.html"
+         templateUrl: "./views/list.html"
       })
 
       .otherwise({
