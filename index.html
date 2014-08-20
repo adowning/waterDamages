@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="phonebook">
+<html lang="en" ng-app="phonebook" manifest="AngularCRUD-Firebase.appcache">
 
 <head> <!-- Begin head. -->
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +7,13 @@
    <!-- Bootstrap. -->
    <link rel="stylesheet" href="lib/bootstrap.min.css">
 
+   <!-- Cordova. -->
+   <script src="cordova.js"></script>
+
    <title>AngularJS Phonebook</title>
 </head> <!-- End head. -->
 
-<body> <!-- Begin body. -->
+<body ng-cloak> <!-- Begin body. -->
    <div class="container"> <!-- Begin container. -->
       <p></p>
 
@@ -52,6 +55,7 @@
    <script src="lib/angularfire.min.js"></script>
    <script src="lib/jquery.min.js"></script>
    <script src="lib/bootstrap.min.js"></script>
+   <script src="lib/localforage.min.js"></script>
 
    <!-- Load our application JavaScript files. -->
    <script src="js/controllers.js"></script>
