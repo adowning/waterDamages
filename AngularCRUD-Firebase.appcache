@@ -1,0 +1,20 @@
+CACHE MANIFEST
+#version 1
+
+index.html
+js/controllers.js
+js/services.js
+views/edit.html
+views/list.html
+views/view.html
+lib/angular-route.js
+lib/angular.js
+lib/angularfire.min.js
+lib/bootstrap.min.css
+lib/bootstrap.min.js
+lib/firebase.js
+lib/jquery.min.js
+lib/localforage.min.js
+
+NETWORK:
+*

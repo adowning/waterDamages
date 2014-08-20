@@ -1,3 +1,7 @@
+<div class="alert alert-warning" ng-hide="online">
+    Working Offline. Changes will be saved when an Internet connection is restored.
+</div>
+
 <div class="well well-sm"> <!-- Begin well. -->
     <table class="table table-striped"> <!-- Begin table. -->
         <thead>
@@ -13,9 +17,9 @@
         <tbody>
         <!--AngularFire doesn't do the default sort on priority-->
         <!--https://www.firebase.com/docs/angular/reference.html#ordered-data-and-arrays-->
-            <tr ng-repeat="person in contacts | orderByPriority">
+            <tr ng-repeat="(id, person) in contacts">
                 <td>{{$index}}</td>
-                <td><a ng-href="#/view/{{person.$id}}">{{person.firstname}} {{person.lastname}}</a></td>
+                <td><a href="#/view/{{id}}">{{person.firstname}} {{person.lastname}}</a></td>
             </tr>
         </tbody>
     </table> <!-- End table. -->

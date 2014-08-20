@@ -54,11 +54,63 @@ app.constant('PHONEBOOK',
       {"firstname": "Betty", "lastname":"Rubble"}
    ]);
 
+// Called on application start up.
+app.run(function($window, $rootScope, dataFactory) {
+   function onOnline() {
+      $rootScope.$apply(function() {
+         if (!$rootScope.online) {
+                dataFactory.updateAllContacts();
+         }
+         $rootScope.online = true;
+      });
+   }
+
+   function onOffline() {
+      $rootScope.$apply(function() {
+         $rootScope.online = false;
+      });
+   }
+
+   function onDeviceReady() {
+      if(navigator.network.connection.type == Connection.NONE) {
+         $rootScope.$apply(function() {
+            $rootScope.online = false;
+         });
+      }
+      else {
+         $rootScope.$apply(function() {
+            $rootScope.online = true;
+         });
+      }
+      document.addEventListener("offline", onOffline, false);
+      document.addEventListener("online", onOnline, false);
+   }
+
+   if (window.cordova) {
+      document.addEventListener("deviceready", onDeviceReady, false);
+   } 
+   else {
+      $rootScope.online = $window.navigator.onLine;
+
+      $window.addEventListener("offline", onOffline, false);
+      $window.addEventListener("online", onOnline, false);
+   }
+});
+
 /*
  * Controller for the listing page.
  */
-app.controller("ListCtrl", function ($scope, fireService) {
-   $scope.contacts = fireService.getAllContacts();
+app.controller("ListCtrl", function (FBURL, $scope, dataFactory) {
+   dataFactory.getAllContacts(function (data) {
+      $scope.contacts = data;
+
+      if ($scope.online) {
+         localforage.setItem(FBURL, data);
+      }
+      else {
+         $scope.$apply();
+      }
+   });
 
    $("#menu-list").addClass("active");
    $("#menu-new").removeClass("active");
@@ -67,16 +119,22 @@ app.controller("ListCtrl", function ($scope, fireService) {
 /*
  * Controller for the view details page.
  */
-app.controller("ViewCtrl", function ($scope, $location, $routeParams, fireService) {
-   $scope.contact = fireService.getContactById($routeParams.contactId);
-   $scope.contact.contactId = $routeParams.contactId;
+app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactory) {
+   dataFactory.getContactById($routeParams.contactId, function (data) {
+      $scope.contact = data;
+      $scope.contact.contactId = $routeParams.contactId;
+
+      if (!$scope.online) {
+         $scope.$apply();
+      }
+   });
+
+   $scope.remove = function () {
+      dataFactory.removeContactById($scope.contact.contactId);
+   };
 
    $scope.edit = function () {
       $location.path("/edit/" + $scope.contact.contactId);
-   };
-
-   $scope.remove = function () {
-      fireService.removeContactById($scope.contact.contactId);
    };
 
    $("#menu-list").removeClass("active");
@@ -86,16 +144,22 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, fireServic
 /*
  * Controller for the edit page.
  */
-app.controller("EditCtrl", function ($scope, $routeParams, fireService) {
-   $scope.contact = fireService.getContactById($routeParams.contactId);
-   $scope.contact.contactId = $routeParams.contactId;
+app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
+   dataFactory.getContactById($routeParams.contactId, function (data) {
+      $scope.contact = data;
+      $scope.contact.contactId = $routeParams.contactId;
 
-   $scope.save = function () {
-      fireService.updateNameById($scope.contact.contactId, $scope.contact.firstname, $scope.contact.lastname);
-   };
+      if (!$scope.online) {
+         $scope.$apply();
+      }
+   });
 
    $scope.remove = function () {
-      fireService.removeContactById($scope.contact.contactId);
+      dataFactory.removeContactById($scope.contact.contactId);
+   };
+
+   $scope.save = function () {
+      dataFactory.updateNameById($scope.contact.contactId, $scope.contact.firstname, $scope.contact.lastname);
    };
 
    $("#menu-list").removeClass("active");
@@ -105,11 +169,11 @@ app.controller("EditCtrl", function ($scope, $routeParams, fireService) {
 /*
  * Controller for the new contact page.
  */
-app.controller("NewCtrl", function ($scope, fireService) {
+app.controller("NewCtrl", function ($scope, dataFactory) {
    $scope.contact = {};
 
    $scope.save = function () {
-      fireService.saveNewName($scope.contact.firstname, $scope.contact.lastname);
+      dataFactory.saveNewName($scope.contact.firstname, $scope.contact.lastname);
    };
 
    $("#menu-list").removeClass("active");
