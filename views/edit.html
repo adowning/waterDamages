@@ -2,14 +2,14 @@
     Working Offline. Changes will be saved when an Internet connection is restored.
 </div>
 
-<div class="well well-sm"> <!-- Begin well. -->
+<div class="well well-sm">
    <h3 ng-show="contact.contactId">Update Contact</h3>
    <h3 ng-show="!contact.contactId">New Contact</h3>
 
    <!-- This is a responsive form. At small sizes the label will stack above its control. -->
    <form name="contactForm" class="form-horizontal" role="form" ng-submit="save()">
 
-      <!-- First Name. -->
+      <!-- First Name -->
       <div class="form-group">
          <label for="firstname" class="control-label col-md-2">First Name:</label>
 
@@ -18,7 +18,7 @@
          </div>
       </div>
 
-      <!-- Last Name. -->
+      <!-- Last Name -->
       <div class="form-group">
          <label for="lastname" class="control-label col-md-2">Last Name:</label>
          <div class="col-md-10">
@@ -26,7 +26,7 @@
          </div>
       </div>
 
-      <!-- Buttons. -->
+      <!-- Buttons -->
       <div>
          <span ng-show="contact.contactId">
             <button class="btn btn-primary" ng-disabled="contactForm.$invalid">Save</button>
@@ -42,4 +42,4 @@
       </div>
    </form>
 
-</div> <!-- End well. -->
+</div>

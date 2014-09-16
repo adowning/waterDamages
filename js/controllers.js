@@ -7,7 +7,7 @@
  */
 
 // Define our application module.
-var app = angular.module("phonebook", ["ngRoute", "firebase"]);
+var app = angular.module("angularcrud", ["ngRoute", "firebase"]);
 
 // Configure our applications routing.
 app.config(["$routeProvider", function ($routeProvider) {
@@ -43,10 +43,10 @@ app.config(["$routeProvider", function ($routeProvider) {
 }]);
 
 // Add your Firebase application URL here.
-app.constant('FBURL', 'https://Your-App-Name-Here.firebaseio.com/');
+app.constant("FBURL", "https://jimshea.firebaseio.com/");
 
-// Initial phonebook data.
-app.constant('PHONEBOOK',
+// Initial angularcrud data.
+app.constant("SAMPLEDATA",
    [
       {"firstname": "Fred",  "lastname":"Flintstone"},
       {"firstname": "Wilma", "lastname":"Flintstone"},
@@ -54,48 +54,35 @@ app.constant('PHONEBOOK',
       {"firstname": "Betty", "lastname":"Rubble"}
    ]);
 
+
 // Called on application start up.
 app.run(function($window, $rootScope, dataFactory) {
+   // Function to run when we transition to being online
    function onOnline() {
       $rootScope.$apply(function() {
+         // If we were previously offline, push all local changes to the server
          if (!$rootScope.online) {
-                dataFactory.updateAllContacts();
+            dataFactory.updateAllContacts();
          }
          $rootScope.online = true;
       });
    }
 
+   // Function to run when we transition to being offline
    function onOffline() {
       $rootScope.$apply(function() {
          $rootScope.online = false;
       });
    }
 
-   function onDeviceReady() {
-      if(navigator.network.connection.type == Connection.NONE) {
-         $rootScope.$apply(function() {
-            $rootScope.online = false;
-         });
-      }
-      else {
-         $rootScope.$apply(function() {
-            $rootScope.online = true;
-         });
-      }
-      document.addEventListener("offline", onOffline, false);
-      document.addEventListener("online", onOnline, false);
-   }
+   // Variable containing network status, note we don't (but should) test access to our_data.firebaseio.com
+   $rootScope.online = $window.navigator.onLine;
 
-   if (window.cordova) {
-      document.addEventListener("deviceready", onDeviceReady, false);
-   } 
-   else {
-      $rootScope.online = $window.navigator.onLine;
-
-      $window.addEventListener("offline", onOffline, false);
-      $window.addEventListener("online", onOnline, false);
-   }
+   // Set our on/off line functions as event listeners
+   $window.addEventListener("offline", onOffline, false);
+   $window.addEventListener("online",  onOnline,  false);
 });
+
 
 /*
  * Controller for the listing page.
@@ -104,10 +91,15 @@ app.controller("ListCtrl", function (FBURL, $scope, dataFactory) {
    dataFactory.getAllContacts(function (data) {
       $scope.contacts = data;
 
+      // Save the retrieved data locally in case we go offline
       if ($scope.online) {
-         localforage.setItem(FBURL, data);
+         localforage.setItem(FBURL, data, function(value) {
+            // Do other things once the value has been saved.
+            // console.log(value);
+         });
       }
       else {
+         // We are offline. localForage operations happen outside of Angular's view, tell Angular data changed
          $scope.$apply();
       }
    });
@@ -115,6 +107,7 @@ app.controller("ListCtrl", function (FBURL, $scope, dataFactory) {
    $("#menu-list").addClass("active");
    $("#menu-new").removeClass("active");
 });
+
 
 /*
  * Controller for the view details page.
@@ -124,6 +117,7 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
       $scope.contact = data;
       $scope.contact.contactId = $routeParams.contactId;
 
+      // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
       if (!$scope.online) {
          $scope.$apply();
       }
@@ -141,6 +135,7 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
    $("#menu-new").removeClass("active");
 });
 
+
 /*
  * Controller for the edit page.
  */
@@ -149,6 +144,7 @@ app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
       $scope.contact = data;
       $scope.contact.contactId = $routeParams.contactId;
 
+      // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
       if (!$scope.online) {
          $scope.$apply();
       }
@@ -166,6 +162,7 @@ app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
    $("#menu-new").removeClass("active");
 });
 
+
 /*
  * Controller for the new contact page.
  */
@@ -180,9 +177,10 @@ app.controller("NewCtrl", function ($scope, dataFactory) {
    $("#menu-new").addClass("active");
 });
 
+
 /*
  * Controller for reinitializing the database.
  */
-app.controller("LoadCtrl", function (PHONEBOOK, fireService) {
-   fireService.initializeData(PHONEBOOK);
+app.controller("LoadCtrl", function (SAMPLEDATA, fireService) {
+   fireService.initializeData(SAMPLEDATA);
 });
