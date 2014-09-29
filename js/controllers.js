@@ -88,7 +88,7 @@ app.run(function($window, $rootScope, dataFactory) {
  * Controller for the listing page.
  */
 app.controller("ListCtrl", function (FBURL, $scope, dataFactory) {
-   dataFactory.getAllContacts(function (data) {
+   dataFactory.getAll(function (data) {
       $scope.contacts = data;
 
       // Save the retrieved data locally in case we go offline
@@ -113,7 +113,7 @@ app.controller("ListCtrl", function (FBURL, $scope, dataFactory) {
  * Controller for the view details page.
  */
 app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactory) {
-   dataFactory.getContactById($routeParams.contactId, function (data) {
+   dataFactory.getById($routeParams.contactId, function (data) {
       $scope.contact = data;
       $scope.contact.contactId = $routeParams.contactId;
 
@@ -124,7 +124,7 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
    });
 
    $scope.remove = function () {
-      dataFactory.removeContactById($scope.contact.contactId);
+      dataFactory.delete($scope.contact.contactId);
    };
 
    $scope.edit = function () {
@@ -140,7 +140,7 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
  * Controller for the edit page.
  */
 app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
-   dataFactory.getContactById($routeParams.contactId, function (data) {
+   dataFactory.getById($routeParams.contactId, function (data) {
       $scope.contact = data;
       $scope.contact.contactId = $routeParams.contactId;
 
@@ -151,11 +151,11 @@ app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
    });
 
    $scope.remove = function () {
-      dataFactory.removeContactById($scope.contact.contactId);
+      dataFactory.delete($scope.contact.contactId);
    };
 
    $scope.save = function () {
-      dataFactory.updateNameById($scope.contact.contactId, $scope.contact.firstname, $scope.contact.lastname);
+      dataFactory.update($scope.contact.contactId, $scope.contact.firstname, $scope.contact.lastname);
    };
 
    $("#menu-list").removeClass("active");
@@ -170,7 +170,7 @@ app.controller("NewCtrl", function ($scope, dataFactory) {
    $scope.contact = {};
 
    $scope.save = function () {
-      dataFactory.saveNewName($scope.contact.firstname, $scope.contact.lastname);
+      dataFactory.add($scope.contact.firstname, $scope.contact.lastname);
    };
 
    $("#menu-list").removeClass("active");

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="angularcrud" manifest="AngularCRUD-Firebase.appcache">
+<html lang="en" ng-app="angularcrud"> <!-- manifest="AngularCRUD-Firebase.appcache"> -->
 
 <head>
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +9,6 @@
 
    <!-- Angular - In head because use of ng-cloak on body tag -->
    <script src="lib/angular.js"></script>
-
-   <!-- Cordova This is used for compiling to mobile with Cordova -->
-   <!-- <script src="cordova.js"></script> -->
 
    <title>AngularJS CRUD Example</title>
 </head>
@@ -53,12 +50,14 @@
    </div>
 
    <!-- Load JS files at bottom so page loads faster. -->
-   <script src="lib/firebase.js"></script>
    <script src="lib/jquery-2.1.1.js"></script>
    <script src="lib/angular-route.js"></script>
-   <script src="lib/angularfire.min.js"></script>
    <script src="lib/bootstrap.min.js"></script>
    <script src="lib/localforage.js"></script>
+
+   <!-- Firebase libs -->
+   <script src="lib/firebase.js"></script>
+   <script src="lib/angularfire.min.js"></script>
 
    <!-- Load our application JavaScript files. -->
    <script src="js/controllers.js"></script>
