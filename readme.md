@@ -1,6 +1,5 @@
 
 # AngularCRUD
----
 
 A learning example that demonstrates CRUD operations on a simple data model of lastname and firstname. It has server data
 provided by Firebase, a commercial (with a free plan) service providing NoSQL/JSON object storage as well as application
