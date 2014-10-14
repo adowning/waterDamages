@@ -55,7 +55,8 @@ angular.module("angularcrud")
          }
       }
    })
-   .factory("fireFactory", function (FBURL, $http, $location, $firebase) {
+   // Data interface, called by dataFactory for server storage. This is used when we have a network connection.
+   .factory("fireFactory", function (FBURL, $http, $location) {
       return {
          getAll: function (successCallback) {
             $http.get(FBURL + '.json?format=export').success(successCallback);
@@ -105,7 +106,7 @@ angular.module("angularcrud")
       }
    })
 
-// Data interface, called by dataFactory for local storage. This is used when we don't have a network connection.
+   // Data interface, called by dataFactory for local storage. This is used when we don't have a network connection.
    .factory("forageFactory", function (FBURL, $rootScope, $location) {
       return {
          getAll: function (successCallback) {
@@ -160,4 +161,3 @@ angular.module("angularcrud")
          }
       }
    });
-   // Data interface, called by dataFactory for server storage. This is used when we have a network connection.
