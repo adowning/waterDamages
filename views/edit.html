@@ -57,4 +57,21 @@
       </div>
    </form>
 
+   firstname = {{contact.firstname}}<br>
+   firstname.$pristine = {{contactForm.firstname.$pristine}}<br>
+   firstname.$dirty = {{contactForm.firstname.$dirty}}<br>
+   firstname.$valid = {{contactForm.firstname.$valid}}<br>
+   firstname.$error = {{contactForm.firstname.$error}}<br>
+   <br>
+   lastname = {{contact.lastname}}<br>
+   lastname.$pristine = {{contactForm.lastname.$pristine}}<br>
+   lastname.$dirty = {{contactForm.lastname.$dirty}}<br>
+   lastname.$valid = {{contactForm.lastname.$valid}}<br>
+   lastname.$error = {{contactForm.lastname.$error}}<br>
+   <br>
+   form.$valid = {{contactForm.$valid}}<br>
+   form.$error.required = {{!!contactForm.$error.required}}<br>
+   form.$error.minlength = {{!!contactForm.$error.minlength}}<br>
+   form.$error.maxlength = {{!!contactForm.$error.maxlength}}<br>
+
 </div>

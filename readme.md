@@ -1,9 +1,10 @@
 
 # AngularCRUD
 
-A learning example that demonstrates CRUD operations on a simple data model of lastname and firstname. It has server data
-provided by Firebase, a commercial (with a free plan) service providing NoSQL/JSON object storage as well as application
-hosting. It also supports offline use via appcache and localstorage.
+A learning example that demonstrates [CRUD](http://wikipedia.org/wiki/Create,_read,_update_and_delete) operations on a
+simple data model of lastname and firstname. It has server data provided by Firebase, a commercial (with a free plan)
+service providing NoSQL/JSON object storage as well as application hosting. It also supports offline use via appcache
+and localstorage.
 
 ## Learning/training application for Angular/Bootstrap and associated technologies 
 This is a learning/training application for Angular/Bootstrap and associated technologies. It is a
@@ -14,13 +15,15 @@ No actual rocket scientists were injured in the creation of this sample applicat
 
 ## Technologies and Tools
 ### AngularJS
-[AngularJS](http://angularjs.org)
+[AngularJS](http://angularjs.org) is the core MVC framework used in this application.
 ### Bootstrap
-[Bootstrap](http://getbootstrap.com)
+[Bootstrap](http://getbootstrap.com) is used for menus and styling instead of reinventing the wheel with our own custom CSS.
 ### Firebase
-[Firebase](http://firebase.com)
+[Firebase](http://firebase.com) is a commercial data and hosting service. The data service is a NoSQL backend with a
+RESTful interface. The application hosting is just plain easy!
 ### localForage
-Mozilla [localForage](https://github.com/mozilla/localForage)
+Mozilla [localForage](https://github.com/mozilla/localForage) is used for offline data access. localForage will use the
+best available local browser storage technology (indexedDB, localstorage...)
 
 ## Folders and files in the application
 The following is a quick tour of the folders and files that comprise the application. Not every folder and file

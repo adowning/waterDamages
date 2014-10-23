@@ -94,6 +94,8 @@ angular.module("angularcrud")
             var contactsRef = new Firebase(FBURL);       // Use AngularFire to connect to Firebase
             contactsRef.remove();                        // Remove all data from Firebase
 
+            // Note we let Firebase reassign the id for all objects. Preexisting get new ids
+            // and new items (that we gave a temp id) also get reassigned.
             for (var key in data) {                      // Iterate through local data saving to Firebase
                var obj = data[key];
                var newContactRef = contactsRef.push();
@@ -141,9 +143,11 @@ angular.module("angularcrud")
             });
          },
          add: function (first, last) {
+            // Create a dummy key.
             var id = "-";
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+            // iterate through the possible chars grabbing 20 random characters
             for (var i = 0; i < 19; ++i) {
                id += possible.charAt(Math.floor(Math.random() * possible.length));
             }
@@ -161,4 +165,3 @@ angular.module("angularcrud")
          }
       }
    });
-   // Data interface, called by dataFactory for server storage. This is used when we have a network connection.
