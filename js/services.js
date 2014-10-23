@@ -161,3 +161,4 @@ angular.module("angularcrud")
          }
       }
    });
+   // Data interface, called by dataFactory for server storage. This is used when we have a network connection.
