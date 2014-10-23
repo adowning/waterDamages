@@ -7,7 +7,7 @@
  */
 
 // Define our application module.
-var app = angular.module("angularcrud", ["ngRoute", "firebase"]);
+var app = angular.module("angularcrud", ["ngRoute", "ngMessages", "firebase"]);
 
 // Configure our applications routing.
 app.config(["$routeProvider", function ($routeProvider) {
@@ -181,6 +181,6 @@ app.controller("NewCtrl", function ($scope, dataFactory) {
 /*
  * Controller for reinitializing the database.
  */
-app.controller("LoadCtrl", function (SAMPLEDATA, fireService) {
-   fireService.initializeData(SAMPLEDATA);
+app.controller("LoadCtrl", function (SAMPLEDATA, fireFactory) {
+   fireFactory.updateAllContacts(SAMPLEDATA);
 });

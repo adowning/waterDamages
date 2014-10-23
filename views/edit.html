@@ -14,15 +14,30 @@
          <label for="firstname" class="control-label col-md-2">First Name:</label>
 
          <div class="col-md-10">
-            <input type="text" id="firstname" ng-model="contact.firstname" class="form-control col-md-10" placeholder="First name" focus required>
+            <input type="text" id="firstname" name="firstname" ng-model="contact.firstname" class="form-control col-md-10" placeholder="First name" minlength="2" ng-maxlength="20" focus required>
+
+            <!-- Supposedly will use ngAnimate if it's available -->
+            <div class="text-danger" ng-if="contactForm.firstname.$dirty" ng-messages="contactForm.firstname.$error">
+               <div ng-message="required">A first name is required!</div>
+               <div ng-message="minlength">First name too short!</div>
+               <div ng-message="maxlength">First name is too long!</div>
+            </div>
+
          </div>
       </div>
 
       <!-- Last Name -->
       <div class="form-group">
          <label for="lastname" class="control-label col-md-2">Last Name:</label>
+
          <div class="col-md-10">
-            <input type="text" id="lastname" ng-model="contact.lastname" class="form-control col-md-10" placeholder="Last name" required>
+            <input type="text" id="lastname" name="lastname" ng-model="contact.lastname" class="form-control col-md-10" placeholder="Last name" minlength="2" ng-maxlength="20" required>
+
+            <div class="text-danger" ng-if="contactForm.lastname.$dirty" ng-messages="contactForm.lastname.$error">
+               <div ng-message="required">A last name is required!</div>
+               <div ng-message="minlength">Last name too short!</div>
+               <div ng-message="maxlength">Last name is too long!</div>
+            </div>
          </div>
       </div>
 
@@ -37,7 +52,7 @@
             <button class="btn btn-primary" ng-disabled="contactForm.$invalid">Add</button>
          </span>
 
-         <!-- Show this button when contactId is blank. This happens when adding. -->
+         <!-- Show this button when contactId is not blank. This happens when editing existing. -->
          <button class="btn btn-danger" type="button" ng-click="remove()" ng-show="contact.contactId">Delete</button>
       </div>
    </form>
