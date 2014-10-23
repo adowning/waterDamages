@@ -57,21 +57,47 @@
       </div>
    </form>
 
-   firstname = {{contact.firstname}}<br>
-   firstname.$pristine = {{contactForm.firstname.$pristine}}<br>
-   firstname.$dirty = {{contactForm.firstname.$dirty}}<br>
-   firstname.$valid = {{contactForm.firstname.$valid}}<br>
-   firstname.$error = {{contactForm.firstname.$error}}<br>
-   <br>
-   lastname = {{contact.lastname}}<br>
-   lastname.$pristine = {{contactForm.lastname.$pristine}}<br>
-   lastname.$dirty = {{contactForm.lastname.$dirty}}<br>
-   lastname.$valid = {{contactForm.lastname.$valid}}<br>
-   lastname.$error = {{contactForm.lastname.$error}}<br>
-   <br>
-   form.$valid = {{contactForm.$valid}}<br>
-   form.$error.required = {{!!contactForm.$error.required}}<br>
-   form.$error.minlength = {{!!contactForm.$error.minlength}}<br>
-   form.$error.maxlength = {{!!contactForm.$error.maxlength}}<br>
+   <!--
+      Debugging/training info demonstrating AngularJS forms data entry and validation capabilities.
+      Note use of Bootstrap collapse object. Also href issue with AngularJS, per SO:
+         http://stackoverflow.com/questions/21436237/using-bootstrap-collapse-with-angularjs
+    -->
+   <p></p>
+   <div class="panel-group" id="accordion">
+
+      <div class="panel panel-default">
+
+         <div class="panel-heading">
+            <h4 class="panel-title">
+               <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" href="">
+                  Form details
+               </a>
+            </h4>
+         </div>
+
+         <div id="collapseOne" class="panel-collapse collapse">
+            <div class="panel-body">
+               firstname = {{contact.firstname}}<br>
+               firstname.$pristine = {{contactForm.firstname.$pristine}}<br>
+               firstname.$dirty = {{contactForm.firstname.$dirty}}<br>
+               firstname.$valid = {{contactForm.firstname.$valid}}<br>
+               firstname.$error = {{contactForm.firstname.$error}}<br>
+               <br>
+               lastname = {{contact.lastname}}<br>
+               lastname.$pristine = {{contactForm.lastname.$pristine}}<br>
+               lastname.$dirty = {{contactForm.lastname.$dirty}}<br>
+               lastname.$valid = {{contactForm.lastname.$valid}}<br>
+               lastname.$error = {{contactForm.lastname.$error}}<br>
+               <br>
+               form.$valid = {{contactForm.$valid}}<br>
+               form.$error.required = {{!!contactForm.$error.required}}<br>
+               form.$error.minlength = {{!!contactForm.$error.minlength}}<br>
+               form.$error.maxlength = {{!!contactForm.$error.maxlength}}<br>
+            </div>
+
+         </div>
+
+      </div>
+   </div>
 
 </div>
