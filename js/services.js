@@ -4,9 +4,9 @@
 angular.module("angularcrud")
    /*
     * Our controllers interact with dataFactory which is a facade for server or local storage. If we have
-    * a network connection, we use our rest service. Otherwise we use our local storage service.
+    * a network connection, we use our REST service, otherwise we use our local storage (browser storage) service.
     */
-   .factory("dataFactory", function (FBURL, $rootScope, fireFactory, forageFactory) {
+   .factory("dataFactory", function ($rootScope, fireFactory, forageFactory) {
       return {
          getAll: function (successCallback) {
             if ($rootScope.online) {
@@ -49,23 +49,23 @@ angular.module("angularcrud")
             }
          },
          updateAllContacts: function () {
-            localforage.getItem(FBURL, function (contacts) {
+            localforage.getItem($rootScope.FBURL, function (contacts) {
                fireFactory.updateAllContacts(contacts);
             });
          }
       }
    })
    // Data interface, called by dataFactory for server storage. This is used when we have a network connection.
-   .factory("fireFactory", function (FBURL, $http, $location, $firebase) {
+   .factory("fireFactory", function ($rootScope, $http, $location, $firebase) {
       return {
          getAll: function (successCallback) {
-            $http.get(FBURL + '.json?format=export').success(successCallback);
+            $http.get($rootScope.FBURL + '.json?format=export').success(successCallback);
          },
          getById: function (id, successCallback) {
-            $http.get(FBURL + id + '.json?format=export').success(successCallback);
+            $http.get($rootScope.FBURL + id + '.json?format=export').success(successCallback);
          },
          delete: function (id) {
-            $http.delete(FBURL + id + '.json?format=export').success(function () {
+            $http.delete($rootScope.FBURL + id + '.json?format=export').success(function () {
                $location.path("/");
             });
          },
@@ -77,7 +77,7 @@ angular.module("angularcrud")
          //    https://firebase.com/docs/rest/guide/saving-data.html
          update: function (id, first, last) {
             $http({
-               url: FBURL + id + '.json?format=export',
+               url: $rootScope.FBURL + id + '.json?format=export',
                data: {firstname:first, lastname:last, ".priority": last.toLowerCase() + " " + first.toLowerCase()},
                method: "PATCH"
             }).success(function (data, status, headers, config) {
@@ -85,18 +85,18 @@ angular.module("angularcrud")
             });
          },
          add: function (first, last) {
-            $http.post(FBURL + '.json?format=export', {firstname:first, lastname:last, ".priority": last.toLowerCase() + " " + first.toLowerCase()})
+            $http.post($rootScope.FBURL + '.json?format=export', {firstname:first, lastname:last, ".priority": last.toLowerCase() + " " + first.toLowerCase()})
                .success(function () {
                   $location.path("/");
                });
          },
          updateAllContacts: function (data) {
-            var contactsRef = new Firebase(FBURL);       // Use AngularFire to connect to Firebase
-            contactsRef.remove();                        // Remove all data from Firebase
+            var contactsRef = new Firebase($rootScope.FBURL);  // Use AngularFire to connect to Firebase
+            contactsRef.remove();                              // Remove all data from Firebase
 
-            // Note we let Firebase reassign the id for all objects. Preexisting get new ids
-            // and new items (that we gave a temp id) also get reassigned.
-            for (var key in data) {                      // Iterate through local data saving to Firebase
+            // Note we let Firebase reassign the id for all objects. Preexisting items will
+            // get new ids and new items (that we gave a temp id) get reassigned.
+            for (var key in data) {                            // Iterate through local data saving to Firebase
                var obj = data[key];
                var newContactRef = contactsRef.push();
                var first = obj.firstname;
@@ -108,21 +108,21 @@ angular.module("angularcrud")
       }
    })
 
-   // Data interface, called by dataFactory for local storage. This is used when we don't have a network connection.
-   .factory("forageFactory", function (FBURL, $rootScope, $location) {
+   // Data interface called by dataFactory for local storage. This is used when we don't have a network connection.
+   .factory("forageFactory", function ($rootScope, $location) {
       return {
          getAll: function (successCallback) {
-            localforage.getItem(FBURL, successCallback);
+            localforage.getItem($rootScope.FBURL, successCallback);
          },
          getById: function (id, successCallback) {
-            localforage.getItem(FBURL, function (contact) {
+            localforage.getItem($rootScope.FBURL, function (contact) {
                successCallback(contact[id]);
             });
          },
          delete: function (id) {
-            localforage.getItem(FBURL, function (contact) {
+            localforage.getItem($rootScope.FBURL, function (contact) {
                delete contact[id];
-               localforage.setItem(FBURL, contact, function (data) {
+               localforage.setItem($rootScope.FBURL, contact, function (data) {
                   $rootScope.$apply(function() {
                      $location.path("/");
                   });
@@ -130,12 +130,12 @@ angular.module("angularcrud")
             });
          },
          update: function (id, first, last) {
-            localforage.getItem(FBURL, function (contact) {
+            localforage.getItem($rootScope.FBURL, function (contact) {
                contact[id].firstname = first;
                contact[id].lastname = last;
                // Note syntax for attribute that starts with a period
                contact[id][".priority"] = last.toLowerCase() + " " + first.toLowerCase();
-               localforage.setItem(FBURL, contact, function (data) {
+               localforage.setItem($rootScope.FBURL, contact, function (data) {
                   $rootScope.$apply(function() {
                      $location.path("/view/" + id);
                   });
@@ -147,21 +147,24 @@ angular.module("angularcrud")
             var id = "-";
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-            // iterate through the possible chars grabbing 20 random characters
+            // Build up a key by iterating through the possible chars grabbing 20 random characters
             for (var i = 0; i < 19; ++i) {
                id += possible.charAt(Math.floor(Math.random() * possible.length));
             }
 
-            localforage.getItem(FBURL, function (contact) {
-               contact[id] = {};
-               contact[id].firstname = first;
+            localforage.getItem($rootScope.FBURL, function (contact) {  // Get all localStorage data
+               contact[id] = {};                                        // Create a new child element
+               contact[id].firstname = first;                           // Set values for new child element
                contact[id].lastname = last;
-               localforage.setItem(FBURL, contact, function (data) {
+
+               // Replace localStorage date with updated version
+               localforage.setItem($rootScope.FBURL, contact, function (data) {
                   $rootScope.$apply(function() {
                      $location.path("/");
                   });
                });
             });
+
          }
       }
    });

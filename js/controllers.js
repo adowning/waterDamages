@@ -37,15 +37,18 @@ app.config(["$routeProvider", function ($routeProvider) {
          templateUrl: "./views/list.html"
       })
 
+      .when("/settings", {
+         controller: "SettingsCtrl",
+         templateUrl: "./views/settings.html"
+      })
+
       .otherwise({
          redirectTo: "/"
       });
 }]);
 
-// Add your Firebase application URL here.
-app.constant("FBURL", "https://jimshea.firebaseio.com/");
 
-// Initial angularcrud data.
+// Initial angularcrud data. This will be used by the reinitialize functionality.
 app.constant("SAMPLEDATA",
    [
       {"firstname": "Fred",  "lastname":"Flintstone"},
@@ -55,8 +58,9 @@ app.constant("SAMPLEDATA",
    ]);
 
 
-// Called on application start up.
-app.run(function($window, $rootScope, dataFactory) {
+// Called on application start up. We use this to do application setup.
+app.run(function($window, $rootScope, $location, dataFactory) {
+
    // Function to run when we transition to being online
    function onOnline() {
       $rootScope.$apply(function() {
@@ -81,31 +85,54 @@ app.run(function($window, $rootScope, dataFactory) {
    // Set our on/off line functions as event listeners
    $window.addEventListener("offline", onOffline, false);
    $window.addEventListener("online",  onOnline,  false);
+
+
+   // Get the Firebase data URL from localStorage. If this is the first run (or localStorage has been cleared)
+   // the returned value will be null. If null the list screen will redirect us to the settings page where it
+   // can be set.
+   var FBHOST = localStorage.getItem("FBHOST");
+   if (typeof FBHOST === "undefined" || FBHOST === null) {
+      $rootScope.FBHOST = "https://YOUR_HOSTNAME.firebaseio.com/";
+      $rootScope.FBURL = "";
+   } else {
+      $rootScope.FBHOST = FBHOST;
+      $rootScope.FBURL = FBHOST;
+   }
+
 });
 
 
 /*
  * Controller for the listing page.
  */
-app.controller("ListCtrl", function (FBURL, $scope, dataFactory) {
-   dataFactory.getAll(function (data) {
-      $scope.contacts = data;
+app.controller("ListCtrl", function ($scope, $location, dataFactory) {
+   // Vars are set at rootScope, $scope will recursively search up to rootScope
+   if ($scope.FBHOST === "" || $scope.FBURL === "") {
+      $location.path("/settings");
+   } else {
+      dataFactory.getAll(function (data) {
+         $scope.contacts = data;
 
-      // Save the retrieved data locally in case we go offline
-      if ($scope.online) {
-         localforage.setItem(FBURL, data, function(value) {
-            // Do other things once the value has been saved.
-            // console.log(value);
-         });
-      }
-      else {
-         // We are offline. localForage operations happen outside of Angular's view, tell Angular data changed
-         $scope.$apply();
-      }
-   });
+         // Save the retrieved data locally so it's available when we go offline
+         if ($scope.online) {
+            localforage.setItem($scope.FBURL, data, function(value) {
+               // Do other things once the value has been saved.
+               // console.log(value);
+            });
+         }
+         else {
+            // We are offline. localForage operations happen outside of Angular's view, tell Angular data changed
+            $scope.$apply();
+         }
+      });
 
-   $("#menu-list").addClass("active");
-   $("#menu-new").removeClass("active");
+      // Set our menu tab active and all others inactive
+      $("#menu-list").addClass("active");
+      $("#menu-new").removeClass("active");
+      $("#menu-loaddata").removeClass("active");
+      $("#menu-settings").removeClass("active");
+   }
+
 });
 
 
@@ -113,6 +140,7 @@ app.controller("ListCtrl", function (FBURL, $scope, dataFactory) {
  * Controller for the view details page.
  */
 app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactory) {
+   // Get the object identified by contactId from our data store so we can edit it
    dataFactory.getById($routeParams.contactId, function (data) {
       $scope.contact = data;
       $scope.contact.contactId = $routeParams.contactId;
@@ -123,16 +151,21 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
       }
    });
 
+   // Function to run on Delete button click
    $scope.remove = function () {
       dataFactory.delete($scope.contact.contactId);
    };
 
+   // Function to run on Edit button click
    $scope.edit = function () {
       $location.path("/edit/" + $scope.contact.contactId);
    };
 
+   // Set all menu tabs inactive (there isn't a menu tab for viewing an items detail)
    $("#menu-list").removeClass("active");
    $("#menu-new").removeClass("active");
+   $("#menu-loaddata").removeClass("active");
+   $("#menu-settings").removeClass("active");
 });
 
 
@@ -140,26 +173,32 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
  * Controller for the edit page.
  */
 app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
+   // Get the object identified by contactId from our data store so we can edit it
    dataFactory.getById($routeParams.contactId, function (data) {
       $scope.contact = data;
       $scope.contact.contactId = $routeParams.contactId;
 
-      // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
+      // We are offline. localforage operations happen outside of Angular's view, tell Angular our model has changed
       if (!$scope.online) {
          $scope.$apply();
       }
    });
 
+   // Function to run on Delete button click
    $scope.remove = function () {
       dataFactory.delete($scope.contact.contactId);
    };
 
+   // Function to run on Save button click
    $scope.save = function () {
       dataFactory.update($scope.contact.contactId, $scope.contact.firstname, $scope.contact.lastname);
    };
 
+   // Set all menu tabs inactive (there isn't a menu tab for editing an existing item)
    $("#menu-list").removeClass("active");
    $("#menu-new").removeClass("active");
+   $("#menu-loaddata").removeClass("active");
+   $("#menu-settings").removeClass("active");
 });
 
 
@@ -167,14 +206,18 @@ app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
  * Controller for the new contact page.
  */
 app.controller("NewCtrl", function ($scope, dataFactory) {
-   $scope.contact = {};
+   $scope.contact = {}; // Initialize a blank object for the data entry form to use
 
+   // Function to run on Save button click
    $scope.save = function () {
       dataFactory.add($scope.contact.firstname, $scope.contact.lastname);
    };
 
+   // Set our menu tab active and all others inactive
    $("#menu-list").removeClass("active");
    $("#menu-new").addClass("active");
+   $("#menu-loaddata").removeClass("active");
+   $("#menu-settings").removeClass("active");
 });
 
 
@@ -183,4 +226,44 @@ app.controller("NewCtrl", function ($scope, dataFactory) {
  */
 app.controller("LoadCtrl", function (SAMPLEDATA, fireFactory) {
    fireFactory.updateAllContacts(SAMPLEDATA);
+});
+
+
+/*
+ * Controller for the settings page.
+ */
+app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
+   $scope.settings = {};
+   $scope.settings.firebaseurl = $scope.FBHOST;
+
+   //
+   $scope.save = function () {
+      // Really should test that url is a valid Firebase data url
+
+      // Make sure URL ends with "/"
+      if ($scope.settings.firebaseurl.slice(-1) !== "/") {
+         $scope.settings.firebaseurl += "/";
+      }
+
+      localStorage.setItem("FBHOST", $scope.settings.firebaseurl);   // Persist the URL to localStorage for future use
+      $rootScope.FBURL = $scope.settings.firebaseurl;                // Set the app runtime URL variable
+
+      // Re-enable other tabs now that we have a URL
+      $("#menu-list").removeClass("disabled");
+      $("#menu-new").removeClass("disabled");
+      $("#menu-loaddata").removeClass("disabled");
+
+      $location.path("/"); // Go to list screen which will load data from the server
+   };
+
+   // Disable other menu items until a valid data url is entered
+   $("#menu-list").addClass("disabled");
+   $("#menu-new").addClass("disabled");
+   $("#menu-loaddata").addClass("disabled");
+
+   // Make settings tab active and all others inactive
+   $("#menu-list").removeClass("active");
+   $("#menu-new").removeClass("active");
+   $("#menu-loaddata").removeClass("active");
+   $("#menu-settings").addClass("active");
 });

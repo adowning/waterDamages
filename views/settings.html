@@ -1,0 +1,28 @@
+
+<div class="well well-sm">
+   <h3>Settings</h3>
+
+   <!-- This is a responsive form. At small sizes the label will stack above its control. -->
+   <form name="settingsForm" class="form-horizontal" role="form" ng-submit="save()">
+
+      <!-- Firebase URL -->
+      <div class="form-group">
+         <label for="firebaseurl" class="control-label col-md-2">Firebase URL:</label>
+
+         <div class="col-md-10">
+            <input type="text" id="firebaseurl" name="firebaseurl" ng-model="settings.firebaseurl" class="form-control col-md-10" placeholder="https://inferno.firebaseio.com/" minlength="23" ng-maxlength="60" focus required>
+
+            <!-- Supposedly will use ngAnimate if it's available -->
+            <div class="text-danger" ng-if="settingsForm.firebaseurl.$dirty" ng-messages="settingsForm.firebaseurl.$error">
+               <div ng-message="required">A Firebase URL required!</div>
+               <div ng-message="minlength">URL appears to be too short!</div>
+               <div ng-message="maxlength">URL is too long!</div>
+            </div>
+
+         </div>
+      </div>
+
+      <button class="btn btn-primary" ng-disabled="settingsForm.$invalid">Save</button>
+   </form>
+
+</div>

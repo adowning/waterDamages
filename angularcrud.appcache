@@ -1,19 +1,21 @@
 CACHE MANIFEST
-#version 09152014:16:54
+#version 10272014:13:18
 
 index.html
 js/controllers.js
 js/services.js
 views/edit.html
 views/list.html
+views/settings.html
 views/view.html
-lib/angular-route.js
 lib/angular.js
-lib/angularfire.min.js
-lib/bootstrap.min.css
-lib/bootstrap.min.js
+lib/angular-messages.js
+lib/angular-route.js
+lib/angularfire.js
+lib/bootstrap.css
+lib/bootstrap.js
 lib/firebase.js
-lib/jquery-2.1.1.js
+lib/jquery.js
 lib/localforage.js
 
 NETWORK:
