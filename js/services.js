@@ -6,7 +6,7 @@ angular.module("angularcrud")
     * Our controllers interact with dataFactory which is a facade for server or local storage. If we have
     * a network connection, we use our REST service, otherwise we use our local storage (browser storage) service.
     */
-   .factory("dataFactory", function ($rootScope, fireFactory, forageFactory) {
+   .factory("dataFactory", function ($rootScope, fireFactory, forageFactory, DATAKEY) {
       return {
          getAll: function (successCallback) {
             if ($rootScope.online) {
@@ -49,23 +49,24 @@ angular.module("angularcrud")
             }
          },
          updateAllContacts: function () {
-            localforage.getItem($rootScope.FBURL, function (contacts) {
+            localforage.getItem(DATAKEY, function (contacts) {
                fireFactory.updateAllContacts(contacts);
             });
          }
       }
    })
    // Data interface, called by dataFactory for server storage. This is used when we have a network connection.
+   // .json returns JSON format, ?format=export adds the .priority attribute to the output
    .factory("fireFactory", function ($rootScope, $http, $location, $firebase) {
       return {
          getAll: function (successCallback) {
-            $http.get($rootScope.FBURL + '.json?format=export').success(successCallback);
+            $http.get($rootScope.FBURL + "angularcrud/" + ".json?format=export").success(successCallback);
          },
          getById: function (id, successCallback) {
-            $http.get($rootScope.FBURL + id + '.json?format=export').success(successCallback);
+            $http.get($rootScope.FBURL + "angularcrud/" + id + ".json?format=export").success(successCallback);
          },
          delete: function (id) {
-            $http.delete($rootScope.FBURL + id + '.json?format=export').success(function () {
+            $http.delete($rootScope.FBURL + "angularcrud/" + id + ".json?format=export").success(function () {
                $location.path("/");
             });
          },
@@ -77,7 +78,7 @@ angular.module("angularcrud")
          //    https://firebase.com/docs/rest/guide/saving-data.html
          update: function (id, first, last) {
             $http({
-               url: $rootScope.FBURL + id + '.json?format=export',
+               url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
                data: {firstname:first, lastname:last, ".priority": last.toLowerCase() + " " + first.toLowerCase()},
                method: "PATCH"
             }).success(function (data, status, headers, config) {
@@ -85,13 +86,13 @@ angular.module("angularcrud")
             });
          },
          add: function (first, last) {
-            $http.post($rootScope.FBURL + '.json?format=export', {firstname:first, lastname:last, ".priority": last.toLowerCase() + " " + first.toLowerCase()})
+            $http.post($rootScope.FBURL + "angularcrud/" + ".json?format=export", {firstname:first, lastname:last, ".priority": last.toLowerCase() + " " + first.toLowerCase()})
                .success(function () {
                   $location.path("/");
                });
          },
          updateAllContacts: function (data) {
-            var contactsRef = new Firebase($rootScope.FBURL);  // Use AngularFire to connect to Firebase
+            var contactsRef = new Firebase($rootScope.FBURL + "angularcrud/");  // Use AngularFire to connect to Firebase
             contactsRef.remove();                              // Remove all data from Firebase
 
             // Note we let Firebase reassign the id for all objects. Preexisting items will
@@ -109,20 +110,20 @@ angular.module("angularcrud")
    })
 
    // Data interface called by dataFactory for local storage. This is used when we don't have a network connection.
-   .factory("forageFactory", function ($rootScope, $location) {
+   .factory("forageFactory", function ($rootScope, $location, DATAKEY) {
       return {
          getAll: function (successCallback) {
-            localforage.getItem($rootScope.FBURL, successCallback);
+            localforage.getItem(DATAKEY, successCallback);
          },
          getById: function (id, successCallback) {
-            localforage.getItem($rootScope.FBURL, function (contact) {
+            localforage.getItem(DATAKEY, function (contact) {
                successCallback(contact[id]);
             });
          },
          delete: function (id) {
-            localforage.getItem($rootScope.FBURL, function (contact) {
+            localforage.getItem(DATAKEY, function (contact) {
                delete contact[id];
-               localforage.setItem($rootScope.FBURL, contact, function (data) {
+               localforage.setItem(DATAKEY, contact, function (data) {
                   $rootScope.$apply(function() {
                      $location.path("/");
                   });
@@ -130,12 +131,12 @@ angular.module("angularcrud")
             });
          },
          update: function (id, first, last) {
-            localforage.getItem($rootScope.FBURL, function (contact) {
+            localforage.getItem(DATAKEY, function (contact) {
                contact[id].firstname = first;
                contact[id].lastname = last;
                // Note syntax for attribute that starts with a period
                contact[id][".priority"] = last.toLowerCase() + " " + first.toLowerCase();
-               localforage.setItem($rootScope.FBURL, contact, function (data) {
+               localforage.setItem(DATAKEY, contact, function (data) {
                   $rootScope.$apply(function() {
                      $location.path("/view/" + id);
                   });
@@ -152,13 +153,13 @@ angular.module("angularcrud")
                id += possible.charAt(Math.floor(Math.random() * possible.length));
             }
 
-            localforage.getItem($rootScope.FBURL, function (contact) {  // Get all localStorage data
+            localforage.getItem(DATAKEY, function (contact) {  // Get all localStorage data
                contact[id] = {};                                        // Create a new child element
                contact[id].firstname = first;                           // Set values for new child element
                contact[id].lastname = last;
 
                // Replace localStorage date with updated version
-               localforage.setItem($rootScope.FBURL, contact, function (data) {
+               localforage.setItem(DATAKEY, contact, function (data) {
                   $rootScope.$apply(function() {
                      $location.path("/");
                   });

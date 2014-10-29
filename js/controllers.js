@@ -57,6 +57,8 @@ app.constant("SAMPLEDATA",
       {"firstname": "Betty", "lastname":"Rubble"}
    ]);
 
+// Offline data storage key used by localForage
+app.constant("DATAKEY", "AngularCrudData");
 
 // Called on application start up. We use this to do application setup.
 app.run(function($window, $rootScope, $location, dataFactory) {
@@ -90,24 +92,17 @@ app.run(function($window, $rootScope, $location, dataFactory) {
    // Get the Firebase data URL from localStorage. If this is the first run (or localStorage has been cleared)
    // the returned value will be null. If null the list screen will redirect us to the settings page where it
    // can be set.
-   var FBHOST = localStorage.getItem("FBHOST");
-   if (typeof FBHOST === "undefined" || FBHOST === null) {
-      $rootScope.FBHOST = "https://YOUR_HOSTNAME.firebaseio.com/";
-      $rootScope.FBURL = "";
-   } else {
-      $rootScope.FBHOST = FBHOST;
-      $rootScope.FBURL = FBHOST;
-   }
-
+   // If key isn't found null is returned
+   $rootScope.FBURL = localStorage.getItem("FBURL");
 });
 
 
 /*
  * Controller for the listing page.
  */
-app.controller("ListCtrl", function ($scope, $location, dataFactory) {
+app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY) {
    // Vars are set at rootScope, $scope will recursively search up to rootScope
-   if ($scope.FBHOST === "" || $scope.FBURL === "") {
+   if ($scope.FBURL === null) {
       $location.path("/settings");
    } else {
       dataFactory.getAll(function (data) {
@@ -115,7 +110,7 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory) {
 
          // Save the retrieved data locally so it's available when we go offline
          if ($scope.online) {
-            localforage.setItem($scope.FBURL, data, function(value) {
+            localforage.setItem(DATAKEY, data, function(value) {
                // Do other things once the value has been saved.
                // console.log(value);
             });
@@ -234,7 +229,12 @@ app.controller("LoadCtrl", function (SAMPLEDATA, fireFactory) {
  */
 app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
    $scope.settings = {};
-   $scope.settings.firebaseurl = $scope.FBHOST;
+   // Set default value to be used for form input field
+   if ($scope.FBURL === null) {
+      $scope.settings.firebaseurl = "https://YOUR_HOSTNAME.firebaseio.com/";
+   } else {
+      $scope.settings.firebaseurl = $scope.FBURL;
+   }
 
    //
    $scope.save = function () {
@@ -245,7 +245,7 @@ app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
          $scope.settings.firebaseurl += "/";
       }
 
-      localStorage.setItem("FBHOST", $scope.settings.firebaseurl);   // Persist the URL to localStorage for future use
+      localStorage.setItem("FBURL", $scope.settings.firebaseurl);   // Persist the URL to localStorage for future use
       $rootScope.FBURL = $scope.settings.firebaseurl;                // Set the app runtime URL variable
 
       // Re-enable other tabs now that we have a URL
@@ -256,14 +256,9 @@ app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
       $location.path("/"); // Go to list screen which will load data from the server
    };
 
-   // Disable other menu items until a valid data url is entered
-   $("#menu-list").addClass("disabled");
-   $("#menu-new").addClass("disabled");
-   $("#menu-loaddata").addClass("disabled");
-
-   // Make settings tab active and all others inactive
-   $("#menu-list").removeClass("active");
-   $("#menu-new").removeClass("active");
-   $("#menu-loaddata").removeClass("active");
-   $("#menu-settings").addClass("active");
+   // Disable other menu items until a valid data url is entered and make settings tab active with all others inactive
+   $("#menu-list")    .addClass("disabled").removeClass("active");
+   $("#menu-new")     .addClass("disabled").removeClass("active");
+   $("#menu-loaddata").addClass("disabled").removeClass("active");
+   $("#menu-settings")                     .addClass("active");
 });

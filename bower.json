@@ -5,9 +5,14 @@
   "authors": [
     "jshea <jimtshea@gmail.com>"
   ],
-  "description": "Demo/Learning application",
-  "main": "js/controller.js",
+  "description": "My super duper project",
+  "main": "index.html",
+  "keywords": [
+    "Super",
+    "Duper"
+  ],
   "license": "MIT",
+  "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
@@ -18,10 +23,11 @@
   "dependencies": {
     "angular": "~1.3.0",
     "angular-route": "~1.3.0",
-    "angularfire": "~0.8.2",
-    "bootstrap": "~3.2.0",
-    "localforage": "~1.1.0",
     "angular-messages": "~1.3.0",
-    "angular-animate": "~1.3.0"
+    "bootstrap": "~3.2.0",
+    "localforage": "~1.1.1",
+    "firebase": "~1.1.3",
+    "angularfire": "~0.8.2",
+    "jquery": "~2.1.1"
   }
 }

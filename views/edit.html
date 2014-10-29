@@ -14,7 +14,9 @@
          <label for="firstname" class="control-label col-md-2">First Name:</label>
 
          <div class="col-md-10">
-            <input type="text" id="firstname" name="firstname" ng-model="contact.firstname" class="form-control col-md-10" placeholder="First name" minlength="2" ng-maxlength="20" focus required>
+            <input type="text" id="firstname" name="firstname" ng-model="contact.firstname"
+                   class="form-control col-md-10" placeholder="First name" minlength="2" ng-maxlength="20"
+                   focus required>
 
             <!-- Supposedly will use ngAnimate if it's available -->
             <div class="text-danger" ng-if="contactForm.firstname.$dirty" ng-messages="contactForm.firstname.$error">
