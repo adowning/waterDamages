@@ -16,24 +16,22 @@
 ### Initialize the Firebase tools.
    * Change directory to your application
 
-      `c:\> cd \Users\jshea\AngularCRUD`
-
+      `c:\> cd \Users\USER_NAME\AngularCRUD`
 
    * Initialize your project for Firebase. This is a onetime step. When prompted, sign-in with your Firebase account. 
    For 'Firebase app:' enter the name of the application that is listed. For the 'Public Directory:' just press enter
    for (current directory) as we are already in the directory of our application.
 
-      `c:\Users\jshea\AngularCRUD> firebase init`
+      `c:\Users\USER_NAME\AngularCRUD> firebase init`
 
 ### Deploy your application to your Firebase hosted account.
-   * `c:\Users\jshea\AngularCRUD> firebase deploy`
+   * `c:\Users\USER_NAME\AngularCRUD> firebase deploy`
 
 ### Run your application.
    * In your browser - open your URL or
-   * Use the Firebase tools utility `c:\Users\jshea\AngularCRUD> firebase deploy`
+   * Use the Firebase tools utility `c:\Users\USER_NAME\AngularCRUD> firebase deploy`
 
 ## Misc
-
 Add .json at the end of a url to get a json format response
 
    `http://myapp.firebaseio.com/1.json`
