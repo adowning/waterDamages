@@ -3,7 +3,7 @@
  */
 angular.module("angularcrud")
    /*
-    * Our controllers interact with dataFactory which is a facade for server or local storage. If we have
+    * Our controllers interact with dataFactory which is a facade for remote server data or local storage. If we have
     * a network connection, we use our REST service, otherwise we use our local storage (browser storage) service.
     */
    .factory("dataFactory", function ($rootScope, fireFactory, forageFactory, DATAKEY) {
@@ -55,8 +55,8 @@ angular.module("angularcrud")
          }
       }
    })
-   // Data interface, called by dataFactory for server storage. This is used when we have a network connection.
-   // .json returns JSON format, ?format=export adds the .priority attribute to the output
+   // Data interface, called by dataFactory for server storage. This is used when we have a network connection. For
+   // firebase adding .json to the URL returns JSON format, ?format=export adds the .priority attribute to the output
    .factory("fireFactory", function ($rootScope, $http, $location, $firebase) {
       return {
          getAll: function (successCallback) {
@@ -71,11 +71,8 @@ angular.module("angularcrud")
             });
          },
          // Note use of HTTP method PATCH.
-         //    Updating Data with PATCH
-         //       Using a PATCH request, you can update specific children at a location
-         //       without overwriting existing data.
-         //
-         //    https://firebase.com/docs/rest/guide/saving-data.html
+         //    Updating Data with PATCH (https://firebase.com/docs/rest/guide/saving-data.html)
+         //       Using a PATCH request, you can update specific children at a location without overwriting existing data.
          update: function (id, first, last) {
             $http({
                url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
@@ -92,8 +89,8 @@ angular.module("angularcrud")
                });
          },
          updateAllContacts: function (data) {
-            var contactsRef = new Firebase($rootScope.FBURL + "angularcrud/");  // Use AngularFire to connect to Firebase
-            contactsRef.remove();                              // Remove all data from Firebase
+            var contactsRef = new Firebase($rootScope.FBURL + "angularcrud/");   // Use AngularFire to connect to Firebase
+            contactsRef.remove();                                                // Remove all data from Firebase
 
             // Note we let Firebase reassign the id for all objects. Preexisting items will
             // get new ids and new items (that we gave a temp id) get reassigned.

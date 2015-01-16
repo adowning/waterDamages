@@ -57,7 +57,7 @@ app.constant("SAMPLEDATA",
       {"firstname": "Betty", "lastname":"Rubble"}
    ]);
 
-// Offline data storage key used by localForage
+// Offline data storage key used by localForage. This will be the document key in IndexedDB.
 app.constant("DATAKEY", "AngularCrudData");
 
 // Called on application start up. We use this to do application setup.
@@ -236,7 +236,8 @@ app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
       $scope.settings.firebaseurl = $scope.FBURL;
    }
 
-   //
+   // TODO - Should add a cancel button. We currently leave the user stuck in this screen. They
+   // have to click save to get their menus back. That's not friendly.
    $scope.save = function () {
       // Really should test that url is a valid Firebase data url
 
@@ -245,7 +246,7 @@ app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
          $scope.settings.firebaseurl += "/";
       }
 
-      localStorage.setItem("FBURL", $scope.settings.firebaseurl);   // Persist the URL to localStorage for future use
+      localStorage.setItem("FBURL", $scope.settings.firebaseurl);    // Persist the URL to localStorage for future use
       $rootScope.FBURL = $scope.settings.firebaseurl;                // Set the app runtime URL variable
 
       // Re-enable other tabs now that we have a URL
