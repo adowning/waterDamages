@@ -4,14 +4,21 @@ For this example we're going to build an Android version of our application. And
 Install the [Android SDK](http://developer.android.com/sdk/index.html#Other). The Cordova [Platform Guides](http://cordova.apache.org/docs/en/4.0.0/guide_platforms_index.md.html#Platform%20Guides) have information on the installation, configuration and usage of Android.
 
     # Download and install the Andorid SDK
-    # Install platform version 19 (Android version 4.4.2) as that's what Cordova is happy with
-    cd Dropbox\Development\Angular\AngularCRUD          // Go to folder above where we want our project created
+    # Install platform version 19 (Android version 4.4.2) as that's what today's Cordova is happy with
+    # Add the Android SDK to your path
+    # ;C:\Program Files\Android\android-sdk\platform-tools;C:\Program Files\Android\android-sdk\tools
+    mkdir \Users\USER_NAME\Documents\Cordova            // Make a directory for our Cordova projects
+    cd  \Users\USER_NAME\Documents\Cordova              // CD to our Cordova projects parent folder
     cordova create CordovaCRUD com.mydomain AngularCRUD // Create our Cordova project
-    cd CordovaCRUD                                      // Change directory to our new Cordova prject
+    cd CordovaCRUD                                      // Change directory to our new Cordova project
     cordova platform add android                        // Add the Android platform
-    cordova build                                       // Compile our Android executable
-    cordova emulate android                             // Run our executable in the Android emulator
-    cordova run android                                 // Deploy our executable to the attached Android device
+    cordova build                                       // Compile default Cordova project as an Android executable
+    cordova emulate android                             // Run default project executable in the Android emulator
+    cordova run android                                 // Deploy the executable to the attached Android device
+    # Clear the default Cordova application from C:\Users\USER_NAME\Documents\Cordova\CordovaCRUD\www
+    del C:\Users\USER_NAME\Documents\Cordova\CordovaCRUD\www
+    # Copy our AngularJS application to C:\Users\USER_NAME\Documents\Cordova\CordovaCRUD\www
+    copy C:\Users\USER_NAME\Documents\AngularCRUD C:\Users\USER_NAME\Documents\Cordova\CordovaCRUD\www
 
 ## Key signing
 cordova build creates signed debug version of the apk, for production we'll be signed by OCIO?
