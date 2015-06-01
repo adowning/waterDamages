@@ -4,8 +4,8 @@
    * https://firebase.com/signup/
 
 ### From your firebase account get your data and hosting URLs. The'll be something like
-   * **hotfire123.firebaseio.com**   This is your data store
-   * **hotfire123.firebaseapp.com**  This is your application hosting
+   * **andrewscleaning.firebaseapp.com**   This is your data store
+   * **andrewscleaning.firebaseapp.com**  This is your application hosting
 
 ### Install nodeJS
    * http://nodejs.org/download/

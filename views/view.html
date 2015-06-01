@@ -1,10 +1,72 @@
 <div class="alert alert-warning" ng-hide="online">
     Working Offline. Changes will be saved when an Internet connection is restored.
 </div>
+<!--<div class="well well-sm">-->
+<!--<h3>{{contact.firstname}} {{contact.lastname}}</h3>-->
 
-<div class="well well-sm">
-    <h3>{{contact.firstname}} {{contact.lastname}}</h3>
+<!--<button type="button" ng-click="edit()"   class="btn btn-primary">Edit</button>-->
+<!--&lt;!&ndash;<button type="button" ng-click="remove()" class="btn btn-danger">Delete</button>&ndash;&gt;-->
+<!--</div>-->
 
-    <button type="button" ng-click="edit()"   class="btn btn-primary">Edit</button>
-    <button type="button" ng-click="remove()" class="btn btn-danger">Delete</button>
+
+
+
+<div id="contactCard">
+
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left">Job Number: {{job.jobNumber}}</h3>
+            <div class="btn-group pull-right visible-xs">
+                <a class="btn btn-primary" href="/contacts/sH5PxrdzkZ3T/edit"
+                   data-toggle="modal"
+                   data-target="#editModal">
+                    <i class="fa fa-pencil"></i>
+                    <span>Edit</span>
+                </a>
+            </div>
+            <a class="btn btn-primary pull-right hidden-xs" href="/contacts/sH5PxrdzkZ3T/edit"
+               data-toggle="modal"
+               data-target="#editModal">
+                <i class="fa fa-pencil"></i>
+                <span>Edit</span>
+            </a>
+        </div>
+        <div class="list-group">
+            <div class="list-group-item">
+                <img src="views/img/person.jpg" class="img-rounded pull-left"/>
+                <h4 class="list-group-item-heading">{{job.firstname}} {{job.lastname}}</h4>
+                <label>Temp Address {{job.address}}</label>
+
+            </div>
+            <div class="list-group-item">
+                <label>Company</label>
+                <h4 class="list-group-item-heading">Masung Corp.</h4>
+            </div>
+            <div class="list-group-item">
+                <label>Job Title</label>
+                <h4 class="list-group-item-heading">Engineer</h4>
+            </div>
+            <div class="list-group-item">
+                <label>Department</label>
+                <h4 class="list-group-item-heading">IT</h4>
+            </div>
+            <a class="list-group-item" href="tel://+1 650-555-0029">
+                <label>Phone</label>
+                <h4 class="list-group-item-heading">+1 650-555-0029</h4>
+            </a>
+            <a class="list-group-item" href="mailto:Joseph.Barish@masung.com">
+                <label>Email</label>
+                <h4 class="list-group-item-heading">Joseph.Barish@masung.com</h4>
+            </a>
+        </div>
+        <div class="panel-footer">
+            <small class="pull-left">Built with Bootcards - Base Card</small>
+            <a class="btn btn-link btn-xs pull-right"
+               href="/snippets/base-card-form"
+               data-toggle="modal"
+               data-target="#docsModal">
+                View Source</a>
+        </div>
+    </div>
+
 </div>
