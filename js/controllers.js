@@ -7,7 +7,7 @@
  */
 
 // Define our application module.
-var app = angular.module("angularcrud", ["ngRoute", "ngMessages", "firebase", 'LocalForageModule']);
+var app = angular.module("angularcrud", ["ngRoute", "ngMessages", "firebase", 'LocalForageModule', 'ajoslin.promise-tracker']);
 
 // Configure our applications routing.
 app.config(["$routeProvider", function ($routeProvider) {
@@ -126,6 +126,9 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
             }
         });
 
+        $scope.savingNewJob = function () {
+            console.log('heaysdf')
+        }
         // Set our menu tab active and all others inactive
         $("#menu-list").addClass("active");
         $("#menu-new").removeClass("active");
@@ -139,12 +142,15 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
 /*
  * Controller for the view details page.
  */
-app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactory) {
+app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactory, $http, promiseTracker) {
     // Get the object identified by contactId from our data store so we can edit it
+    $scope.formDisabled = true;
+
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
-        var jobNumber = data.jobNumber;
-        if(!jobNumber){alert('Error: No job number.')}
+        $scope.formDisabled = false;
+        console.log($scope.formDisabled)
+
         $scope.job.contactId = $routeParams.contactId;
 
         // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
@@ -152,16 +158,74 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
             $scope.$apply();
         }
     });
+    // Inititate the promise tracker to track form submissions.
+    //$scope.progress = promiseTracker();
+    //
+    $scope.submit = function (form) {
+        // Trigger validation flag.
+        $scope.submitted = true;
+        // If form is invalid, return and let AngularJS show validation errors.
+        if (form.$invalid) {
+            return;
+        }
+        console.table(form)
+        $scope.progress = true;
+        // Default values for the request.
+        var config = {
+            params: {
+                'callback': 'JSON_CALLBACK',
+                'name': $scope.name,
+                'email': $scope.email,
+                'subjectList': $scope.subjectList,
+                'url': $scope.url,
+                'comments': $scope.comments
+            },
+        };
 
-    // Function to run on Delete button click
-    $scope.remove = function () {
-        dataFactory.delete($scope.job.contactId);
-    };
+        //Perform JSONP request.
+        //var promise = $http.jsonp('response.json', config)
+        //    .success(function (data, status, headers, config) {
+        //    if (data.status == 'OK') {
+        //        $scope.name = null;
+        //        $scope.email = null;
+        //        $scope.subjectList = null;
+        //        $scope.url = null;
+        //        $scope.comments = null;
+        //        $scope.messages = 'Your form has been sent!';
+        //        $scope.submitted = false;
+        //    } else {
+        //        $scope.messages = 'Oops, we received your request, but there was an error processing it.';
+        //        console.error(data);
+        //    }
+        //})
+        //    .error(function (data, status, headers, config) {
+        //        $scope.progress = data;
+        //        $scope.messages = 'There was a network error. Try again later.';
+        //        console.error(data);
+        //    })
+        //    .finally(function () {
+        //        // Hide status messages after three seconds.
+        //        $timeout(function () {
+        //            $scope.messages = null;
+        //        }, 3000);
+        //    });
 
-    // Function to run on Edit button click
-    $scope.edit = function () {
-        $location.path("/edit/" + $scope.job.contactId);
+        //// Track the request and show its progress to the user.
+        //$scope.progress.addPromise(promise);
     };
+    //var message = "Are you sure ?";
+    //
+    //var modalHtml = '<div class="modal-body">' + message + '</div>';
+    //modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
+    //
+    //var modalInstance = $modal.open({
+    //    template: modalHtml,
+    //    controller: ModalInstanceCtrl
+    //});
+    //
+    //modalInstance.result.then(function() {
+    //    dataFactory.delete($scope.contact.contactId);
+    //});
 
     // Set all menu tabs inactive (there isn't a menu tab for viewing an items detail)
     $("#menu-list").removeClass("active");
@@ -188,22 +252,21 @@ app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
 
     // Function to run on Delete button click
     $scope.remove = function () {
-alert('need to add this modal back')
-            //var message = "Are you sure ?";
-            //
-            //var modalHtml = '<div class="modal-body">' + message + '</div>';
-            //modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
-            //
-            //var modalInstance = $modal.open({
-            //    template: modalHtml,
-            //    controller: ModalInstanceCtrl
-            //});
-            //
-            //modalInstance.result.then(function() {
-            //    dataFactory.delete($scope.contact.contactId);
-            //});
+        alert('need to add this modal back')
+        //var message = "Are you sure ?";
+        //
+        //var modalHtml = '<div class="modal-body">' + message + '</div>';
+        //modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
+        //
+        //var modalInstance = $modal.open({
+        //    template: modalHtml,
+        //    controller: ModalInstanceCtrl
+        //});
+        //
+        //modalInstance.result.then(function() {
+        //    dataFactory.delete($scope.contact.contactId);
+        //});
     };
-
 
 
     // Function to run on Save button click
@@ -224,7 +287,7 @@ alert('need to add this modal back')
  */
 app.controller("NewCtrl", function ($scope, dataFactory) {
     $scope.contact = {}; // Initialize a blank object for the data entry form to use
-
+    console.log('new job creation')
     // Function to run on Save button click
     $scope.save = function () {
         dataFactory.add($scope.contact.firstname, $scope.contact.lastname);
@@ -286,12 +349,13 @@ app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
     $("#menu-settings").addClass("active");
 });
 
-var ModalInstanceCtrl = function($scope, $modalInstance) {
-    $scope.ok = function() {
+var ModalInstanceCtrl = function ($scope, $modalInstance) {
+    console.log('hi')
+    $scope.ok = function () {
         $modalInstance.close();
     };
 
-    $scope.cancel = function() {
+    $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
 };
