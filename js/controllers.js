@@ -7,7 +7,7 @@
  */
 
 // Define our application module.
-var app = angular.module("angularcrud", ["ngRoute", "ngMessages", "firebase", 'LocalForageModule', 'ajoslin.promise-tracker']);
+var app = angular.module("angularcrud", ["ui.bootstrap", "ngRoute", "ngMessages", "firebase", 'LocalForageModule', 'ajoslin.promise-tracker']);
 
 // Configure our applications routing.
 app.config(["$routeProvider", function ($routeProvider) {
@@ -165,11 +165,11 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
         // Trigger validation flag.
         $scope.submitted = true;
         // If form is invalid, return and let AngularJS show validation errors.
-        if (form.$invalid) {
-            return;
-        }
+        // if (form.$invalid) {
+        //     return;
+        // }
         console.table(form)
-        $scope.progress = true;
+        $scope.messages = 'There was a network error. Try again later.';
         // Default values for the request.
         var config = {
             params: {

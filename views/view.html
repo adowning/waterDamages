@@ -83,7 +83,7 @@
     <!--<div data-ng-show="progress.active()" style="color: red; font-size: 50px;">Sending&hellip;</div>-->
     <div class="modal-dialog">
         <div class="modal-content">
-            <form name="helpForm" novalidate role="form">
+            <form name="helpForm" novalidate role="form" ng-submit="submit()">
                 <div id="name" class="form-group">
                     <label for="name">Your Name </label>
                     <span class="label label-danger"
@@ -121,7 +121,8 @@
                     <textarea name="comments" data-ng-model="comments" class="form-control" required></textarea>
                 </div>
 
-                <button data-ng-disabled="progress.active()" data-ng-click="submit(helpForm)" class="btn btn-default">
+                <button data-toggle="modal"
+               data-target="#editModal" data-ng-disabled="progress.active()" data-ng-click="submit(helpForm)" class="btn btn-default">
                     Submit
                 </button>
             </form>
