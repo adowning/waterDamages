@@ -78,9 +78,11 @@
     </div>
 
 </div>
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
+
+
+<!--<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
     <div id="messages" class="alert alert-success" data-ng-show="messages" data-ng-bind="messages"></div>
-    <!--<div data-ng-show="progress.active()" style="color: red; font-size: 50px;">Sending&hellip;</div>-->
+    <div data-ng-show="progress.active()" style="color: red; font-size: 50px;">Sending&hellip;</div>
     <div class="modal-dialog">
         <div class="modal-content">
             <form name="helpForm" novalidate role="form" ng-submit="submit()">
@@ -88,7 +90,7 @@
                     <label for="name">Your Name </label>
                     <span class="label label-danger"
                           data-ng-show="submitted && helpForm.name.$error.required">Required!</span>
-                    <!-- TODO fix me to prefil values -->
+                  
                     <input type="text" name="name"  data-ng-model="job.firstname" class="form-control" required/>
                 </div>
 
@@ -100,13 +102,6 @@
                     <input type="email" name="email" data-ng-model="email" class="form-control" required/>
                 </div>
 
-                <!--<div class="form-group">-->
-                <!--<label for="subjectList">What is the nature of your request?</label>-->
-                <!--<span class="label label-danger" data-ng-show="submitted && helpForm.subjectList.$error.required">Required!</span>-->
-                <!--<select name="subjectList" data-ng-model="subjectList" data-ng-options="id as value for (id, value) in subjectListOptions" class="form-control" required>-->
-                <!--<option value=""></option>-->
-                <!--</select>-->
-                <!--</div>-->
 
                 <div id="url" class="form-group">
                     <label for="url">URL of Relevant Page</label>
@@ -128,7 +123,7 @@
             </form>
         </div>
     </div>
-</div>
+</div>-->
 
 
 <!--<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">-->

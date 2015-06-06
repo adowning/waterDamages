@@ -142,14 +142,40 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
 /*
  * Controller for the view details page.
  */
-app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactory, $http, promiseTracker) {
-    // Get the object identified by contactId from our data store so we can edit it
-    $scope.formDisabled = true;
+app.controller('ModalInstanceCtrl', function ($scope, $modalInstance, items) {
 
-    dataFactory.getById($routeParams.contactId, function (data) {
+
+  $scope.ok = function () {
+      console.log($scope.user.name)
+       $scope.messages = 'There was a network error. Try again later.';
+    $modalInstance.close();
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+  
+  
+console.table(items)
+//  $scope.items = items;
+//  $scope.selected = {
+//    item: $scope.items[0]
+//  };
+//
+//  $scope.ok = function () {
+//    $modalInstance.close($scope.selected.item);
+//  };
+//
+//  $scope.cancel = function () {
+//    $modalInstance.dismiss('cancel');
+//  };
+});
+
+app.controller("ViewCtrl", function ( $scope, $location, $routeParams, dataFactory, $http) {
+    
+        dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.formDisabled = false;
-        console.log($scope.formDisabled)
 
         $scope.job.contactId = $routeParams.contactId;
 
@@ -158,29 +184,85 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
             $scope.$apply();
         }
     });
+    
+    
+//    $scope.animationsEnabled = true;
+//
+//  $scope.open = function (size) {
+//
+//    var modalInstance = $modal.open({
+//      animation: $scope.animationsEnabled,
+//      templateUrl: 'myModalContent.html',
+//      controller: 'ModalInstanceCtrl',
+//      size: size,
+//      resolve: {
+//        items: function () {
+//          return $scope.user;
+//        }
+//      }
+//    });
+
+//    modalInstance.result.then(function (selectedItem) {
+//     
+//        console.log(selectedItem)
+//      $scope.selected = selectedItem;
+//    }, function () {
+//      $log.info('Modal dismissed at: ' + new Date());
+//    });
+//  };
+
+//  $scope.toggleAnimation = function () {
+//    $scope.animationsEnabled = !$scope.animationsEnabled;
+//  };
+//    // Get the object identified by contactId from our data store so we can edit it
+//    $scope.formDisabled = true;
+//
+//    dataFactory.getById($routeParams.contactId, function (data) {
+//        $scope.job = data;
+//        $scope.formDisabled = false;
+//        console.log($scope.formDisabled)
+//
+//        $scope.job.contactId = $routeParams.contactId;
+//
+//        // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
+//        if (!$scope.online) {
+//            $scope.$apply();
+//        }
+//    });
+//    
+//     $scope.submitForm = function() {
+//
+//            // check to make sure the form is completely valid
+//            if ($scope.userForm.$valid) {
+//                alert('our form is amazing');
+//            }
+//
+//        };
+        
+        
     // Inititate the promise tracker to track form submissions.
     //$scope.progress = promiseTracker();
     //
-    $scope.submit = function (form) {
-        // Trigger validation flag.
-        $scope.submitted = true;
-        // If form is invalid, return and let AngularJS show validation errors.
-        // if (form.$invalid) {
-        //     return;
-        // }
-        console.table(form)
-        $scope.messages = 'There was a network error. Try again later.';
-        // Default values for the request.
-        var config = {
-            params: {
-                'callback': 'JSON_CALLBACK',
-                'name': $scope.name,
-                'email': $scope.email,
-                'subjectList': $scope.subjectList,
-                'url': $scope.url,
-                'comments': $scope.comments
-            },
-        };
+//    $scope.submit = function (form) {
+//        // Trigger validation flag.
+//        $scope.submitted = true;
+//        // If form is invalid, return and let AngularJS show validation errors.
+//        // if (form.$invalid) {
+//        //     return;
+//        // }
+//        console.table(form)
+//        $scope.messages = 'There was a network error. Try again later.';
+//        // Default values for the request.
+//        var config = {
+//            params: {
+//                'callback': 'JSON_CALLBACK',
+//                'name': $scope.name,
+//                'email': $scope.email,
+//                'subjectList': $scope.subjectList,
+//                'url': $scope.url,
+//                'comments': $scope.comments
+//            },
+//        };
 
         //Perform JSONP request.
         //var promise = $http.jsonp('response.json', config)
@@ -212,7 +294,7 @@ app.controller("ViewCtrl", function ($scope, $location, $routeParams, dataFactor
 
         //// Track the request and show its progress to the user.
         //$scope.progress.addPromise(promise);
-    };
+//    };
     //var message = "Are you sure ?";
     //
     //var modalHtml = '<div class="modal-body">' + message + '</div>';
