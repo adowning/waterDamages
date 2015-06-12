@@ -13,48 +13,48 @@ var app = angular.module("angularcrud", ["ui.bootstrap", "ngRoute", "ngMessages"
 app.config(["$routeProvider", function ($routeProvider) {
     $routeProvider
         .when("/", {
-            controller: "ListCtrl",
-            templateUrl: "./views/list.html"
-        })
+        controller: "ListCtrl",
+        templateUrl: "./views/list.html"
+    })
 
         .when("/edit/:contactId", {
-            controller: "EditCtrl",
-            templateUrl: "./views/edit.html"
-        })
+        controller: "EditCtrl",
+        templateUrl: "./views/edit.html"
+    })
 
         .when("/view/:contactId", {
-            controller: "ViewCtrl",
-            templateUrl: "./views/view.html"
-        })
+        controller: "ViewCtrl",
+        templateUrl: "./views/view.html"
+    })
 
         .when("/new", {
-            controller: "NewCtrl",
-            templateUrl: "./views/edit.html"
-        })
+        controller: "NewCtrl",
+        templateUrl: "./views/edit.html"
+    })
 
         .when("/load", {
-            controller: "LoadCtrl",
-            templateUrl: "./views/list.html"
-        })
+        controller: "LoadCtrl",
+        templateUrl: "./views/list.html"
+    })
 
         .when("/settings", {
-            controller: "SettingsCtrl",
-            templateUrl: "./views/settings.html"
-        })
+        controller: "SettingsCtrl",
+        templateUrl: "./views/settings.html"
+    })
 
         .otherwise({
-            redirectTo: "/"
-        });
+        redirectTo: "/"
+    });
 }]);
 
 
 // Initial angularcrud data. This will be used by the reinitialize functionality.
 app.constant("SAMPLEDATA",
     [
-        {"firstname": "Fred", "lastname": "Flintstone"},
-        {"firstname": "Wilma", "lastname": "Flintstone"},
-        {"firstname": "Barney", "lastname": "Rubble"},
-        {"firstname": "Betty", "lastname": "Rubble"}
+        { "firstname": "Fred", "lastname": "Flintstone" },
+        { "firstname": "Wilma", "lastname": "Flintstone" },
+        { "firstname": "Barney", "lastname": "Rubble" },
+        { "firstname": "Betty", "lastname": "Rubble" }
     ]);
 
 // Offline data storage key used by localForage. This will be the document key in IndexedDB.
@@ -119,9 +119,9 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
             }
             else {
                 // We are offline. localForage operations happen outside of Angular's view, tell Angular data changed
-//            $localForage.getItem(DATAKEY).then(function (d) {
-//               bind($scope.contacts, d);
-//            });
+                //            $localForage.getItem(DATAKEY).then(function (d) {
+                //               bind($scope.contacts, d);
+                //            });
                 $scope.$apply();
             }
         });
@@ -138,178 +138,65 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
 
 });
 
+var ModalInstanceCtrl = function ($scope, $modalInstance, userForm) {
+    $scope.form = {}
+    $scope.submitForm = function () {
+        if ($scope.form.userForm.$valid) {
+            console.log('trying to save')
+            $scope.df.update($scope.job.contactId, $scope.form.userForm.name.$modelValue, $scope.form.userForm.name.$modelValue);
 
-/*
- * Controller for the view details page.
- */
-app.controller('ModalInstanceCtrl', function ($scope, $modalInstance, items) {
+            $modalInstance.close('closed');
+        } else {
+            console.log('userform is not in scope');
+        }
+    };
 
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+};
 
-  $scope.ok = function () {
-      console.log($scope.user.name)
-       $scope.messages = 'There was a network error. Try again later.';
-    $modalInstance.close();
-  };
+app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $http) {
 
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
-  
-  
-console.table(items)
-//  $scope.items = items;
-//  $scope.selected = {
-//    item: $scope.items[0]
-//  };
-//
-//  $scope.ok = function () {
-//    $modalInstance.close($scope.selected.item);
-//  };
-//
-//  $scope.cancel = function () {
-//    $modalInstance.dismiss('cancel');
-//  };
-});
-
-app.controller("ViewCtrl", function ( $scope, $location, $routeParams, dataFactory, $http) {
-    
-        dataFactory.getById($routeParams.contactId, function (data) {
+    dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.formDisabled = false;
-
+        $scope.df = dataFactory;
         $scope.job.contactId = $routeParams.contactId;
 
         // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
         if (!$scope.online) {
             $scope.$apply();
         }
+
+        $scope.showForm = function () {
+            $scope.message = "Show Form Button Clicked";
+            console.log($scope.message);
+
+            var modalInstance = $modal.open({
+                templateUrl: 'views/modal-form.html',
+                controller: ModalInstanceCtrl,
+                scope: $scope,
+                resolve: {
+                    userForm: function () {
+                        return $scope.userForm;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+                //TODO this doesnt feel right
+                $location.path('/')
+                console.log('returned')
+            }, function () {
+                    console.info('Modal dismissed at: ' + new Date());
+                });
+        };
+
+
     });
-    
-    
-//    $scope.animationsEnabled = true;
-//
-//  $scope.open = function (size) {
-//
-//    var modalInstance = $modal.open({
-//      animation: $scope.animationsEnabled,
-//      templateUrl: 'myModalContent.html',
-//      controller: 'ModalInstanceCtrl',
-//      size: size,
-//      resolve: {
-//        items: function () {
-//          return $scope.user;
-//        }
-//      }
-//    });
 
-//    modalInstance.result.then(function (selectedItem) {
-//     
-//        console.log(selectedItem)
-//      $scope.selected = selectedItem;
-//    }, function () {
-//      $log.info('Modal dismissed at: ' + new Date());
-//    });
-//  };
-
-//  $scope.toggleAnimation = function () {
-//    $scope.animationsEnabled = !$scope.animationsEnabled;
-//  };
-//    // Get the object identified by contactId from our data store so we can edit it
-//    $scope.formDisabled = true;
-//
-//    dataFactory.getById($routeParams.contactId, function (data) {
-//        $scope.job = data;
-//        $scope.formDisabled = false;
-//        console.log($scope.formDisabled)
-//
-//        $scope.job.contactId = $routeParams.contactId;
-//
-//        // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
-//        if (!$scope.online) {
-//            $scope.$apply();
-//        }
-//    });
-//    
-//     $scope.submitForm = function() {
-//
-//            // check to make sure the form is completely valid
-//            if ($scope.userForm.$valid) {
-//                alert('our form is amazing');
-//            }
-//
-//        };
-        
-        
-    // Inititate the promise tracker to track form submissions.
-    //$scope.progress = promiseTracker();
-    //
-//    $scope.submit = function (form) {
-//        // Trigger validation flag.
-//        $scope.submitted = true;
-//        // If form is invalid, return and let AngularJS show validation errors.
-//        // if (form.$invalid) {
-//        //     return;
-//        // }
-//        console.table(form)
-//        $scope.messages = 'There was a network error. Try again later.';
-//        // Default values for the request.
-//        var config = {
-//            params: {
-//                'callback': 'JSON_CALLBACK',
-//                'name': $scope.name,
-//                'email': $scope.email,
-//                'subjectList': $scope.subjectList,
-//                'url': $scope.url,
-//                'comments': $scope.comments
-//            },
-//        };
-
-        //Perform JSONP request.
-        //var promise = $http.jsonp('response.json', config)
-        //    .success(function (data, status, headers, config) {
-        //    if (data.status == 'OK') {
-        //        $scope.name = null;
-        //        $scope.email = null;
-        //        $scope.subjectList = null;
-        //        $scope.url = null;
-        //        $scope.comments = null;
-        //        $scope.messages = 'Your form has been sent!';
-        //        $scope.submitted = false;
-        //    } else {
-        //        $scope.messages = 'Oops, we received your request, but there was an error processing it.';
-        //        console.error(data);
-        //    }
-        //})
-        //    .error(function (data, status, headers, config) {
-        //        $scope.progress = data;
-        //        $scope.messages = 'There was a network error. Try again later.';
-        //        console.error(data);
-        //    })
-        //    .finally(function () {
-        //        // Hide status messages after three seconds.
-        //        $timeout(function () {
-        //            $scope.messages = null;
-        //        }, 3000);
-        //    });
-
-        //// Track the request and show its progress to the user.
-        //$scope.progress.addPromise(promise);
-//    };
-    //var message = "Are you sure ?";
-    //
-    //var modalHtml = '<div class="modal-body">' + message + '</div>';
-    //modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
-    //
-    //var modalInstance = $modal.open({
-    //    template: modalHtml,
-    //    controller: ModalInstanceCtrl
-    //});
-    //
-    //modalInstance.result.then(function() {
-    //    dataFactory.delete($scope.contact.contactId);
-    //});
-
-    // Set all menu tabs inactive (there isn't a menu tab for viewing an items detail)
     $("#menu-list").removeClass("active");
     $("#menu-new").removeClass("active");
     $("#menu-loaddata").removeClass("active");
@@ -320,48 +207,48 @@ app.controller("ViewCtrl", function ( $scope, $location, $routeParams, dataFacto
 /*
  * Controller for the edit page.
  */
-app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
-    // Get the object identified by contactId from our data store so we can edit it
-    dataFactory.getById($routeParams.contactId, function (data) {
-        $scope.contact = data;
-        $scope.contact.contactId = $routeParams.contactId;
+// app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
+//     // Get the object identified by contactId from our data store so we can edit it
+//     dataFactory.getById($routeParams.contactId, function (data) {
+//         $scope.contact = data;
+//         $scope.contact.contactId = $routeParams.contactId;
 
-        // We are offline. localforage operations happen outside of Angular's view, tell Angular our model has changed
-        if (!$scope.online) {
-            $scope.$apply();
-        }
-    });
+//         // We are offline. localforage operations happen outside of Angular's view, tell Angular our model has changed
+//         if (!$scope.online) {
+//             $scope.$apply();
+//         }
+//     });
 
-    // Function to run on Delete button click
-    $scope.remove = function () {
-        alert('need to add this modal back')
-        //var message = "Are you sure ?";
-        //
-        //var modalHtml = '<div class="modal-body">' + message + '</div>';
-        //modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
-        //
-        //var modalInstance = $modal.open({
-        //    template: modalHtml,
-        //    controller: ModalInstanceCtrl
-        //});
-        //
-        //modalInstance.result.then(function() {
-        //    dataFactory.delete($scope.contact.contactId);
-        //});
-    };
+//     // Function to run on Delete button click
+//     $scope.remove = function () {
+//         alert('need to add this modal back')
+//         //var message = "Are you sure ?";
+//         //
+//         //var modalHtml = '<div class="modal-body">' + message + '</div>';
+//         //modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
+//         //
+//         //var modalInstance = $modal.open({
+//         //    template: modalHtml,
+//         //    controller: ModalInstanceCtrl
+//         //});
+//         //
+//         //modalInstance.result.then(function() {
+//         //    dataFactory.delete($scope.contact.contactId);
+//         //});
+//     };
 
 
-    // Function to run on Save button click
-    $scope.save = function () {
-        dataFactory.update($scope.contact.contactId, $scope.contact.firstname, $scope.contact.lastname);
-    };
+//     // Function to run on Save button click
+//     $scope.save = function () {
+//         dataFactory.update($scope.contact.contactId, $scope.contact.firstname, $scope.contact.lastname);
+//     };
 
-    // Set all menu tabs inactive (there isn't a menu tab for editing an existing item)
-    $("#menu-list").removeClass("active");
-    $("#menu-new").removeClass("active");
-    $("#menu-loaddata").removeClass("active");
-    $("#menu-settings").removeClass("active");
-});
+//     // Set all menu tabs inactive (there isn't a menu tab for editing an existing item)
+//     $("#menu-list").removeClass("active");
+//     $("#menu-new").removeClass("active");
+//     $("#menu-loaddata").removeClass("active");
+//     $("#menu-settings").removeClass("active");
+// });
 
 
 /*
@@ -431,13 +318,3 @@ app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
     $("#menu-settings").addClass("active");
 });
 
-var ModalInstanceCtrl = function ($scope, $modalInstance) {
-    console.log('hi')
-    $scope.ok = function () {
-        $modalInstance.close();
-    };
-
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-};
