@@ -14,30 +14,32 @@
         <div class="form-group">
             <label>Address</label>
             <input type="text" name="address" class="form-control" ng-model="address" ng-minlength="15" ng-maxlength="50" required>
-            <p ng-show="form.userForm.username.$error.minlength" class="help-block">Address is too short.</p>
-            <p ng-show="form.userForm.username.$error.maxlength" class="help-block">Address is too long.</p>
+            <p ng-show="form.userForm.adress.$error.minlength" class="help-block">Address is too short.</p>
+            <p ng-show="form.userForm.address.$error.maxlength" class="help-block">Address is too long.</p>
         </div>
  
          <!-- PHONE1 -->
         <div class="form-group">
             <label>Phone 1</label>
-            <input type="number"  require ng-pattern="(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$" name="phone1" class="form-control" ng-model="phone1" required>
-            <p ng-show="form.userForm.email.$invalid && !form.userForm.email.$pristine" class="help-block">Enter a valid phone #.</p>
+            <input type="text" name="phone1" class="form-control" ng-model="phone1" ng-minlength="10" ng-maxlength="10" required required>
+          <p ng-show="form.userForm.phone1.$error.minlength" class="help-block">Phone Number is too short.</p>
+            <p ng-show="form.userForm.phone1.$error.maxlength" class="help-block">Phone Number is too long.</p>
         </div>
         
          <!-- PHONE2 -->
         <div class="form-group">
             <label>Phone 2</label>
-            <input type="number" name="phone2" class="form-control" ng-model="phone2" required>
-            <p ng-show="form.userForm.email.$invalid && !form.userForm.email.$pristine" class="help-block">Enter a valid phone #.</p>
+            <input type="text" name="phone2" class="form-control" ng-model="phone2" ng-minlength="10" ng-maxlength="10" required required>
+          <p ng-show="form.userForm.phone2.$error.minlength" class="help-block">Phone Number is too short.</p>
+            <p ng-show="form.userForm.phone2.$error.maxlength" class="help-block">Phone Number is too long.</p>
         </div>
         
         <!-- EMAIL -->
-        <div class="form-group">
+        <!--<div class="form-group">
             <label>Email</label>
             <input type="email" name="email" class="form-control" ng-model="email" required>
             <p ng-show="form.userForm.email.$invalid && !form.userForm.email.$pristine" class="help-block">Enter a valid email.</p>
-        </div>
+        </div>-->
  
     </div>
     <div class="modal-footer">

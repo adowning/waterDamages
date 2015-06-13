@@ -140,18 +140,23 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
 
 var ModalInstanceCtrl = function ($scope, $modalInstance, userForm) {
     $scope.form = {}
+       $scope.cancel = function () {
+        }
     $scope.submitForm = function () {
         if ($scope.form.userForm.$valid) {
             console.log('trying to save')
-            $scope.df.update($scope.job.contactId, $scope.form.userForm.name.$modelValue, $scope.form.userForm.name.$modelValue);
-
+             $scope.df.update($scope.job.contactId, $scope.form.userForm.name.$modelValue, 
+                 $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue, $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue );
+            console.log($modalInstance)
             $modalInstance.close('closed');
         } else {
+
             console.log('userform is not in scope');
         }
     };
 
     $scope.cancel = function () {
+        console.log('just canceled')
         $modalInstance.dismiss('cancel');
     };
 };
@@ -170,8 +175,6 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
         }
 
         $scope.showForm = function () {
-            $scope.message = "Show Form Button Clicked";
-            console.log($scope.message);
 
             var modalInstance = $modal.open({
                 templateUrl: 'views/modal-form.html',

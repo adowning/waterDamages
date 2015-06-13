@@ -26,7 +26,6 @@ angular.module("angularcrud")
          }
       },
       delete: function (id) {
-         alert('intentionally deleting data')
          if ($rootScope.online) {
             fireFactory.delete(id);
          }
@@ -66,6 +65,8 @@ angular.module("angularcrud")
    .factory("fireFactory", function ($rootScope, $http, $location, $firebase) {
    return {
       getAll: function (successCallback) {
+            //TODO hacky
+            $rootScope.FBURL = "https://andrewscleaning.firebaseio.com/"
          $http.get($rootScope.FBURL + "angularcrud/" + ".json?format=export").success(successCallback);
 
       },
@@ -73,7 +74,6 @@ angular.module("angularcrud")
          $http.get($rootScope.FBURL + "angularcrud/" + id + ".json?format=export").success(successCallback);
       },
       delete: function (id) {
-         alert('intentionally deleting data')
 
          $http.delete($rootScope.FBURL + "angularcrud/" + id + ".json?format=export").success(function () {
             $location.path("/");
@@ -82,12 +82,11 @@ angular.module("angularcrud")
       // Note use of HTTP method PATCH.
       //    Updating Data with PATCH (https://firebase.com/docs/rest/guide/saving-data.html)
       //       Using a PATCH request, you can update specific children at a location without overwriting existing data.
-      update: function (id, first, last) {
-         alert('intentionally updating data')
+      update: function (id, name, address, phone1, phone2) {
 
          $http({
             url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
-            data: { firstname: first, lastname: last, ".priority": last.toLowerCase() + " " + first.toLowerCase() },
+            data: { name: name, address: address, phone1: phone1, phone2: phone2 ".priority": name.toLowerCase() },
             method: "PATCH"
          }).success(function (data, status, headers, config) {
             $location.path("/view/" + id);
@@ -100,7 +99,6 @@ angular.module("angularcrud")
          });
       },
       updateAllContacts: function (data) {
-         console.log('intentionalloy updating all data')
          var contactsRef = new Firebase($rootScope.FBURL + "angularcrud/");   // Use AngularFire to connect to Firebase
          contactsRef.remove();                                                // Remove all data from Firebase
 
@@ -134,7 +132,6 @@ angular.module("angularcrud")
          });
       },
       delete: function (id) {
-         alert('foragefactory deleting all data')
          localforage.getItem(DATAKEY, function (contact) {
             delete contact[id];
             localforage.setItem(DATAKEY, contact, function (data) {
@@ -144,13 +141,15 @@ angular.module("angularcrud")
             });
          });
       },
-      update: function (id, first, last) {
-         alert('forage factorty updating data')
+      update: function (id, name, address, phone1, phone2) {
          localforage.getItem(DATAKEY, function (contact) {
-            contact[id].firstname = first;
-            contact[id].lastname = last;
+            contact[id].name = name;
+            contact[id].address = address;
+            contact[id].phone1 = phone1;
+            contact[id].phone2 = phone2;
+            
             // Note syntax for attribute that starts with a period
-            contact[id][".priority"] = last.toLowerCase() + " " + first.toLowerCase();
+            contact[id][".priority"] = name.toLowerCase() ;
             localforage.setItem(DATAKEY, contact, function (data) {
                $rootScope.$apply(function () {
                   $location.path("/view/" + id);

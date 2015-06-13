@@ -3,30 +3,30 @@
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
             <h3 class="panel-title pull-left">
-                <b>Job#</b>123123 {{job.jobNumber}}</h3>
+                <b>Job# </b> {{job.jobID}}</h3>
         </div>
         <div class="list-group">
             <div class="list-group-item">
                 <img src="views/img/person.jpg" class="img-rounded pull-left" />
-                <h4 class="list-group-item-heading">{{job.firstname}}, {{job.lastname}}</h4>
-                <label>118 Bellmont, Ave. Tyler TX{{job.address}}</label>
+                <h4 class="list-group-item-heading">{{job.name}}</h4>
+                <label>{{job.address}}</label>
             </div>
             <!--<div class="list-group-item">
                 <label>Insurance</label>
                 <h4 class="list-group-item-heading">Adjuster {{job.adjuster}} Claim# {{job.claimNumber}}</h4>
             </div>-->
-            <a class="list-group-item" href="tel://+1 650-555-0029">
+            <a class="list-group-item" href="tel://"+{{job.phone1}}">
                 <label>Phone 1</label>
-                <h4 class="list-group-item-heading">+1 650-555-0029</h4>
+                <h4 class="list-group-item-heading">{{job.phone1}}</h4>
             </a>
-            <a class="list-group-item" href="tel://+1 650-555-0029">
+            <a class="list-group-item" href="tel://"+{{job.phone2}}">
                 <label>Phone 2</label>
-                <h4 class="list-group-item-heading">+1 650-555-0029</h4>
+                <h4 class="list-group-item-heading">{{job.phone2}}</h4>
             </a>
-            <a class="list-group-item" href="mailto:Joseph.Barish@masung.com">
+            <!--<a class="list-group-item" href="mailto:Joseph.Barish@masung.com">
                 <label>Email</label>
-                <h4 class="list-group-item-heading">Joseph.Barish@masung.com</h4>
-            </a>
+                <h4 class="list-group-item-heading">{{job.email}}</h4>
+            </a>-->
             <!--<div class="list-group-item">
                 <label>Source of Loss</label>
                 <h4 class="list-group-item-heading">{{job.lossSource}}{{formDisabled}}</h4>
