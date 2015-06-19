@@ -19,19 +19,26 @@
                         <div class="row">
                             <div class="col-xs-9">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Search Contacts...">
+                                    <input type="text" ng-model="jobLookup" class="form-control" placeholder="Job Number">
                                     <i class="fa fa-search"></i>
                                 </div>
                             </div>
                             <div class="col-xs-3">
-                                <a class="btn btn-primary btn-block"     data-toggle="modal"
+                                <a class="btn btn-primary btn-block"     
+                                   ng-click="addNewJob(jobLookup)"
+                                            >
+                                    <i class="fa fa-plus"></i>
+                                    <span>Add</span>
+
+                                </a>
+                                <!--<a class="btn btn-primary btn-block"     data-toggle="modal"
                                    data-target="#newJobModal"
                                    data-toggle="modal"
                                             >
                                     <i class="fa fa-plus"></i>
                                     <span>Add</span>
 
-                                </a>
+                                </a>-->
                             </div>
                         </div>
                     </div>
@@ -73,12 +80,12 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <i class="fa fa-3x fa-building-o pull-left"></i>
-                                    <h4 class="list-group-item-heading">{{job.name}}</h4>
-                                    <p class="list-group-item-text">{{job.address}}</p>
+                                    <h4 class="list-group-item-heading">{{job.account.accountName}}</h4>
+                                    <!--<p class="list-group-item-text">{{job.address}}</p>-->
                                 </div>
                                 <div class="col-sm-6">
-                                    <p class="list-group-item-text">job# {{job.jobID}}</p>
-                                    <p class="list-group-item-text">something something</p>
+                                    <p class="list-group-item-text">job# {{job.orderNumber}}</p>
+                                    <p class="list-group-item-text">{{job.account.address1}}, {{job.account.city}} {{job.account.zip}}</p>
                                 </div>
                             </div>
 

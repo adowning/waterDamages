@@ -119,15 +119,19 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
             }
             else {
                 // We are offline. localForage operations happen outside of Angular's view, tell Angular data changed
-                //            $localForage.getItem(DATAKEY).then(function (d) {
-                //               bind($scope.contacts, d);
-                //            });
+                           $localForage.getItem(DATAKEY).then(function (d) {
+                              bind($scope.contacts, d);
+                           });
                 $scope.$apply();
             }
         });
 
         $scope.savingNewJob = function () {
             console.log('heaysdf')
+        }
+        $scope.addNewJob = function (jobID) {
+            console.log('here '+jobID)
+            dataFactory.addJob(jobID)
         }
         // Set our menu tab active and all others inactive
         $("#menu-list").addClass("active");
@@ -139,15 +143,19 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
 });
 
 var ModalInstanceCtrl = function ($scope, $modalInstance, userForm) {
+
     $scope.form = {}
        $scope.cancel = function () {
         }
     $scope.submitForm = function () {
         if ($scope.form.userForm.$valid) {
-            console.log('trying to save')
-             $scope.df.update($scope.job.contactId, $scope.form.userForm.name.$modelValue, 
-                 $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue, $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue );
-            console.log($modalInstance)
+            console.log('trying to save w/ id ' + $scope.job.contactId)
+            console.log(userForm)
+            console.log($scope.job)
+            $scope.form.userForm.name.$modelValue,
+                $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue, $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue
+             //$scope.df.update($scope.job.contactId, $scope.form.userForm.name.$modelValue,
+             //    $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue, $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue );
             $modalInstance.close('closed');
         } else {
 
@@ -167,8 +175,7 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
         $scope.job = data;
         $scope.formDisabled = false;
         $scope.df = dataFactory;
-        $scope.job.contactId = $routeParams.contactId;
-
+        //$scope.job.contactId = $routeParams.contactId;
         // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
         if (!$scope.online) {
             $scope.$apply();

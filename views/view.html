@@ -3,13 +3,13 @@
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
             <h3 class="panel-title pull-left">
-                <b>Job# </b> {{job.jobID}}</h3>
+                <b>Job# </b> {{job.orderNumber}}</h3>
         </div>
         <div class="list-group">
             <div class="list-group-item">
                 <img src="views/img/person.jpg" class="img-rounded pull-left" />
-                <h4 class="list-group-item-heading">{{job.name}}</h4>
-                <label>{{job.address}}</label>
+                <h4 class="list-group-item-heading">{{job.account.accountName}}</h4>
+                <label>{{job.account.address1}} , {{job.account.city}} {{job.account.zip}}</label>
             </div>
             <!--<div class="list-group-item">
                 <label>Insurance</label>
@@ -17,23 +17,23 @@
             </div>-->
             <a class="list-group-item" href="tel://"+{{job.phone1}}">
                 <label>Phone 1</label>
-                <h4 class="list-group-item-heading">{{job.phone1}}</h4>
+                <h4 class="list-group-item-heading">{{job.account.phone1}}</h4>
             </a>
             <a class="list-group-item" href="tel://"+{{job.phone2}}">
                 <label>Phone 2</label>
-                <h4 class="list-group-item-heading">{{job.phone2}}</h4>
+                <h4 class="list-group-item-heading">{{job.account.phone2}}</h4>
             </a>
-            <!--<a class="list-group-item" href="mailto:Joseph.Barish@masung.com">
+            <a class="list-group-item" href="job.email">
                 <label>Email</label>
-                <h4 class="list-group-item-heading">{{job.email}}</h4>
-            </a>-->
+                <h4 class="list-group-item-heading">{{job.account.email}}</h4>
+            </a>
             <!--<div class="list-group-item">
                 <label>Source of Loss</label>
                 <h4 class="list-group-item-heading">{{job.lossSource}}{{formDisabled}}</h4>
             </div>-->
         </div>
         <div class="panel-footer">
-            <small class="pull-left">Built with Bootcards - Base Card</small>
+            <small class="pull-left"></small>
             <a class="btn btn-primary pull-right" ng-click="showForm()" <i class="fa fa-pencil"></i>
                 <span >Edit</span></a>
         </div>
