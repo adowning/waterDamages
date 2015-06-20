@@ -143,19 +143,15 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
 });
 
 var ModalInstanceCtrl = function ($scope, $modalInstance, userForm) {
-
     $scope.form = {}
        $scope.cancel = function () {
         }
     $scope.submitForm = function () {
         if ($scope.form.userForm.$valid) {
-            console.log('trying to save w/ id ' + $scope.job.contactId)
-            console.log(userForm)
-            console.log($scope.job)
-            $scope.form.userForm.name.$modelValue,
-                $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue, $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue
-             //$scope.df.update($scope.job.contactId, $scope.form.userForm.name.$modelValue,
-             //    $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue, $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue );
+            console.log($scope.job.contactId)
+            console.log( $scope.form.userForm.name.$modelValue)
+             $scope.df.updateJob($scope.job.contactId, $scope.form.userForm.name.$modelValue,
+                 $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue, $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue );
             $modalInstance.close('closed');
         } else {
 
@@ -173,6 +169,7 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
 
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
+        console.log(data.contactId)
         $scope.formDisabled = false;
         $scope.df = dataFactory;
         //$scope.job.contactId = $routeParams.contactId;

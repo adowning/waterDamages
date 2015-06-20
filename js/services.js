@@ -41,12 +41,15 @@ angular.module("angularcrud")
                     forageFactory.update(id, name, address, phone1, phone2, email);
                 }
             },
-            updateJob: function (id, job) {
+            updateJob: function (id, name, address, phone1, phone2, email) {
+                console.log('1')
                 if ($rootScope.online) {
-                    fireFactory.update(id, job);
+                    console.log('2')
+                    fireFactory.updateJob(id, name, address, phone1, phone2, email);
                 }
                 else {
-                    forageFactory.update(id, job);
+                    console.log('3')
+                    forageFactory.updateJob(id, name, address, phone1, phone2, email);
                 }
             },
             add: function (first, last) {
@@ -150,20 +153,43 @@ angular.module("angularcrud")
             // Note use of HTTP method PATCH.
             //    Updating Data with PATCH (https://firebase.com/docs/rest/guide/saving-data.html)
             //       Using a PATCH request, you can update specific children at a location without overwriting existing data.
-            updateJob: function (id, job) {
+            updateJob: function (id, name, address, phone1, phone2, email) {
+                console.log('updating job ' + id)
                 $http({
-                    url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
+                    url: $rootScope.FBURL + "angularcrud/" + id  + ".json?format=export",
                     data: {
-                        name: name,
-                        address: address,
+                        account:{
+                        accountName: name,
+                        address1: address,
                         phone1: phone1,
                         phone2: phone2,
                         email: email,
                         ".priority": name.toLowerCase()
-                    },
+                    }},
                     method: "PATCH"
                 }).success(function (data, status, headers, config) {
+                    console.log('success')
+                    $http({
+                        url: $rootScope.FBURL + "angularcrud/" + id  + ".json?format=export",
+                        data: {
+                            account:{
+                                accountName: name,
+                                address1: address,
+                                phone1: phone1,
+                                phone2: phone2,
+                                email: email,
+                                ".priority": name.toLowerCase()
+                            }},
+                        method: "PATCH"
+                    }).success(function (data, status, headers, config) {
+                        console.log('success')
+                        $location.path("/view/" + id);
+                    }).error(function (error){
+                        console.log(error)
+                    });
                     $location.path("/view/" + id);
+                }).error(function (error){
+                    console.log(error)
                 });
             },
             update: function (id, name, address, phone1, phone2, email) {
