@@ -13,7 +13,7 @@
         <!-- ADDRESS -->
         <div class="form-group">
             <label>Address</label>
-            <input type="text" name="address" class="form-control" ng-model="job.account.address1" value="job.account.address1" ng-minlength="15" ng-maxlength="50" required>
+            <input type="text" name="address" class="form-control" ng-model="job.account.address1" value="job.account.address1" ng-minlength="8" ng-maxlength="50" required>
             <p ng-show="form.userForm.address.$error.minlength" class="help-block">Address is too short.</p>
             <p ng-show="form.userForm.address.$error.maxlength" class="help-block">Address is too long.</p>
         </div>
@@ -42,6 +42,14 @@
             <input type="email" name="email" class="form-control" ng-model="job.account.email" value="job.account.email">
             <p ng-show="form.userForm.email.$invalid && !form.userForm.email.$pristine" class="help-block">Enter a valid email.</p>
         </div>
+
+        <!-- Start Date -->
+        <div class="form-group">
+            <label>Job Start Date</label>
+            <input type="date" name="startDate" class="form-control" ng-model="job.startDate" value="job.startDate" required>
+            <p ng-show="form.userForm.startDate.$invalid && !form.userForm.startDate.$pristine" class="help-block">Day we started work.</p>
+        </div>
+
  
     </div>
     <div class="modal-footer">

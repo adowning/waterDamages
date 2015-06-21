@@ -10,51 +10,51 @@
 var app = angular.module("angularcrud", ["ui.bootstrap", "ngRoute", "ngMessages", "firebase", 'LocalForageModule', 'ajoslin.promise-tracker']);
 
 // Configure our applications routing.
-app.config(["$routeProvider", function ($routeProvider) {
+app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
         .when("/", {
-        controller: "ListCtrl",
-        templateUrl: "./views/list.html"
-    })
+            controller: "ListCtrl",
+            templateUrl: "./views/list.html"
+        })
 
         .when("/edit/:contactId", {
-        controller: "EditCtrl",
-        templateUrl: "./views/edit.html"
-    })
+            controller: "EditCtrl",
+            templateUrl: "./views/edit.html"
+        })
 
         .when("/view/:contactId", {
-        controller: "ViewCtrl",
-        templateUrl: "./views/view.html"
-    })
+            controller: "ViewCtrl",
+            templateUrl: "./views/view.html"
+        })
 
         .when("/new", {
-        controller: "NewCtrl",
-        templateUrl: "./views/edit.html"
-    })
+            controller: "NewCtrl",
+            templateUrl: "./views/edit.html"
+        })
 
         .when("/load", {
-        controller: "LoadCtrl",
-        templateUrl: "./views/list.html"
-    })
+            controller: "LoadCtrl",
+            templateUrl: "./views/list.html"
+        })
 
         .when("/settings", {
-        controller: "SettingsCtrl",
-        templateUrl: "./views/settings.html"
-    })
+            controller: "SettingsCtrl",
+            templateUrl: "./views/settings.html"
+        })
 
         .otherwise({
-        redirectTo: "/"
-    });
+            redirectTo: "/"
+        });
 }]);
 
 
 // Initial angularcrud data. This will be used by the reinitialize functionality.
 app.constant("SAMPLEDATA",
     [
-        { "firstname": "Fred", "lastname": "Flintstone" },
-        { "firstname": "Wilma", "lastname": "Flintstone" },
-        { "firstname": "Barney", "lastname": "Rubble" },
-        { "firstname": "Betty", "lastname": "Rubble" }
+        {"firstname": "Fred", "lastname": "Flintstone"},
+        {"firstname": "Wilma", "lastname": "Flintstone"},
+        {"firstname": "Barney", "lastname": "Rubble"},
+        {"firstname": "Betty", "lastname": "Rubble"}
     ]);
 
 // Offline data storage key used by localForage. This will be the document key in IndexedDB.
@@ -119,9 +119,9 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
             }
             else {
                 // We are offline. localForage operations happen outside of Angular's view, tell Angular data changed
-                           $localForage.getItem(DATAKEY).then(function (d) {
-                              bind($scope.contacts, d);
-                           });
+                $localForage.getItem(DATAKEY).then(function (d) {
+                    bind($scope.contacts, d);
+                });
                 $scope.$apply();
             }
         });
@@ -130,7 +130,7 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
             console.log('heaysdf')
         }
         $scope.addNewJob = function (jobID) {
-            console.log('here '+jobID)
+            console.log('here ' + jobID)
             dataFactory.addJob(jobID)
         }
         // Set our menu tab active and all others inactive
@@ -144,14 +144,15 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
 
 var ModalInstanceCtrl = function ($scope, $modalInstance, userForm) {
     $scope.form = {}
-       $scope.cancel = function () {
-        }
+    $scope.cancel = function () {
+    }
     $scope.submitForm = function () {
         if ($scope.form.userForm.$valid) {
-            console.log($scope.job.contactId)
-            console.log( $scope.form.userForm.name.$modelValue)
-             $scope.df.updateJob($scope.job.contactId, $scope.form.userForm.name.$modelValue,
-                 $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue, $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue );
+            console.log('>>>' + $scope.form.userForm.startDate)
+            $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+                $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+                $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+                $scope.form.userForm.startDate.$modelValue);
             $modalInstance.close('closed');
         } else {
 
@@ -169,7 +170,14 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
 
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
-        console.log(data.contactId)
+        $scope.job.contactId = $routeParams.contactId;
+        console.log($scope.job.startDate)
+        if(!$scope.job.startDate){
+            $scope.day1Show = false;
+
+        }else{
+            $scope.day1Show = true;
+        }
         $scope.formDisabled = false;
         $scope.df = dataFactory;
         //$scope.job.contactId = $routeParams.contactId;
@@ -195,10 +203,9 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
                 $scope.selected = selectedItem;
                 //TODO this doesnt feel right
                 $location.path('/')
-                console.log('returned')
             }, function () {
-                    console.info('Modal dismissed at: ' + new Date());
-                });
+                console.info('Modal dismissed at: ' + new Date());
+            });
         };
 
 

@@ -33,23 +33,20 @@ angular.module("angularcrud")
                     forageFactory.delete(id);
                 }
             },
-            update: function (id, name, address, phone1, phone2, email) {
+            //update: function (id, smId, name, address, phone1, phone2, email) {
+            //    if ($rootScope.online) {
+            //        fireFactory.update(id, smId, name, address, phone1, phone2, email);
+            //    }
+            //    else {
+            //        forageFactory.update(id, smId, name, address, phone1, phone2, email);
+            //    }
+            //},
+            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate) {
                 if ($rootScope.online) {
-                    fireFactory.update(id, name, address, phone1, phone2, email);
+                    fireFactory.updateJob(id, smId, name, address, phone1, phone2, email, startDate);
                 }
                 else {
-                    forageFactory.update(id, name, address, phone1, phone2, email);
-                }
-            },
-            updateJob: function (id, name, address, phone1, phone2, email) {
-                console.log('1')
-                if ($rootScope.online) {
-                    console.log('2')
-                    fireFactory.updateJob(id, name, address, phone1, phone2, email);
-                }
-                else {
-                    console.log('3')
-                    forageFactory.updateJob(id, name, address, phone1, phone2, email);
+                    //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
                 }
             },
             add: function (first, last) {
@@ -107,7 +104,7 @@ angular.module("angularcrud")
                             success: function (account) {
                                 console.table('asdf ' + account)
                                 thisJob.account = account;
-
+                                $location.path("/");
                             }
                         });
                     }
@@ -153,61 +150,72 @@ angular.module("angularcrud")
             // Note use of HTTP method PATCH.
             //    Updating Data with PATCH (https://firebase.com/docs/rest/guide/saving-data.html)
             //       Using a PATCH request, you can update specific children at a location without overwriting existing data.
-            updateJob: function (id, name, address, phone1, phone2, email) {
-                console.log('updating job ' + id)
-                $http({
-                    url: $rootScope.FBURL + "angularcrud/" + id  + ".json?format=export",
-                    data: {
-                        account:{
-                        accountName: name,
-                        address1: address,
-                        phone1: phone1,
-                        phone2: phone2,
-                        email: email,
-                        ".priority": name.toLowerCase()
-                    }},
-                    method: "PATCH"
-                }).success(function (data, status, headers, config) {
-                    console.log('success')
-                    $http({
-                        url: $rootScope.FBURL + "angularcrud/" + id  + ".json?format=export",
-                        data: {
-                            account:{
-                                accountName: name,
-                                address1: address,
-                                phone1: phone1,
-                                phone2: phone2,
-                                email: email,
-                                ".priority": name.toLowerCase()
-                            }},
-                        method: "PATCH"
-                    }).success(function (data, status, headers, config) {
-                        console.log('success')
-                        $location.path("/view/" + id);
-                    }).error(function (error){
-                        console.log(error)
-                    });
-                    $location.path("/view/" + id);
-                }).error(function (error){
-                    console.log(error)
-                });
-            },
-            update: function (id, name, address, phone1, phone2, email) {
+            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate) {
                 $http({
                     url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
                     data: {
-                        name: name,
-                        address: address,
-                        phone1: phone1,
-                        phone2: phone2,
-                        email: email,
-                        ".priority": name.toLowerCase()
+                        startDate: startDate,
+                        account: {
+                            accountName: name,
+                            address1: address,
+                            phone1: phone1,
+                            phone2: phone2,
+                            email: email,
+                            ".priority": name.toLowerCase()
+                        }
                     },
                     method: "PATCH"
                 }).success(function (data, status, headers, config) {
-                    $location.path("/view/" + id);
-                });
+                    console.log('success')
+
+                    var req = {
+                        method: 'PATCH',
+                        url: 'https://api.servicemonster.net/v1/accounts/' + smId,
+                        headers: {
+                            'Authorization': "Basic ZTZleGc0Nkw6bUM0RHM5MXFnZXdPUzFv",
+                            'Content-Type': "application/json"
+                        },
+                        data: {
+                            accountName: name,
+                            address1: address,
+                            phone1: phone1,
+                            phone2: phone2,
+                            email: email,
+                        }
+                    }
+
+                    $http(req).success(function () {
+                        console.log('success')
+                        $location.path("/view/" + id);
+                    }).error(function (error) {
+                        console.log(error)
+                        $location.path("/view/" + id);
+                    });
+
+                }).error(function (error) {
+                    console.log(error)
+                })
+
+                    .error(function (error) {
+                        console.log(error)
+                    });
             },
+            //update: function (id, name, address, phone1, phone2, email) {
+                //$http({
+                //    url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
+                //    data: {
+                //        name: name,
+                //        address: address,
+                //        phone1: phone1,
+                //        phone2: phone2,
+                //        email: email,
+                //        ".priority": name.toLowerCase()
+                //    },
+                //    method: "PATCH"
+                //}).success(function (data, status, headers, config) {
+                //    $location.path("/view/" + id);
+                //});
+            //},
             add: function (first, last) {
                 $http.post($rootScope.FBURL + "angularcrud/" + ".json?format=export", {
                     firstname: first,
@@ -263,9 +271,7 @@ angular.module("angularcrud")
 
             },
             getById: function (id, successCallback) {
-                console.log(id)
                 localforage.getItem(DATAKEY, function (contact) {
-                    console.log(contact)
                     successCallback(contact[id]);
                 });
             },

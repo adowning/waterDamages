@@ -1,4 +1,6 @@
 <div class="alert alert-warning" ng-hide="online">Working Offline. Changes will be saved when an Internet connection is restored.</div>
+<div class="alert alert-warning" ng-show="!job.startDate">This job needs a start date.</div>
+
 <div id="contactCard" disabled="true">
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
@@ -27,6 +29,10 @@
                 <label>Email</label>
                 <h4 class="list-group-item-heading">{{job.account.email}}</h4>
             </a>
+            <a class="list-group-item" href="">
+                <label>Job Start Date</label>
+                <h4 class="list-group-item-heading">{{job.startDate}}</h4>
+            </a>
             <!--<div class="list-group-item">
                 <label>Source of Loss</label>
                 <h4 class="list-group-item-heading">{{job.lossSource}}{{formDisabled}}</h4>
@@ -39,3 +45,4 @@
         </div>
     </div>
 </div>
+
