@@ -17,11 +17,11 @@
                 <label>Insurance</label>
                 <h4 class="list-group-item-heading">Adjuster {{job.adjuster}} Claim# {{job.claimNumber}}</h4>
             </div>-->
-            <a class="list-group-item" href="tel://"+{{job.phone1}}">
+            <a class="list-group-item" href="tel://"+{{job.phone1}}>
                 <label>Phone 1</label>
                 <h4 class="list-group-item-heading">{{job.account.phone1}}</h4>
             </a>
-            <a class="list-group-item" href="tel://"+{{job.phone2}}">
+            <a class="list-group-item" href="tel://"+{{job.phone2}}>
                 <label>Phone 2</label>
                 <h4 class="list-group-item-heading">{{job.account.phone2}}</h4>
             </a>
@@ -33,6 +33,12 @@
                 <label>Job Start Date</label>
                 <h4 class="list-group-item-heading">{{job.startDate}}</h4>
             </a>
+            <div class="list-group-item" href="">
+                <label>Rooms</label>
+                <div ng-repeat="room in job.rooms track by $index">
+                    <h4>{{job.rooms[$index]}}</h4>
+                </div>
+            </div>
             <!--<div class="list-group-item">
                 <label>Source of Loss</label>
                 <h4 class="list-group-item-heading">{{job.lossSource}}{{formDisabled}}</h4>
@@ -42,6 +48,34 @@
             <small class="pull-left"></small>
             <a class="btn btn-primary pull-right" ng-click="showForm()" <i class="fa fa-pencil"></i>
                 <span >Edit</span></a>
+        </div>
+    </div>
+</div>
+
+
+<div id="equipment" ng-show="job.startDate" disabled="true">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left">
+                <b>Day One </b>  ({{job.startDate}})</h3>
+        </div>
+        <div class="list-group">
+            <div class="list-group-item">
+
+                <h4 class="list-group-item-heading">Fans(8) Dehumidifiers(2) </h4>
+                <label>Living room: F001, F002, F003, F004, D001, D002</label><br>
+                <label>Dining room: F001, F002</label>
+
+                <!--<small class="pull-left"></small>-->
+                <!--<a class="btn btn-primary pull-right" ng-click="showForm()" <i class="fa fa-pencil"></i>-->
+                <!--<span >Edit</span></a>-->
+            </div>
+
+        </div>
+        <div class="panel-footer">
+            <small class="pull-left"></small>
+            <a class="btn btn-primary pull-right" ng-click="showForm()" <i class="fa fa-pencil"></i>
+            <span >Edit</span></a>
         </div>
     </div>
 </div>

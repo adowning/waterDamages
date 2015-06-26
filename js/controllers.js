@@ -109,6 +109,7 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
         dataFactory.getAll(function (data) {
             $scope.contacts = data;
 
+
             // Save the retrieved data locally so it's available when we go offline
             if ($scope.online) {
                 localforage.setItem(DATAKEY, DATAKEY, function (value) {
@@ -125,35 +126,76 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
                 $scope.$apply();
             }
         });
+        //
+        //$scope.savingNewJob = function () {
+        //    console.log('heaysdf')
+        //}
 
-        $scope.savingNewJob = function () {
-            console.log('heaysdf')
-        }
-        $scope.addNewJob = function (jobID) {
-            console.log('here ' + jobID)
-            dataFactory.addJob(jobID)
-        }
         // Set our menu tab active and all others inactive
         $("#menu-list").addClass("active");
         $("#menu-new").removeClass("active");
         $("#menu-loaddata").removeClass("active");
         $("#menu-settings").removeClass("active");
     }
+    $scope.addNewJob = function (jobID) {
+        //TODO this needs to refresh page after job added
+        dataFactory.addJob(jobID, $scope.contacts);
+    }
 
 });
 
+//app.filter('date', function($filter)
+//{
+//    return function(input)
+//    {
+//
+//        if(input == null){ return ""; }
+//
+//        var _date = $filter('date')(new Date(input),
+//            'MMM dd yyyy - HH:mm:ss');
+//
+//        return _date.toUpperCase();
+//
+//    };
+//});
+
 var ModalInstanceCtrl = function ($scope, $modalInstance, userForm) {
     $scope.form = {}
+
     $scope.cancel = function () {
     }
+    $scope.addRoom = function (room) {
+        console.log(room.$modelValue)
+        $scope.job.rooms.push(room.$modelValue)
+    }
     $scope.submitForm = function () {
+        //TODO this entire jobstartdate shit is hacky as fuck
         if ($scope.form.userForm.$valid) {
-            console.log('>>>' + $scope.form.userForm.startDate)
-            $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-                $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-                $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-                $scope.form.userForm.startDate.$modelValue);
-            $modalInstance.close('closed');
+            console.table($scope.form.userForm.startDate.$modelValue)
+            console.log($scope.job.oldStartDate);
+            if ($scope.form.userForm.startDate.$modelValue) {
+                $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+                    $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+                    $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+                    $scope.form.userForm.startDate.$modelValue, $scope.job.rooms);
+                $modalInstance.close('closed');
+                return;
+            }
+            if (!$scope.form.userForm.startDate.$modelValue && $scope.job.oldStartDate) {
+                $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+                    $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+                    $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+                    $scope.job.oldStartDate, $scope.job.rooms);
+                $modalInstance.close('closed');
+                return;
+            }
+            if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
+                $modalInstance.close('closed');
+                alert('This job needs a start Date')
+                return;
+            }
+
+
         } else {
 
             console.log('userform is not in scope');
@@ -166,16 +208,19 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm) {
     };
 };
 
-app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $http) {
+app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
 
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
-        console.log($scope.job.startDate)
-        if(!$scope.job.startDate){
+        $scope.job.rooms = JSON.parse(data.rooms)
+        $scope.job.oldStartDate = $scope.job.startDate;
+        //TODO make a jobStartDate pretty object to show
+        
+        if (!$scope.job.startDate) {
             $scope.day1Show = false;
 
-        }else{
+        } else {
             $scope.day1Show = true;
         }
         $scope.formDisabled = false;
@@ -217,54 +262,6 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
     $("#menu-settings").removeClass("active");
 });
 
-
-/*
- * Controller for the edit page.
- */
-// app.controller("EditCtrl", function ($scope, $routeParams, dataFactory) {
-//     // Get the object identified by contactId from our data store so we can edit it
-//     dataFactory.getById($routeParams.contactId, function (data) {
-//         $scope.contact = data;
-//         $scope.contact.contactId = $routeParams.contactId;
-
-//         // We are offline. localforage operations happen outside of Angular's view, tell Angular our model has changed
-//         if (!$scope.online) {
-//             $scope.$apply();
-//         }
-//     });
-
-//     // Function to run on Delete button click
-//     $scope.remove = function () {
-//         alert('need to add this modal back')
-//         //var message = "Are you sure ?";
-//         //
-//         //var modalHtml = '<div class="modal-body">' + message + '</div>';
-//         //modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
-//         //
-//         //var modalInstance = $modal.open({
-//         //    template: modalHtml,
-//         //    controller: ModalInstanceCtrl
-//         //});
-//         //
-//         //modalInstance.result.then(function() {
-//         //    dataFactory.delete($scope.contact.contactId);
-//         //});
-//     };
-
-
-//     // Function to run on Save button click
-//     $scope.save = function () {
-//         dataFactory.update($scope.contact.contactId, $scope.contact.firstname, $scope.contact.lastname);
-//     };
-
-//     // Set all menu tabs inactive (there isn't a menu tab for editing an existing item)
-//     $("#menu-list").removeClass("active");
-//     $("#menu-new").removeClass("active");
-//     $("#menu-loaddata").removeClass("active");
-//     $("#menu-settings").removeClass("active");
-// });
-
-
 /*
  * Controller for the new contact page.
  */
@@ -304,8 +301,6 @@ app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
         $scope.settings.firebaseurl = $scope.FBURL;
     }
 
-    // TODO - Should add a cancel button. We currently leave the user stuck in this screen. They
-    // have to click save to get their menus back. That's not friendly.
     $scope.save = function () {
         // Really should test that url is a valid Firebase data url
 

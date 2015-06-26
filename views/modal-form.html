@@ -44,10 +44,23 @@
         </div>
 
         <!-- Start Date -->
+        <!-- TODO prepopulate startDate -->
         <div class="form-group">
             <label>Job Start Date</label>
-            <input type="date" name="startDate" class="form-control" ng-model="job.startDate" value="job.startDate" required>
+            <input type="date" name="startDate" class="form-control" ng-model="job.startDate" value="job.startDate" >
+
+            <!--<input type="date" name="startDate" class="form-control" ng-model="job.startDate" value="job.startDate" required>-->
             <p ng-show="form.userForm.startDate.$invalid && !form.userForm.startDate.$pristine" class="help-block">Day we started work.</p>
+            <!--<input type="date" ng-model="job.startDate.dateAsString" value="{{ job.startDate.dateAsString }}" pattern="dd/MM/YYYY"/>-->
+        </div>
+
+        <div class="form-group">
+            <label>Rooms</label>
+            <div ng-repeat="room in job.rooms track by $index">
+                <h4>{{job.rooms[$index]}}</h4>
+            </div>
+            <input type="text" name="room" class="form-control" ng-model="room">
+            <button type="button" class="btn btn-primary" ng-click="addRoom(form.userForm.room)">Add</button>
         </div>
 
  

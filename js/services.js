@@ -6,7 +6,7 @@ angular.module("angularcrud")
      * Our controllers interact with dataFactory which is a facade for remote server data or local storage. If we have
      * a network connection, we use our REST service, otherwise we use our local storage (browser storage) service.
      */
-    .factory("dataFactory", function ($rootScope, fireFactory, forageFactory, DATAKEY, $localForage) {
+    .factory("dataFactory", function ($rootScope, fireFactory, forageFactory,  $location, DATAKEY, $localForage) {
         return {
             getAll: function (successCallback) {
                 if ($rootScope.online) {
@@ -41,9 +41,9 @@ angular.module("angularcrud")
             //        forageFactory.update(id, smId, name, address, phone1, phone2, email);
             //    }
             //},
-            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate) {
+            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms) {
                 if ($rootScope.online) {
-                    fireFactory.updateJob(id, smId, name, address, phone1, phone2, email, startDate);
+                    fireFactory.updateJob(id, smId, name, address, phone1, phone2, email, startDate, rooms);
                 }
                 else {
                     //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
@@ -57,8 +57,10 @@ angular.module("angularcrud")
                     forageFactory.add(first, last);
                 }
             },
-            addJob: function (jobID) {
+            addJob: function (jobID, currentJobs) {
                 var thisJob = {};
+
+
                 $.ajax({
                     type: "GET",
                     url: "https://api.servicemonster.net/v1/orders?q=" + jobID,
@@ -71,6 +73,7 @@ angular.module("angularcrud")
                         xhr.setRequestHeader("Authorization", "Basic ZTZleGc0Nkw6bUM0RHM5MXFnZXdPUzFv");
                     },
                     complete: function () {
+
                         console.log('completed')
                     },
                     success: function (json) {
@@ -88,12 +91,16 @@ angular.module("angularcrud")
                             },
                             complete: function (account) {
                                 if ($rootScope.online) {
-                                    //account.job = thisJob;
-                                    //thisJob.account = account;
-                                    //TODO need to see if the job is already here and not add
-                                    console.table(thisJob.account)
-
-                                    fireFactory.addJob(thisJob);
+                                    var found = false;
+                                    for(var i = 0; i < currentJobs.length; i++) {
+                                        console.log(currentJobs[i].accountID)
+                                        if (currentJobs[i].accountID == '1f215af4-1373-11e4-ad57-f843444aafcc') {
+                                            found = true;
+                                            console.log('found')
+                                            break;
+                                        }
+                                    }
+                                    fireFactory.addJob(thisJob, currentJobs);
                                 }
                                 else {
                                     account.job = thisJob;
@@ -102,8 +109,8 @@ angular.module("angularcrud")
                                 }
                             },
                             success: function (account) {
-                                console.table('asdf ' + account)
                                 thisJob.account = account;
+
                                 $location.path("/");
                             }
                         });
@@ -133,7 +140,6 @@ angular.module("angularcrud")
     .factory("fireFactory", function ($rootScope, $http, $location, $firebase) {
         return {
             getAll: function (successCallback) {
-                //TODO hacky
                 $rootScope.FBURL = "https://andrewscleaning.firebaseio.com/"
                 $http.get($rootScope.FBURL + "angularcrud/" + ".json?format=export").success(successCallback);
 
@@ -150,11 +156,13 @@ angular.module("angularcrud")
             // Note use of HTTP method PATCH.
             //    Updating Data with PATCH (https://firebase.com/docs/rest/guide/saving-data.html)
             //       Using a PATCH request, you can update specific children at a location without overwriting existing data.
-            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate) {
+            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms) {
+                console.log(JSON.stringify(rooms))
                 $http({
                     url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
                     data: {
                         startDate: startDate,
+                        rooms: JSON.stringify(rooms),
                         account: {
                             accountName: name,
                             address1: address,
@@ -226,11 +234,25 @@ angular.module("angularcrud")
                         $location.path("/");
                     });
             },
-            addJob: function (job) {
-                $http.post($rootScope.FBURL + "angularcrud/" + ".json?format=export", job)
-                    .success(function () {
-                        $location.path("/");
-                    });
+            addJob: function (job, currentJobs) {
+                var exists = false;
+                for (var x in currentJobs ){
+                    if(currentJobs[x].accountID == job.accountID){
+                        exists = true;
+                    }
+                }
+                if(!exists){
+                    job.active = true;
+                    $http.post($rootScope.FBURL + "angularcrud/" + ".json?format=export", job)
+                        .success(function () {
+                            console.log('trying to refresh')
+                            $location.path("/");
+                        });
+                }else{
+                    console.log('job exists not doing shit')
+                    return "exists";
+                }
+
             },
             updateAllContacts: function (data) {
                 var contactsRef = new Firebase($rootScope.FBURL + "angularcrud/");   // Use AngularFire to connect to Firebase
