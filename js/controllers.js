@@ -80,7 +80,8 @@ app.run(function ($window, $rootScope, $location, dataFactory) {
         $rootScope.$apply(function () {
             // If we were previously offline, push all local changes to the server
             if (!$rootScope.online) {
-                dataFactory.updateAllContacts();
+                //TODO removed this... had to do with local shit, may need to return for something else
+                //dataFactory.updateAllContacts();
                 $scope.$apply();
             }
             $rootScope.online = true;
@@ -559,7 +560,8 @@ app.controller("NewCtrl", function ($scope, dataFactory) {
  * Controller for reinitializing the database.
  */
 app.controller("LoadCtrl", function (SAMPLEDATA, fireFactory) {
-    fireFactory.updateAllContacts(SAMPLEDATA);
+    //TODO may need to put back in ?
+    //fireFactory.updateAllContacts(SAMPLEDATA);
 });
 
 
