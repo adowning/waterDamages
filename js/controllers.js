@@ -27,6 +27,18 @@ app.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./views/view.html"
         })
 
+        .when("/view2/:contactId", {
+            controller: "ViewJobCtrl",
+            templateUrl: "./views/viewJob.html"
+        })
+        .when("/viewJobBasics/:contactId", {
+            controller: "ViewJobBasicsCtrl",
+            templateUrl: "./views/viewJob-basics.html"
+        })
+        .when("/viewJobEquipment/:contactId", {
+            controller: "ViewJobEquipmentCtrl",
+            templateUrl: "./views/viewJob-equipment.html"
+        })
         .when("/new", {
             controller: "NewCtrl",
             templateUrl: "./views/edit.html"
@@ -126,10 +138,7 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
                 $scope.$apply();
             }
         });
-        //
-        //$scope.savingNewJob = function () {
-        //    console.log('heaysdf')
-        //}
+
 
         // Set our menu tab active and all others inactive
         $("#menu-list").addClass("active");
@@ -139,66 +148,94 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
     }
     $scope.addNewJob = function (jobID) {
         //TODO this needs to refresh page after job added
+        console.log('here ' + $scope.contacts)
         dataFactory.addJob(jobID, $scope.contacts);
     }
 
 });
 
-//app.filter('date', function($filter)
-//{
-//    return function(input)
-//    {
-//
-//        if(input == null){ return ""; }
-//
-//        var _date = $filter('date')(new Date(input),
-//            'MMM dd yyyy - HH:mm:ss');
-//
-//        return _date.toUpperCase();
-//
-//    };
-//});
+app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
+    dataFactory.getById($routeParams.contactId, function (data) {
+        $scope.job = data;
+        $scope.job.contactId = $routeParams.contactId;
+        console.log('list length '+ $scope.job.rooms.length )
+        //TODO fix json.parse rooms incase room are null it will crash everything down
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, userForm) {
+        $scope.editContactInfo = function () {
+            console.log('hi ')
+        }
+        $scope.editEquipment = function () {
+            console.log('hi ')
+        }
+        $scope.editWork = function () {
+            console.log('hi ')
+        }
+    });
+
+    $("#menu-list").removeClass("active");
+    $("#menu-new").removeClass("active");
+    $("#menu-loaddata").removeClass("active");
+    $("#menu-settings").removeClass("active");
+});
+
+var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
     $scope.form = {}
-
     $scope.cancel = function () {
     }
+
     $scope.addRoom = function (room) {
-        console.log(room.$modelValue)
-        $scope.job.rooms.push(room.$modelValue)
+        if (room.$modelValue) {
+            if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
+                console.log('room existed not adding ')
+                return;
+            }
+            $scope.job.rooms.push(room.$modelValue)
+            //userForm.$invalid = false;
+            console.log('pushed a room ' + room.$modelValue)
+        }
+    }
+
+    $scope.removeRoom = function (room) {
+        console.log('removing  ' + room.$modelValue)
+
+        $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
     }
     $scope.submitForm = function () {
         //TODO this entire jobstartdate shit is hacky as fuck
+
         if ($scope.form.userForm.$valid) {
-            console.table($scope.form.userForm.startDate.$modelValue)
-            console.log($scope.job.oldStartDate);
             if ($scope.form.userForm.startDate.$modelValue) {
                 $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
                     $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
                     $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-                    $scope.form.userForm.startDate.$modelValue, $scope.job.rooms);
+                    $scope.form.userForm.startDate.$modelValue, $scope.job.rooms, $scope.job.dayList);
                 $modalInstance.close('closed');
                 return;
             }
-            if (!$scope.form.userForm.startDate.$modelValue && $scope.job.oldStartDate) {
-                $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-                    $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-                    $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-                    $scope.job.oldStartDate, $scope.job.rooms);
-                $modalInstance.close('closed');
-                return;
-            }
+            //if (!$scope.form.userForm.startDate.$modelValue && $scope.job.oldStartDate) {
+            //    console.log('going to scope 2  ' +$scope.job.rooms )
+            //
+            //    $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+            //        $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+            //        $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+            //        $scope.job.oldStartDate, $scope.job.rooms);
+            //    $modalInstance.close('closed');
+            //    return;
+            //}
             if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
                 $modalInstance.close('closed');
                 alert('This job needs a start Date')
                 return;
             }
-
+            if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
+                $modalInstance.close('closed');
+                alert('This job needs at least one room')
+                return;
+            }
 
         } else {
+            $route.reload();
 
-            console.log('userform is not in scope');
         }
     };
 
@@ -208,15 +245,218 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm) {
     };
 };
 
-app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
+var DayInstanceCtrl = function ($scope, $modalInstance, day1Form, $route) {
+    $scope.form = {}
+    $scope.cancel = function () {
+    }
 
+    $scope.addRoom = function (room) {
+        if (room.$modelValue) {
+            if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
+                console.log('room existed not adding ')
+                return;
+            }
+            $scope.job.rooms.push(room.$modelValue)
+            //userForm.$invalid = false;
+            console.log('pushed a room ' + room.$modelValue)
+        }
+    }
+
+    $scope.removeRoom = function (room) {
+        console.log('removing  ' + room.$modelValue)
+
+        $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
+    }
+    $scope.submitForm = function () {
+        //TODO this entire jobstartdate shit is hacky as fuck
+        if ($scope.form.userForm.$valid) {
+            if ($scope.form.userForm.startDate.$modelValue) {
+                console.log('asdf '+ $scope.job.dayList)
+
+                $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+                    $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+                    $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+                    $scope.form.userForm.startDate.$modelValue, $scope.job.rooms, $scope.job.dayList);
+                $modalInstance.close('closed');
+                return;
+            }
+            //if (!$scope.form.userForm.startDate.$modelValue && $scope.job.oldStartDate) {
+            //    console.log('going to scope 2  ' +$scope.job.rooms )
+            //
+            //    $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+            //        $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+            //        $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+            //        $scope.job.oldStartDate, $scope.job.rooms);
+            //    $modalInstance.close('closed');
+            //    return;
+            //}
+            if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
+                $modalInstance.close('closed');
+                alert('This job needs a start Date')
+                return;
+            }
+            if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
+                $modalInstance.close('closed');
+                alert('This job needs at least one room')
+                return;
+            }
+
+        } else {
+            $route.reload();
+
+        }
+    };
+
+    $scope.cancel = function () {
+        console.log('just canceled')
+        $modalInstance.dismiss('cancel');
+    };
+};
+
+
+app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
-        $scope.job.rooms = JSON.parse(data.rooms)
-        $scope.job.oldStartDate = $scope.job.startDate;
+        //TODO fix json.parse rooms incase room are null it will crash everything down
+        if ($scope.job.rooms) {
+
+            //$scope.job.rooms = JSON.parse(data.rooms)
+        } else {
+            console.log('got noes rooms ')
+            $scope.job.rooms = new Array();
+
+        }
+        if (!$scope.job.rooms) {
+            $scope.job.rooms = new Array();
+        }
         //TODO make a jobStartDate pretty object to show
-        
+        $scope.job.oldStartDate = $scope.job.startDate;
+
+        if (!$scope.job.startDate) {
+            $scope.day1Show = false;
+
+        } else {
+            $scope.day1Show = true;
+        }
+        $scope.formDisabled = false;
+        $scope.df = dataFactory;
+        //$scope.job.contactId = $routeParams.contactId;
+        // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
+        if (!$scope.online) {
+            $scope.$apply();
+        }
+
+        $scope.showForm = function () {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'views/modal-form.html',
+                controller: ModalInstanceCtrl,
+                scope: $scope,
+                resolve: {
+                    userForm: function () {
+                        return $scope.userForm;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+                //TODO this doesnt feel right
+                $location.path('/')
+            }, function () {
+                console.info('Modal dismissed at: ' + new Date());
+            });
+        };
+    });
+
+    $("#menu-list").removeClass("active");
+    $("#menu-new").removeClass("active");
+    $("#menu-loaddata").removeClass("active");
+    $("#menu-settings").removeClass("active");
+});
+
+app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
+    dataFactory.getById($routeParams.contactId, function (data) {
+        $scope.job = data;
+        $scope.job.contactId = $routeParams.contactId;
+        //TODO fix json.parse rooms incase room are null it will crash everything down
+        if ($scope.job.rooms) {
+
+            //$scope.job.rooms = JSON.parse(data.rooms)
+        } else {
+            console.log('got noes rooms ')
+            $scope.job.rooms = new Array();
+
+        }
+        if (!$scope.job.rooms) {
+            $scope.job.rooms = new Array();
+        }
+        //TODO make a jobStartDate pretty object to show
+        $scope.job.oldStartDate = $scope.job.startDate;
+
+        if (!$scope.job.startDate) {
+            $scope.day1Show = false;
+
+        } else {
+            $scope.day1Show = true;
+        }
+        $scope.formDisabled = false;
+        $scope.df = dataFactory;
+        //$scope.job.contactId = $routeParams.contactId;
+        // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
+        if (!$scope.online) {
+            $scope.$apply();
+        }
+
+        $scope.showForm = function () {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'views/modal-form.html',
+                controller: ModalInstanceCtrl,
+                scope: $scope,
+                resolve: {
+                    userForm: function () {
+                        return $scope.userForm;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+                //TODO this doesnt feel right
+                $location.path('/')
+            }, function () {
+                console.info('Modal dismissed at: ' + new Date());
+            });
+        };
+    });
+
+    $("#menu-list").removeClass("active");
+    $("#menu-new").removeClass("active");
+    $("#menu-loaddata").removeClass("active");
+    $("#menu-settings").removeClass("active");
+});
+
+app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
+    dataFactory.getById($routeParams.contactId, function (data) {
+        $scope.job = data;
+        $scope.job.contactId = $routeParams.contactId;
+        //TODO fix json.parse rooms incase room are null it will crash everything down
+        if ($scope.job.rooms) {
+
+            //$scope.job.rooms = JSON.parse(data.rooms)
+        } else {
+            console.log('got noes rooms ')
+            $scope.job.rooms = new Array();
+
+        }
+        if (!$scope.job.rooms) {
+            $scope.job.rooms = new Array();
+        }
+        //TODO make a jobStartDate pretty object to show
+        $scope.job.oldStartDate = $scope.job.startDate;
+
         if (!$scope.job.startDate) {
             $scope.day1Show = false;
 
@@ -253,6 +493,40 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
             });
         };
 
+        $scope.showDay = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'views/day-form.html',
+                controller: DayInstanceCtrl,
+                scope: $scope,
+                resolve: {
+                    dayForm: function () {
+                        return $scope.dayForm;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+                //TODO this doesnt feel right
+                $location.path('/')
+            }, function () {
+                console.info('Day modal dismissed at: ' + new Date());
+            });
+        };
+
+        $scope.addDay = function () {
+
+            var date = new Date($scope.job.dayList.slice(-1)[0].date);//gets last date in array
+            date.setDate(date.getDate() + 1);//adds a day
+            var newDay = {};
+            newDay.date = date;
+
+            $scope.job.dayList.push(newDay);
+            $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.job.account.accountName,
+                $scope.job.account.address1, $scope.job.account.phone1,
+                $scope.job.account.phone2, $scope.job.account.email,
+                $scope.job.startDate, $scope.job.rooms, $scope.job.dayList);
+        };
 
     });
 
@@ -326,4 +600,7 @@ app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
     $("#menu-loaddata").addClass("disabled").removeClass("active");
     $("#menu-settings").addClass("active");
 });
+
+
+
 

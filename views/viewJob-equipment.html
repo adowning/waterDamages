@@ -1,0 +1,42 @@
+<div id="contactCard" disabled="true">
+
+<div id="days" ng-show="job.startDate && job.rooms.length >= 1"  disabled="true">
+    <div ng-repeat="days in job.dayList track by $index">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h3 class="panel-title pull-left">
+                    <b> Day {{$index + 1}}</b>  ({{job.dayList[$index].date}})</h3>
+            </div>
+            <div class="list-group">
+                <div class="list-group-item">
+                    <!-- <h4 class="list-group-item-heading"><u>Equipment</u></h4> -->
+                    <div ng-repeat="room in job.rooms track by $index">
+                        <h4>{{job.rooms[$index]}}</h4>
+                        <label><b> 0{{job.dayList[$index].fans}} fans 0{{job.dayList[$index].dehus}} dehus</b></label>
+
+                    </div>
+                </div>
+                <!--<div class="list-group-item">-->
+                <!--<h4 class="list-group-item-heading"><u>Work Performed</u></h4>-->
+                <!--<label>Living room: some shit</label><br>-->
+                <!--<label>Dining room: more shitdfdfdf</label>-->
+                <!--</div>-->
+
+            </div>
+            <div class="panel-footer">
+                <small class="pull-left"></small>
+                <a class="btn btn-primary pull-right" ng-click="showDay()" <i class="fa fa-pencil"></i>
+                <span >Edit</span></a>
+            </div>
+        </div>
+
+
+    </div>
+
+    <small class="pull-left"></small>
+    <a class="btn btn-primary pull-left" ng-click="addDay()" <i class="fa fa-pencil"></i>
+    <span >Add Day</span> <span>    </span>   </a>
+    <a class="btn btn-primary" href="#/view2/{{job.contactId}}"
+    <span>Done</span></a>
+</div>
+</div>

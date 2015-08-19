@@ -41,9 +41,9 @@ angular.module("angularcrud")
             //        forageFactory.update(id, smId, name, address, phone1, phone2, email);
             //    }
             //},
-            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms) {
+            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList) {
                 if ($rootScope.online) {
-                    fireFactory.updateJob(id, smId, name, address, phone1, phone2, email, startDate, rooms);
+                    fireFactory.updateJob(id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList);
                 }
                 else {
                     //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
@@ -59,8 +59,6 @@ angular.module("angularcrud")
             },
             addJob: function (jobID, currentJobs) {
                 var thisJob = {};
-
-
                 $.ajax({
                     type: "GET",
                     url: "https://api.servicemonster.net/v1/orders?q=" + jobID,
@@ -73,7 +71,6 @@ angular.module("angularcrud")
                         xhr.setRequestHeader("Authorization", "Basic ZTZleGc0Nkw6bUM0RHM5MXFnZXdPUzFv");
                     },
                     complete: function () {
-
                         console.log('completed')
                     },
                     success: function (json) {
@@ -91,16 +88,29 @@ angular.module("angularcrud")
                             },
                             complete: function (account) {
                                 if ($rootScope.online) {
+                                    //account.job = thisJob;
+                                    //thisJob.account = account;
+                                    //TODO need to see if the job is already here and not add
+
                                     var found = false;
+                                    if(!currentJobs){
+                                        fireFactory.addJob(thisJob, currentJobs);
+                                        return;
+                                    }
+
                                     for(var i = 0; i < currentJobs.length; i++) {
                                         console.log(currentJobs[i].accountID)
                                         if (currentJobs[i].accountID == '1f215af4-1373-11e4-ad57-f843444aafcc') {
                                             found = true;
                                             console.log('found')
-                                            break;
+                                            return;
+                                        }else{
+                                            fireFactory.addJob(thisJob, currentJobs);
+                                            return;
                                         }
                                     }
-                                    fireFactory.addJob(thisJob, currentJobs);
+
+
                                 }
                                 else {
                                     account.job = thisJob;
@@ -110,7 +120,6 @@ angular.module("angularcrud")
                             },
                             success: function (account) {
                                 thisJob.account = account;
-
                                 $location.path("/");
                             }
                         });
@@ -140,6 +149,7 @@ angular.module("angularcrud")
     .factory("fireFactory", function ($rootScope, $http, $location, $firebase) {
         return {
             getAll: function (successCallback) {
+                //TODO hacky
                 $rootScope.FBURL = "https://andrewscleaning.firebaseio.com/"
                 $http.get($rootScope.FBURL + "angularcrud/" + ".json?format=export").success(successCallback);
 
@@ -156,26 +166,37 @@ angular.module("angularcrud")
             // Note use of HTTP method PATCH.
             //    Updating Data with PATCH (https://firebase.com/docs/rest/guide/saving-data.html)
             //       Using a PATCH request, you can update specific children at a location without overwriting existing data.
-            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms) {
-                console.log(JSON.stringify(rooms))
+            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList) {
+                
+                if(!dayList || dayList.length < 1){
+                    var day1 = {};
+                    day1.date = startDate;
+                    var dayList = [];
+                    dayList.push(day1);
+                }else{
+                    console.log('you gots some days')
+
+                }
+
                 $http({
                     url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
                     data: {
                         startDate: startDate,
-                        rooms: JSON.stringify(rooms),
+                        rooms: rooms,
+                        dayList: dayList,
                         account: {
                             accountName: name,
                             address1: address,
                             phone1: phone1,
                             phone2: phone2,
                             email: email,
+
                             ".priority": name.toLowerCase()
                         }
                     },
                     method: "PATCH"
                 }).success(function (data, status, headers, config) {
-                    console.log('success')
-
+console.log('updating sm ')
                     var req = {
                         method: 'PATCH',
                         url: 'https://api.servicemonster.net/v1/accounts/' + smId,
@@ -193,7 +214,6 @@ angular.module("angularcrud")
                     }
 
                     $http(req).success(function () {
-                        console.log('success')
                         $location.path("/view/" + id);
                     }).error(function (error) {
                         console.log(error)
@@ -236,8 +256,11 @@ angular.module("angularcrud")
             },
             addJob: function (job, currentJobs) {
                 var exists = false;
+                
+                
                 for (var x in currentJobs ){
                     if(currentJobs[x].accountID == job.accountID){
+                        console.log('qas i even here ')
                         exists = true;
                     }
                 }

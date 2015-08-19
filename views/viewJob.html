@@ -1,0 +1,40 @@
+<div class="alert alert-warning" ng-hide="online">Working Offline. Changes will be saved when an Internet connection is
+    restored.
+</div>
+<div class="alert alert-warning" ng-show="!job.startDate">This job needs a start date.</div>
+<!--TODO fix me -->
+<div class="alert alert-warning" ng-show="job.rooms.length < 1 || !job.rooms">This job needs at least one room.</div>
+
+<div id="contactCard" disabled="true">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left">
+                <b>Job# </b> {{job.orderNumber}} <br><br>{{job.account.accountName}}<br> {{job.account.address1}}<br>
+                CityFixMe{{job.account.city}}
+                , ZipFixMe{{job.account.zip}}<br><br>
+                <a href="tel://" +{{job.phone1}}>
+                    <h4 class="list-group-item-heading"> {{job.account.phone1}}</h4>
+                </a></h3>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<a class="btn btn-primary" href="#/viewJobBasics/{{job.contactId}}"
+<span>Edit Basic Info</span></a><span>   </span>
+<span ng-show="job.startDate && job.rooms.length >= 1">
+    <a class="btn btn-primary" href="#/viewJobEquipment/{{job.contactId}}"
+    <span>Edit Equipment</span></a>
+    <span>   </span>
+    </span>
+<span ng-show="job.startDate && job.rooms.length >= 1">
+<a class="btn btn-primary " ng-click="editWork()"
+    <span>Edit Work Performed</span></a>
+</span>
+</div>
+
+

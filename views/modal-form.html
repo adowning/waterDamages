@@ -30,7 +30,7 @@
          <!-- PHONE2 -->
         <div class="form-group">
             <label>Phone 2</label>
-            <input type="text" name="phone2" class="form-control" ng-model="job.account.phone2" value="job.account.phone2" required>
+            <input type="text" name="phone2" class="form-control" ng-model="job.account.phone2" value="job.account.phone2">
             <p ng-show="form.userForm.phone2.$invalid && !form.userForm.phone2.$pristine" class="help-block">Enter a valid phone #.</p>
             <p ng-show="form.userForm.phone2.$error.minlength" class="help-block">Phone number is too short.</p>
             <p ng-show="form.userForm.phone2.$error.maxlength" class="help-block">Phone number is too long.</p>
@@ -47,8 +47,7 @@
         <!-- TODO prepopulate startDate -->
         <div class="form-group">
             <label>Job Start Date</label>
-            <input type="date" name="startDate" class="form-control" ng-model="job.startDate" value="job.startDate" >
-
+            <input type="date" name="startDate" class="form-control" ng-model="job.startDate" value="job.startDate" required >
             <!--<input type="date" name="startDate" class="form-control" ng-model="job.startDate" value="job.startDate" required>-->
             <p ng-show="form.userForm.startDate.$invalid && !form.userForm.startDate.$pristine" class="help-block">Day we started work.</p>
             <!--<input type="date" ng-model="job.startDate.dateAsString" value="{{ job.startDate.dateAsString }}" pattern="dd/MM/YYYY"/>-->
@@ -57,7 +56,9 @@
         <div class="form-group">
             <label>Rooms</label>
             <div ng-repeat="room in job.rooms track by $index">
-                <h4>{{job.rooms[$index]}}</h4>
+                <h4>{{job.rooms[$index]}} <button type="button"  ng-click="removeRoom(room)" class="btn btn-default btn-xs">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button></h4>
             </div>
             <input type="text" name="room" class="form-control" ng-model="room">
             <button type="button" class="btn btn-primary" ng-click="addRoom(form.userForm.room)">Add</button>
@@ -66,7 +67,7 @@
  
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" ng-disabled="form.userForm.$invalid">OK</button>
+        <button type="submit" class="btn btn-primary" ng-disabled="form.userForm.$invalid || !job.rooms || job.rooms < 1">OK</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </form>
