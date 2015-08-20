@@ -253,6 +253,11 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
     $scope.cancel = function () {
         console.log('canceled out ')
     }
+    console.log('daynum '+$scope.dayNum);
+    if($scope.dayNum == null){
+        alert("error: day does not exist.")
+        return;
+    }
     if (!$scope.job.dayList[$scope.dayNum].fans) {
         $scope.job.dayList[$scope.dayNum].fans = 0;
     }
@@ -283,10 +288,10 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
     };
 
     $scope.submitForm = function () {
-
+        console.log('room = '+ $scope.currentRoom);
         if ($scope.form.equipmentForm.$valid) {
-            console.log('dehus '+ $scope.job.dayList[$scope.dayNum].dehus)
-            $scope.df.updateJobEquipment($scope.job.contactId,
+            $scope.df.updateJobEquipment($scope.job.contactId, $scope.dayNum,
+                $scope.currentRoom,
                 $scope.job.dayList[$scope.dayNum].fans,
                 $scope.job.dayList[$scope.dayNum].dehus
             )
@@ -442,6 +447,7 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
 
         $scope.changedValue = function (room) {
             $scope.showFields = true;
+            $scope.currentRoom = room;
         }
 
 
@@ -452,7 +458,7 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
         }
 
         $scope.showForm = function (day) {
-
+console.log('day = '+day);
             $scope.dayNum = day;
             $scope.showFields = false;
 

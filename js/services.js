@@ -6,7 +6,7 @@ angular.module("angularcrud")
      * Our controllers interact with dataFactory which is a facade for remote server data or local storage. If we have
      * a network connection, we use our REST service, otherwise we use our local storage (browser storage) service.
      */
-    .factory("dataFactory", function ($rootScope, fireFactory, forageFactory,  $location, DATAKEY, $localForage) {
+    .factory("dataFactory", function ($rootScope, fireFactory, forageFactory, $location, DATAKEY, $localForage) {
         return {
             getAll: function (successCallback) {
                 if ($rootScope.online) {
@@ -49,9 +49,9 @@ angular.module("angularcrud")
                     //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
                 }
             },
-            updateJobEquipment: function (id, day, fans, dehus) {
+            updateJobEquipment: function (id, room, day, fans, dehus) {
                 if ($rootScope.online) {
-                    fireFactory.updateJobEquipment(id, day, fans, dehus);
+                    fireFactory.updateJobEquipment(id, room, day, fans, dehus);
                 }
                 else {
                     //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
@@ -103,7 +103,7 @@ angular.module("angularcrud")
                                     //TODO need to see if the job is already here and not add
 
                                     var found = false;
-                                    if(!currentJobs || currentJobs == undefined){
+                                    if (!currentJobs || currentJobs == undefined) {
                                         console.log('no jobs sending first to fire factory ')
                                         fireFactory.addJob(thisJob, currentJobs);
                                         return;
@@ -167,13 +167,13 @@ angular.module("angularcrud")
             //    Updating Data with PATCH (https://firebase.com/docs/rest/guide/saving-data.html)
             //       Using a PATCH request, you can update specific children at a location without overwriting existing data.
             updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList) {
-                
-                if(!dayList || dayList.length < 1){
+
+                if (!dayList || dayList.length < 1) {
                     var day1 = {};
                     day1.date = startDate;
                     var dayList = [];
                     dayList.push(day1);
-                }else{
+                } else {
                     console.log('you gots some days')
 
                 }
@@ -196,7 +196,7 @@ angular.module("angularcrud")
                     },
                     method: "PATCH"
                 }).success(function (data, status, headers, config) {
-console.log('updating sm ')
+                    console.log('updating sm ')
                     var req = {
                         method: 'PATCH',
                         url: 'https://api.servicemonster.net/v1/accounts/' + smId,
@@ -209,7 +209,7 @@ console.log('updating sm ')
                             address1: address,
                             phone1: phone1,
                             phone2: phone2,
-                            email: email,
+                            email: email
                         }
                     }
 
@@ -229,14 +229,21 @@ console.log('updating sm ')
                     });
             },
 
-            updateJobEquipment: function (id, day, fans, dehus) {
-console.log('day = '+ day + 'fans   ' + fans + ' dehus '+ dehus)
+            updateJobEquipment: function (id, day, room, fans, dehus) {
+
                 var stringyDay = day;
+                console.log('dehus '+dehus);
                 $http({
-                    url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
+                    url: $rootScope.FBURL + "angularcrud/" + id + "/dayList/" + day + "/" + room +".json?format=export",
                     data: {
-                        dayList: {
-                            0 : {fans : fans , dehus :dehus },}
+                        fans: fans,
+                        dehus: dehus
+
+                    //    dayList: {
+                    //        "/day": {room1 :
+                    //        {fans: fans, dehus: dehus}
+                    //    }
+                    //}
                     },
                     method: "PATCH"
                 }).success(function (data, status, headers, config) {
@@ -275,20 +282,20 @@ console.log('day = '+ day + 'fans   ' + fans + ' dehus '+ dehus)
 
 
             //update: function (id, name, address, phone1, phone2, email) {
-                //$http({
-                //    url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
-                //    data: {
-                //        name: name,
-                //        address: address,
-                //        phone1: phone1,
-                //        phone2: phone2,
-                //        email: email,
-                //        ".priority": name.toLowerCase()
-                //    },
-                //    method: "PATCH"
-                //}).success(function (data, status, headers, config) {
-                //    $location.path("/view/" + id);
-                //});
+            //$http({
+            //    url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
+            //    data: {
+            //        name: name,
+            //        address: address,
+            //        phone1: phone1,
+            //        phone2: phone2,
+            //        email: email,
+            //        ".priority": name.toLowerCase()
+            //    },
+            //    method: "PATCH"
+            //}).success(function (data, status, headers, config) {
+            //    $location.path("/view/" + id);
+            //});
             //},
             add: function (first, last) {
                 $http.post($rootScope.FBURL + "angularcrud/" + ".json?format=export", {
@@ -303,15 +310,15 @@ console.log('day = '+ day + 'fans   ' + fans + ' dehus '+ dehus)
             addJob: function (job, currentJobs) {
                 console.log('adding job ')
                 var exists = false;
-                
-                
-                for (var x in currentJobs ){
-                    if(currentJobs[x].accountID == job.accountID){
+
+
+                for (var x in currentJobs) {
+                    if (currentJobs[x].accountID == job.accountID) {
                         console.log('qas i even here ')
                         exists = true;
                     }
                 }
-                if(!exists){
+                if (!exists) {
                     console.log('posting to fb ')
                     job.active = true;
                     $http.post($rootScope.FBURL + "angularcrud/" + ".json?format=export", job)
@@ -319,7 +326,7 @@ console.log('day = '+ day + 'fans   ' + fans + ' dehus '+ dehus)
                             console.log('trying to refresh')
                             $location.path("/");
                         });
-                }else{
+                } else {
                     console.log('job exists not doing shit')
                     return "exists";
                 }
@@ -345,7 +352,7 @@ console.log('day = '+ day + 'fans   ' + fans + ' dehus '+ dehus)
                         address: address,
                         phone1: phone1,
                         phone2: phone2,
-                        email: email,
+                        email: email
                     }, name.toLowerCase());
                 }
                 $location.path("/");
