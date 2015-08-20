@@ -49,6 +49,14 @@ angular.module("angularcrud")
                     //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
                 }
             },
+            updateJobEquipment: function (id, day, fans, dehus) {
+                if ($rootScope.online) {
+                    fireFactory.updateJobEquipment(id, day, fans, dehus);
+                }
+                else {
+                    //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
+                }
+            },
             add: function (first, last) {
                 if ($rootScope.online) {
                     fireFactory.add(first, last);
@@ -87,34 +95,26 @@ angular.module("angularcrud")
                                 xhr.setRequestHeader("Authorization", "Basic ZTZleGc0Nkw6bUM0RHM5MXFnZXdPUzFv");
                             },
                             complete: function (account) {
+                                console.log('completed #2 ')
                                 if ($rootScope.online) {
+                                    console.log('we are online ')
                                     //account.job = thisJob;
                                     //thisJob.account = account;
                                     //TODO need to see if the job is already here and not add
 
                                     var found = false;
-                                    if(!currentJobs){
+                                    if(!currentJobs || currentJobs == undefined){
+                                        console.log('no jobs sending first to fire factory ')
                                         fireFactory.addJob(thisJob, currentJobs);
                                         return;
                                     }
 
-                                    for(var i = 0; i < currentJobs.length; i++) {
-                                        console.log(currentJobs[i].accountID)
-                                        if (currentJobs[i].accountID == '1f215af4-1373-11e4-ad57-f843444aafcc') {
-                                            found = true;
-                                            console.log('found')
-                                            return;
-                                        }else{
-                                            fireFactory.addJob(thisJob, currentJobs);
-                                            return;
-                                        }
-                                    }
+                                    fireFactory.addJob(thisJob, currentJobs);
 
 
                                 }
                                 else {
                                     account.job = thisJob;
-
                                     //forageFactory.addJob(job);
                                 }
                             },
@@ -228,6 +228,52 @@ console.log('updating sm ')
                         console.log(error)
                     });
             },
+
+            updateJobEquipment: function (id, day, fans, dehus) {
+console.log('day = '+ day + 'fans   ' + fans + ' dehus '+ dehus)
+                var stringyDay = day;
+                $http({
+                    url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
+                    data: {
+                        dayList: {
+                            0 : {fans : fans , dehus :dehus },}
+                    },
+                    method: "PATCH"
+                }).success(function (data, status, headers, config) {
+                    //TODO update SM later on when we figure out our layout
+                    //var req = {
+                    //    method: 'PATCH',
+                    //    url: 'https://api.servicemonster.net/v1/accounts/' + smId,
+                    //    headers: {
+                    //        'Authorization': "Basic ZTZleGc0Nkw6bUM0RHM5MXFnZXdPUzFv",
+                    //        'Content-Type': "application/json"
+                    //    },
+                    //    data: {
+                    //        accountName: name,
+                    //        address1: address,
+                    //        phone1: phone1,
+                    //        phone2: phone2,
+                    //        email: email,
+                    //    }
+                    //}
+                    //
+                    //$http(req).success(function () {
+                    //    $location.path("/view/" + id);
+                    //}).error(function (error) {
+                    //    console.log(error)
+                    //    $location.path("/view/" + id);
+                    //});
+
+                }).error(function (error) {
+                    console.log(error)
+                })
+
+                    .error(function (error) {
+                        console.log(error)
+                    });
+            },
+
+
             //update: function (id, name, address, phone1, phone2, email) {
                 //$http({
                 //    url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
@@ -255,6 +301,7 @@ console.log('updating sm ')
                     });
             },
             addJob: function (job, currentJobs) {
+                console.log('adding job ')
                 var exists = false;
                 
                 
@@ -265,6 +312,7 @@ console.log('updating sm ')
                     }
                 }
                 if(!exists){
+                    console.log('posting to fb ')
                     job.active = true;
                     $http.post($rootScope.FBURL + "angularcrud/" + ".json?format=export", job)
                         .success(function () {

@@ -23,14 +23,14 @@ app.config(['$routeProvider', function ($routeProvider) {
         })
 
         .when("/view/:contactId", {
-            controller: "ViewCtrl",
-            templateUrl: "./views/view.html"
-        })
-
-        .when("/view2/:contactId", {
             controller: "ViewJobCtrl",
             templateUrl: "./views/viewJob.html"
         })
+
+        //.when("/view2/:contactId", {
+        //    controller: "ViewJobCtrl",
+        //    templateUrl: "./views/viewJob.html"
+        //})
         .when("/viewJobBasics/:contactId", {
             controller: "ViewJobBasicsCtrl",
             templateUrl: "./views/viewJob-basics.html"
@@ -82,7 +82,7 @@ app.run(function ($window, $rootScope, $location, dataFactory) {
             if (!$rootScope.online) {
                 //TODO removed this... had to do with local shit, may need to return for something else
                 //dataFactory.updateAllContacts();
-                $scope.$apply();
+                // $scope.$apply();
             }
             $rootScope.online = true;
         });
@@ -159,7 +159,7 @@ app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams,
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
-        console.log('list length '+ $scope.job.rooms.length )
+        console.log('list length ' + $scope.job.rooms.length)
         //TODO fix json.parse rooms incase room are null it will crash everything down
 
         $scope.editContactInfo = function () {
@@ -172,7 +172,9 @@ app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams,
             console.log('hi ')
         }
     });
-
+    $scope.deleteJob = function () {
+        dataFactory.delete($scope.job.contactId)
+    }
     $("#menu-list").removeClass("active");
     $("#menu-new").removeClass("active");
     $("#menu-loaddata").removeClass("active");
@@ -246,6 +248,61 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
     };
 };
 
+var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $route) {
+    $scope.form = {}
+    $scope.cancel = function () {
+        console.log('canceled out ')
+    }
+    if (!$scope.job.dayList[$scope.dayNum].fans) {
+        $scope.job.dayList[$scope.dayNum].fans = 0;
+    }
+    if (!$scope.job.dayList[$scope.dayNum].dehus) {
+        $scope.job.dayList[$scope.dayNum].dehus = 0;
+    }
+    $scope.removeFan = function () {
+
+        if ($scope.job.dayList[$scope.dayNum].fans >= 1) {
+            $scope.job.dayList[$scope.dayNum].fans -= 1;
+
+        }
+    };
+    $scope.addFan = function () {
+        $scope.job.dayList[$scope.dayNum].fans += 1;
+
+    };
+
+    $scope.removeDehu = function () {
+
+        if ($scope.job.dayList[$scope.dayNum].dehus >= 1) {
+            $scope.job.dayList[$scope.dayNum].dehus -= 1;
+        }
+    };
+
+    $scope.addDehu = function () {
+        $scope.job.dayList[$scope.dayNum].dehus += 1;
+    };
+
+    $scope.submitForm = function () {
+
+        if ($scope.form.equipmentForm.$valid) {
+            console.log('dehus '+ $scope.job.dayList[$scope.dayNum].dehus)
+            $scope.df.updateJobEquipment($scope.job.contactId,
+                $scope.job.dayList[$scope.dayNum].fans,
+                $scope.job.dayList[$scope.dayNum].dehus
+            )
+        }
+
+        else {
+            $route.reload();
+
+        }
+    };
+
+    $scope.cancel = function () {
+        console.log('just canceled')
+        $modalInstance.dismiss('cancel');
+    };
+};
 var DayInstanceCtrl = function ($scope, $modalInstance, day1Form, $route) {
     $scope.form = {}
     $scope.cancel = function () {
@@ -272,7 +329,7 @@ var DayInstanceCtrl = function ($scope, $modalInstance, day1Form, $route) {
         //TODO this entire jobstartdate shit is hacky as fuck
         if ($scope.form.userForm.$valid) {
             if ($scope.form.userForm.startDate.$modelValue) {
-                console.log('asdf '+ $scope.job.dayList)
+                console.log('asdf ' + $scope.job.dayList)
 
                 $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
                     $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
@@ -381,44 +438,32 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
-        //TODO fix json.parse rooms incase room are null it will crash everything down
-        if ($scope.job.rooms) {
+        $scope.showFields = false;
 
-            //$scope.job.rooms = JSON.parse(data.rooms)
-        } else {
-            console.log('got noes rooms ')
-            $scope.job.rooms = new Array();
-
+        $scope.changedValue = function (room) {
+            $scope.showFields = true;
         }
-        if (!$scope.job.rooms) {
-            $scope.job.rooms = new Array();
-        }
-        //TODO make a jobStartDate pretty object to show
-        $scope.job.oldStartDate = $scope.job.startDate;
 
-        if (!$scope.job.startDate) {
-            $scope.day1Show = false;
 
-        } else {
-            $scope.day1Show = true;
-        }
-        $scope.formDisabled = false;
         $scope.df = dataFactory;
-        //$scope.job.contactId = $routeParams.contactId;
-        // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
+
         if (!$scope.online) {
             $scope.$apply();
         }
 
-        $scope.showForm = function () {
+        $scope.showForm = function (day) {
+
+            $scope.dayNum = day;
+            $scope.showFields = false;
+
 
             var modalInstance = $modal.open({
-                templateUrl: 'views/modal-form.html',
-                controller: ModalInstanceCtrl,
+                templateUrl: 'views/editequipment-form.html',
+                controller: EquipmentInstanceCtrl,
                 scope: $scope,
                 resolve: {
-                    userForm: function () {
-                        return $scope.userForm;
+                    equipmentForm: function () {
+                        return $scope.equipmentForm;
                     }
                 }
             });

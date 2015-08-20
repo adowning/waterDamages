@@ -9,15 +9,29 @@
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
             <h3 class="panel-title pull-left">
-                <b>Job# </b> {{job.orderNumber}} <br><br>{{job.account.accountName}}<br> {{job.account.address1}}<br>
-                CityFixMe{{job.account.city}}
-                , ZipFixMe{{job.account.zip}}<br><br>
-                <a href="tel://" +{{job.phone1}}>
-                    <h4 class="list-group-item-heading"> {{job.account.phone1}}</h4>
-                </a></h3>
+                Status </h3>
+        </div>
+        <div class="alert alert-success" role="alert">Complete</div>
+        <div class="alert alert-warning" role="alert">No work performed</div>
+        <div class="alert alert-warning" role="alert">No measurements</div>
+
+        <div class="alert alert-warning" role="alert">Not all days have equipment changes</div>
+        <div class="alert alert-danger" role="alert">Not all signatures completed</div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left">
+                Basic Info</h3>
 
         </div>
-
+        Job #  {{job.orderNumber}} <br>
+        {{job.account.accountName}}<br> {{job.account.address1}}<br>
+        CityFixMe{{job.account.city}}
+        , ZipFixMe{{job.account.zip}}<br><br>
+        <a href="tel://" +{{job.phone1}}>
+            <h4 class="list-group-item-heading"> {{job.account.phone1}}</h4>
+        </a>
+        Rooms:
 
     </div>
 
@@ -35,6 +49,8 @@
 <a class="btn btn-primary " ng-click="editWork()"
     <span>Edit Work Performed</span></a>
 </span>
+<a class="btn btn-danger " ng-click="deleteJob()"
+<span>Delete Job</span></a>
 </div>
 
 
