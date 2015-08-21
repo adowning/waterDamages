@@ -168,6 +168,8 @@ angular.module("angularcrud")
             //       Using a PATCH request, you can update specific children at a location without overwriting existing data.
             updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList) {
 
+                console.table(dayList)
+                console.table(rooms)
                 if (!dayList || dayList.length < 1) {
                     var day1 = {};
                     day1.date = startDate;
@@ -177,6 +179,25 @@ angular.module("angularcrud")
                     console.log('you gots some days')
 
                 }
+                console.log('l '+dayList.length);
+                console.log('l '+rooms.length);
+                //attach rooms to Daylist
+                //for(var i ; dayList.length; i++){
+                //    console.log('d '+ dayList[i]);
+                //    for(var y ; rooms.length; y++){
+                //        console.log('r '+ rooms[y]);
+                //    }
+                //}
+                //for(var day in dayList){
+                //    console.log('d '+day);
+                //    for(var room in rooms){
+                //        console.log('r  '+room);
+                //        dayList.push(room);
+                //    }
+                //}
+                //for (var room in rooms){
+                //  //  console.log('r '+room);
+                //}
 
                 $http({
                     url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
@@ -229,8 +250,8 @@ angular.module("angularcrud")
                     });
             },
 
-            updateJobEquipment: function (id, day, room, fans, dehus) {
-
+            updateJobEquipment: function (id, room, day, fans, dehus) {
+console.log('stuff '+id, room, day, fans, dehus);
                 var stringyDay = day;
                 console.log('dehus '+dehus);
                 $http({

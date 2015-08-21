@@ -253,47 +253,59 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
     $scope.cancel = function () {
         console.log('canceled out ')
     }
-    console.log('daynum '+$scope.dayNum);
+    console.log($scope.currentRoom)
     if($scope.dayNum == null){
         alert("error: day does not exist.")
         return;
     }
-    if (!$scope.job.dayList[$scope.dayNum].fans) {
-        $scope.job.dayList[$scope.dayNum].fans = 0;
-    }
-    if (!$scope.job.dayList[$scope.dayNum].dehus) {
-        $scope.job.dayList[$scope.dayNum].dehus = 0;
-    }
+
     $scope.removeFan = function () {
 
-        if ($scope.job.dayList[$scope.dayNum].fans >= 1) {
-            $scope.job.dayList[$scope.dayNum].fans -= 1;
+        if ($scope.todaysEquipment[$scope.currentRoom].fans >= 1) {
+            $scope.todaysEquipment[$scope.currentRoom].fans -= 1;
 
         }
     };
     $scope.addFan = function () {
-        $scope.job.dayList[$scope.dayNum].fans += 1;
+        console.log('room '+ $scope.currentRoom)
+        console.log('stuff '+$scope.todaysEquipment[$scope.currentRoom].fans);
+
+        if (!$scope.todaysEquipment[$scope.currentRoom].fans) {
+            $scope.todaysEquipment[$scope.currentRoom].fans = 0;
+        }
+
+        $scope.todaysEquipment[$scope.currentRoom].fans += 1;
 
     };
 
     $scope.removeDehu = function () {
+        if (!$scope.todaysEquipment[$scope.currentRoom].dehus) {
+            $scope.todaysEquipment[$scope.currentRoom].dehus = 0;
+        }
 
-        if ($scope.job.dayList[$scope.dayNum].dehus >= 1) {
-            $scope.job.dayList[$scope.dayNum].dehus -= 1;
+        if ($scope.todaysEquipment[$scope.currentRoom].dehus >= 1) {
+            $scope.todaysEquipment[$scope.currentRoom].dehus -= 1;
         }
     };
 
     $scope.addDehu = function () {
-        $scope.job.dayList[$scope.dayNum].dehus += 1;
+        if (!$scope.todaysEquipment[$scope.currentRoom].dehus) {
+            $scope.todaysEquipment[$scope.currentRoom].dehus = 0;
+        }
+        $scope.todaysEquipment[$scope.currentRoom].dehus += 1;
     };
 
     $scope.submitForm = function () {
-        console.log('room = '+ $scope.currentRoom);
+        console.log('trying to submit ');
         if ($scope.form.equipmentForm.$valid) {
-            $scope.df.updateJobEquipment($scope.job.contactId, $scope.dayNum,
+            console.log('submitted ' + $scope.currentRoom);
+
+            $scope.df.updateJobEquipment(
+                $scope.job.contactId,
                 $scope.currentRoom,
-                $scope.job.dayList[$scope.dayNum].fans,
-                $scope.job.dayList[$scope.dayNum].dehus
+                $scope.dayNum,
+                $scope.todaysEquipment[$scope.currentRoom].fans,
+                $scope.todaysEquipment[$scope.currentRoom].dehus
             )
         }
 
@@ -309,71 +321,72 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
     };
 };
 var DayInstanceCtrl = function ($scope, $modalInstance, day1Form, $route) {
-    $scope.form = {}
-    $scope.cancel = function () {
-    }
-
-    $scope.addRoom = function (room) {
-        if (room.$modelValue) {
-            if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
-                console.log('room existed not adding ')
-                return;
-            }
-            $scope.job.rooms.push(room.$modelValue)
-            //userForm.$invalid = false;
-            console.log('pushed a room ' + room.$modelValue)
-        }
-    }
-
-    $scope.removeRoom = function (room) {
-        console.log('removing  ' + room.$modelValue)
-
-        $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
-    }
-    $scope.submitForm = function () {
-        //TODO this entire jobstartdate shit is hacky as fuck
-        if ($scope.form.userForm.$valid) {
-            if ($scope.form.userForm.startDate.$modelValue) {
-                console.log('asdf ' + $scope.job.dayList)
-
-                $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-                    $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-                    $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-                    $scope.form.userForm.startDate.$modelValue, $scope.job.rooms, $scope.job.dayList);
-                $modalInstance.close('closed');
-                return;
-            }
-            //if (!$scope.form.userForm.startDate.$modelValue && $scope.job.oldStartDate) {
-            //    console.log('going to scope 2  ' +$scope.job.rooms )
-            //
-            //    $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-            //        $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-            //        $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-            //        $scope.job.oldStartDate, $scope.job.rooms);
-            //    $modalInstance.close('closed');
-            //    return;
-            //}
-            if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
-                $modalInstance.close('closed');
-                alert('This job needs a start Date')
-                return;
-            }
-            if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
-                $modalInstance.close('closed');
-                alert('This job needs at least one room')
-                return;
-            }
-
-        } else {
-            $route.reload();
-
-        }
-    };
-
-    $scope.cancel = function () {
-        console.log('just canceled')
-        $modalInstance.dismiss('cancel');
-    };
+    //console.log('loading dayinstancectrl ');
+    //$scope.form = {}
+    //$scope.cancel = function () {
+    //}
+    //
+    //$scope.addRoom = function (room) {
+    //    if (room.$modelValue) {
+    //        if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
+    //            console.log('room existed not adding ')
+    //            return;
+    //        }
+    //        $scope.job.rooms.push(room.$modelValue)
+    //        //userForm.$invalid = false;
+    //        console.log('pushed a room ' + room.$modelValue)
+    //    }
+    //}
+    //
+    //$scope.removeRoom = function (room) {
+    //    console.log('removing  ' + room.$modelValue)
+    //
+    //    $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
+    //}
+    //$scope.submitForm = function () {
+    //    //TODO this entire jobstartdate shit is hacky as fuck
+    //    if ($scope.form.userForm.$valid) {
+    //        if ($scope.form.userForm.startDate.$modelValue) {
+    //            console.log('asdf ' + $scope.job.dayList)
+    //
+    //            $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+    //                $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+    //                $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+    //                $scope.form.userForm.startDate.$modelValue, $scope.job.rooms, $scope.job.dayList);
+    //            $modalInstance.close('closed');
+    //            return;
+    //        }
+    //        //if (!$scope.form.userForm.startDate.$modelValue && $scope.job.oldStartDate) {
+    //        //    console.log('going to scope 2  ' +$scope.job.rooms )
+    //        //
+    //        //    $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+    //        //        $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+    //        //        $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+    //        //        $scope.job.oldStartDate, $scope.job.rooms);
+    //        //    $modalInstance.close('closed');
+    //        //    return;
+    //        //}
+    //        if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
+    //            $modalInstance.close('closed');
+    //            alert('This job needs a start Date')
+    //            return;
+    //        }
+    //        if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
+    //            $modalInstance.close('closed');
+    //            alert('This job needs at least one room')
+    //            return;
+    //        }
+    //
+    //    } else {
+    //        $route.reload();
+    //
+    //    }
+    //};
+    //
+    //$scope.cancel = function () {
+    //    console.log('just canceled')
+    //    $modalInstance.dismiss('cancel');
+    //};
 };
 
 
@@ -444,9 +457,11 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
         $scope.showFields = false;
+        $scope.currentRoom = "none";
         var room = "asdfasdfsdf";
-        console.table($scope.job.dayList[0][room])
+        console.log('daynum '+ $scope.dayNum);
         $scope.changedValue = function (room) {
+            console.log("in changed value " + room)
             $scope.showFields = true;
             $scope.currentRoom = room;
         }
@@ -459,8 +474,13 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
         }
 
         $scope.showForm = function (day) {
-console.log('day = '+day);
+            console.log('day = '+day);
             $scope.dayNum = day;
+            console.log($scope.job.dayList[$scope.dayNum].constructor.name)
+            $scope.todaysEquipment = $scope.job.dayList[$scope.dayNum];
+            //console.log(todaysEquipment['asdfasdfsdf'])
+            //console.table($scope.job.dayList[$scope.dayNum]['asdfasdfsdf'])
+
             $scope.showFields = false;
 
 
@@ -546,26 +566,26 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
             });
         };
 
-        $scope.showDay = function () {
-            var modalInstance = $modal.open({
-                templateUrl: 'views/day-form.html',
-                controller: DayInstanceCtrl,
-                scope: $scope,
-                resolve: {
-                    dayForm: function () {
-                        return $scope.dayForm;
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (selectedItem) {
-                $scope.selected = selectedItem;
-                //TODO this doesnt feel right
-                $location.path('/')
-            }, function () {
-                console.info('Day modal dismissed at: ' + new Date());
-            });
-        };
+        //$scope.showDay = function () {
+        //    var modalInstance = $modal.open({
+        //        templateUrl: 'views/day-form.html',
+        //        controller: DayInstanceCtrl,
+        //        scope: $scope,
+        //        resolve: {
+        //            dayForm: function () {
+        //                return $scope.dayForm;
+        //            }
+        //        }
+        //    });
+        //
+        //    modalInstance.result.then(function (selectedItem) {
+        //        $scope.selected = selectedItem;
+        //        //TODO this doesnt feel right
+        //        $location.path('/')
+        //    }, function () {
+        //        console.info('Day modal dismissed at: ' + new Date());
+        //    });
+        //};
 
         $scope.addDay = function () {
 

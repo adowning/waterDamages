@@ -11,10 +11,10 @@
 <form name="form.equipmentForm" ng-submit="submitForm()" novalidate>
     <div class="modal-body">
 <label>Room: </label>
-
+<!-- TODO drop down and initial quantity is broke -->
             <div>
-                <select data-ng-model="activeRoom" ng-change="changedValue(activeRoom)"
-                        data-ng-options="room as room in job.dayList[dayNum]  ">
+                <select data-ng-model="activeRoom" ng-change="changedValue(activeRoom.prettyName)"
+                        data-ng-options="key for (key, value) in job.dayList[dayNum]  ">
                 </select>
             </div>
         <div id="fields" ng-show="showFields"  disabled="true">
@@ -29,7 +29,7 @@
               </button>
           </span>
 
-                <input type="text" name="quant[2]" class="form-control input-number" value="{{job.dayList[dayNum][currentRoom]}}" min="0" max="100">
+                <input type="text" name="quant[2]" class="form-control input-number" value="{{todaysEquipment[currentRoom].fans}}" min="0" max="100">
           <span class="input-group-btn">
               <button type="button" ng-model="fans" ng-click="addFan()" class="btn btn-success btn-number" data-type="plus" data-field="quant[2]">
                   <span class="glyphicon glyphicon-plus"></span>
@@ -46,7 +46,7 @@
                   <span class="glyphicon glyphicon-minus"></span>
               </button>
           </span>
-                   <input type="text" name="quant[2]" class="form-control input-number" value="{{job.dayList[dayNum].dehus}}" min="0" max="100">
+                   <input type="text" name="quant[2]" class="form-control input-number" value="{{todaysEquipment[currentRoom].dehus}}" min="0" max="100">
           <span class="input-group-btn">
               <button type="button" ng-model="fans" ng-click="addDehu()" class="btn btn-success btn-number" data-type="plus" data-field="quant[2]">
                   <span class="glyphicon glyphicon-plus"></span>
