@@ -10,10 +10,11 @@
             <div class="list-group">
                 <div class="list-group-item">
                     <!-- <h4 class="list-group-item-heading"><u>Equipment</u></h4> -->
-                    <div ng-repeat="room in job.rooms track by $index">
-                        <h4>{{job.rooms[$index]}}</h4>
-                        <label><b> 0{{job.dayList[$index].fans}} fans 0{{job.dayList[$index].dehus}} dehus</b></label>
-
+                    <div ng-repeat="(key, room) in job.dayList[$index] track by $index">
+                        <div ng-show="key !== 'date'">
+                        <h4>{{key  }}</h4>
+                        <label><b> 0{{room.fans}} fans 0{{room.dehus}} dehus</b></label>
+                    </div>
                     </div>
                 </div>
                 <!--<div class="list-group-item">-->

@@ -444,7 +444,8 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
         $scope.showFields = false;
-
+        var room = "asdfasdfsdf";
+        console.table($scope.job.dayList[0][room])
         $scope.changedValue = function (room) {
             $scope.showFields = true;
             $scope.currentRoom = room;
