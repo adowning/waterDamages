@@ -159,18 +159,7 @@ app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams,
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
-        console.log('list length ' + $scope.job.rooms.length)
-        //TODO fix json.parse rooms incase room are null it will crash everything down
 
-        $scope.editContactInfo = function () {
-            console.log('hi ')
-        }
-        $scope.editEquipment = function () {
-            console.log('hi ')
-        }
-        $scope.editWork = function () {
-            console.log('hi ')
-        }
     });
     $scope.deleteJob = function () {
         dataFactory.delete($scope.job.contactId)
@@ -189,18 +178,13 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
     $scope.addRoom = function (room) {
         if (room.$modelValue) {
             if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
-                console.log('room existed not adding ')
                 return;
             }
             $scope.job.rooms.push(room.$modelValue)
-            //userForm.$invalid = false;
-            console.log('pushed a room ' + room.$modelValue)
         }
     }
 
     $scope.removeRoom = function (room) {
-        console.log('removing  ' + room.$modelValue)
-
         $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
     }
     $scope.submitForm = function () {
@@ -215,16 +199,6 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
                 $modalInstance.close('closed');
                 return;
             }
-            //if (!$scope.form.userForm.startDate.$modelValue && $scope.job.oldStartDate) {
-            //    console.log('going to scope 2  ' +$scope.job.rooms )
-            //
-            //    $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-            //        $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-            //        $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-            //        $scope.job.oldStartDate, $scope.job.rooms);
-            //    $modalInstance.close('closed');
-            //    return;
-            //}
             if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
                 $modalInstance.close('closed');
                 alert('This job needs a start Date')
@@ -253,7 +227,6 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
     $scope.cancel = function () {
         console.log('canceled out ')
     }
-    console.log($scope.currentRoom)
     if($scope.dayNum == null){
         alert("error: day does not exist.")
         return;
@@ -261,54 +234,63 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
 
     $scope.removeFan = function () {
 
-        if ($scope.todaysEquipment[$scope.currentRoom].fans >= 1) {
-            $scope.todaysEquipment[$scope.currentRoom].fans -= 1;
+        if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].fans >= 1) {
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans -= 1;
 
         }
     };
     $scope.addFan = function () {
-        console.log('room '+ $scope.currentRoom)
-        console.log('stuff '+$scope.todaysEquipment[$scope.currentRoom].fans);
 
-        if (!$scope.todaysEquipment[$scope.currentRoom].fans) {
-            $scope.todaysEquipment[$scope.currentRoom].fans = 0;
+        if (!$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans) {
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans = 0;
         }
 
-        $scope.todaysEquipment[$scope.currentRoom].fans += 1;
+        $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans += 1;
 
     };
 
     $scope.removeDehu = function () {
-        if (!$scope.todaysEquipment[$scope.currentRoom].dehus) {
-            $scope.todaysEquipment[$scope.currentRoom].dehus = 0;
+        if (!$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus) {
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus = 0;
         }
 
-        if ($scope.todaysEquipment[$scope.currentRoom].dehus >= 1) {
-            $scope.todaysEquipment[$scope.currentRoom].dehus -= 1;
+        if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus >= 1) {
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus-= 1;
         }
     };
 
     $scope.addDehu = function () {
-        if (!$scope.todaysEquipment[$scope.currentRoom].dehus) {
-            $scope.todaysEquipment[$scope.currentRoom].dehus = 0;
+        if (!$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus) {
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus = 0;
         }
-        $scope.todaysEquipment[$scope.currentRoom].dehus += 1;
+        $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus += 1;
     };
 
     $scope.submitForm = function () {
-        console.log('trying to submit ');
+        if($scope.canceled){
+            $route.reload;
+            return;
+        }
         if ($scope.form.equipmentForm.$valid) {
-            console.log('submitted ' + $scope.currentRoom);
-
             $scope.df.updateJobEquipment(
                 $scope.job.contactId,
                 $scope.currentRoom,
+                $scope.currentRoomNum,
                 $scope.dayNum,
-                $scope.todaysEquipment[$scope.currentRoom].fans,
-                $scope.todaysEquipment[$scope.currentRoom].dehus
+                $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans,
+                $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus
             )
-        }
+            console.log('reloading route')
+            //TODO needs fixed, this reloads before the data is updated
+            // async bullshit
+            //Fucking hack
+            var millisecondsToWait = 1500;
+            setTimeout(function() {
+                $route.reload();
 
+            }, millisecondsToWait);
+
+        }
         else {
             $route.reload();
 
@@ -317,76 +299,9 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
 
     $scope.cancel = function () {
         console.log('just canceled')
+        $scope.canceled = true;
         $modalInstance.dismiss('cancel');
     };
-};
-var DayInstanceCtrl = function ($scope, $modalInstance, day1Form, $route) {
-    //console.log('loading dayinstancectrl ');
-    //$scope.form = {}
-    //$scope.cancel = function () {
-    //}
-    //
-    //$scope.addRoom = function (room) {
-    //    if (room.$modelValue) {
-    //        if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
-    //            console.log('room existed not adding ')
-    //            return;
-    //        }
-    //        $scope.job.rooms.push(room.$modelValue)
-    //        //userForm.$invalid = false;
-    //        console.log('pushed a room ' + room.$modelValue)
-    //    }
-    //}
-    //
-    //$scope.removeRoom = function (room) {
-    //    console.log('removing  ' + room.$modelValue)
-    //
-    //    $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
-    //}
-    //$scope.submitForm = function () {
-    //    //TODO this entire jobstartdate shit is hacky as fuck
-    //    if ($scope.form.userForm.$valid) {
-    //        if ($scope.form.userForm.startDate.$modelValue) {
-    //            console.log('asdf ' + $scope.job.dayList)
-    //
-    //            $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-    //                $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-    //                $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-    //                $scope.form.userForm.startDate.$modelValue, $scope.job.rooms, $scope.job.dayList);
-    //            $modalInstance.close('closed');
-    //            return;
-    //        }
-    //        //if (!$scope.form.userForm.startDate.$modelValue && $scope.job.oldStartDate) {
-    //        //    console.log('going to scope 2  ' +$scope.job.rooms )
-    //        //
-    //        //    $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-    //        //        $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-    //        //        $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-    //        //        $scope.job.oldStartDate, $scope.job.rooms);
-    //        //    $modalInstance.close('closed');
-    //        //    return;
-    //        //}
-    //        if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
-    //            $modalInstance.close('closed');
-    //            alert('This job needs a start Date')
-    //            return;
-    //        }
-    //        if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
-    //            $modalInstance.close('closed');
-    //            alert('This job needs at least one room')
-    //            return;
-    //        }
-    //
-    //    } else {
-    //        $route.reload();
-    //
-    //    }
-    //};
-    //
-    //$scope.cancel = function () {
-    //    console.log('just canceled')
-    //    $modalInstance.dismiss('cancel');
-    //};
 };
 
 
@@ -458,12 +373,11 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
         $scope.job.contactId = $routeParams.contactId;
         $scope.showFields = false;
         $scope.currentRoom = "none";
-        var room = "asdfasdfsdf";
-        console.log('daynum '+ $scope.dayNum);
-        $scope.changedValue = function (room) {
-            console.log("in changed value " + room)
+        $scope.changedValue = function (roomNum) {
             $scope.showFields = true;
-            $scope.currentRoom = room;
+            var roomObject = $scope.job.dayList[$scope.dayNum].rooms[roomNum]
+            $scope.currentRoom = roomObject;
+            $scope.currentRoomNum = roomNum;
         }
 
 
@@ -474,13 +388,8 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
         }
 
         $scope.showForm = function (day) {
-            console.log('day = '+day);
             $scope.dayNum = day;
-            console.log($scope.job.dayList[$scope.dayNum].constructor.name)
             $scope.todaysEquipment = $scope.job.dayList[$scope.dayNum];
-            //console.log(todaysEquipment['asdfasdfsdf'])
-            //console.table($scope.job.dayList[$scope.dayNum]['asdfasdfsdf'])
-
             $scope.showFields = false;
 
 
@@ -502,6 +411,27 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
             }, function () {
                 console.info('Modal dismissed at: ' + new Date());
             });
+        };
+        $scope.addDay = function () {
+
+            var date = new Date($scope.job.dayList.slice(-1)[0].date);//gets last date in array
+            date.setDate(date.getDate() + 1);//adds a day
+            var newDay = {};
+            newDay.date = date;
+            newDay.rooms = [];
+
+            for(var y = 0 ; y < $scope.job.rooms.length; y++){
+                var thisRoom = {}
+                thisRoom.name = $scope.job.rooms[y];
+                thisRoom.fans = 0;
+                thisRoom.dehus = 0;
+                newDay.rooms.push(thisRoom)
+            }
+            $scope.job.dayList.push(newDay);
+            $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.job.account.accountName,
+                $scope.job.account.address1, $scope.job.account.phone1,
+                $scope.job.account.phone2, $scope.job.account.email,
+                $scope.job.startDate, $scope.job.rooms, $scope.job.dayList);
         };
     });
 
@@ -564,41 +494,6 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
             }, function () {
                 console.info('Modal dismissed at: ' + new Date());
             });
-        };
-
-        //$scope.showDay = function () {
-        //    var modalInstance = $modal.open({
-        //        templateUrl: 'views/day-form.html',
-        //        controller: DayInstanceCtrl,
-        //        scope: $scope,
-        //        resolve: {
-        //            dayForm: function () {
-        //                return $scope.dayForm;
-        //            }
-        //        }
-        //    });
-        //
-        //    modalInstance.result.then(function (selectedItem) {
-        //        $scope.selected = selectedItem;
-        //        //TODO this doesnt feel right
-        //        $location.path('/')
-        //    }, function () {
-        //        console.info('Day modal dismissed at: ' + new Date());
-        //    });
-        //};
-
-        $scope.addDay = function () {
-
-            var date = new Date($scope.job.dayList.slice(-1)[0].date);//gets last date in array
-            date.setDate(date.getDate() + 1);//adds a day
-            var newDay = {};
-            newDay.date = date;
-
-            $scope.job.dayList.push(newDay);
-            $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.job.account.accountName,
-                $scope.job.account.address1, $scope.job.account.phone1,
-                $scope.job.account.phone2, $scope.job.account.email,
-                $scope.job.startDate, $scope.job.rooms, $scope.job.dayList);
         };
 
     });

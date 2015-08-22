@@ -40,12 +40,12 @@
 
 <a class="btn btn-primary" href="#/viewJobBasics/{{job.contactId}}"
 <span>Edit Basic Info</span></a><span>   </span>
-<span ng-show="job.startDate && job.rooms.length >= 1">
+<span ng-show="job.startDate && job.rooms.length >= 1 && job.dayList.length >= 1">
     <a class="btn btn-primary" href="#/viewJobEquipment/{{job.contactId}}"
     <span>Edit Equipment</span></a>
     <span>   </span>
     </span>
-<span ng-show="job.startDate && job.rooms.length >= 1">
+<span ng-show="job.startDate && job.rooms.length >= 1 && job.dayList.length >= 1">
 <a class="btn btn-primary " ng-click="editWork()"
     <span>Edit Work Performed</span></a>
 </span>
