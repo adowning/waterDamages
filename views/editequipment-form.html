@@ -46,7 +46,7 @@
                        </button></h4>
                    </div>
                    <select data-ng-model="selectedFan" ng-change=""
-                           data-ng-options="job.dayList[dayNum].rooms.indexOf(selectedItem) as selectedItem.name for selectedItem in job.dayList[dayNum].rooms" ">
+                           data-ng-options="company.equipment.fans.indexOf(selectedItem) as selectedItem.name for selectedItem in company.equipment.fans">
                    </select>
                    <h4>{{selectedFan.id}} <button type="button"  ng-click="addFan2(fan)" class="btn btn-default btn-xs">
                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
