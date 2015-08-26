@@ -26,10 +26,7 @@
         </div>
         <div id="fields" ng-show="showFields" disabled="true">
             <div class="center">
-
                 <label>Fans on Site</label>
-
-
                     <div ng-repeat="equipment in todaysEquipment.rooms[currentRoomNum].equipment">
 
                         <div ng-show="equipment.type == 'fan'">
@@ -42,14 +39,8 @@
                         </div>
 
                     </div>
-
-
                     <label>Dehus on Site</label>
-
-                    <div class="input-group">
-
                         <div ng-repeat="equipment in todaysEquipment.rooms[currentRoomNum].equipment">
-
                             <div ng-show="equipment.type == 'dehu'">
                                 <h4>{{equipment.id}}
                                     <button type="button" ng-click="removeEquipment(equipment)"
@@ -86,7 +77,6 @@
                         <!--<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>-->
                         <!--</button></h4>-->
                         <!--</div>-->
-                    </div>
 
             </div>
             <div class="modal-footer">
