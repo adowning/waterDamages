@@ -10,18 +10,19 @@
             <div class="list-group">
                 <div class="list-group-item">
                     <div ng-repeat="(key, room) in job.dayList[$index].rooms track by $index">
-                        <div ng-show="key !== 'date' && key !== 'fans' && key !== 'dehus'">
                         <h4>{{room.name}}</h4>
                         <!--<label><b> 0{{room.fans}} fans 0{{room.dehus}} dehus</b></label>-->
-                            <h4>Fans:</h4>
-                            <div ng-repeat="(key, fan) in room.fans track by $index">
-                                {{fan.id}}
+                            <div ng-repeat="(key, equipment) in room.equipment track by $index">
+                              {{equipment.id}}
                             </div>
-                            <h4>Dehus:</h4>
-                            <div ng-repeat="(key, dehu) in room.dehus track by $index">
-                                {{dehu.id}}
-                            </div>
-                    </div>
+                            <!--<h4>Fans:</h4>-->
+                            <!--<div ng-repeat="(key, fan) in room.fans track by $index">-->
+                                <!--{{fan.id}}-->
+                            <!--</div>-->
+                            <!--<h4>Dehus:</h4>-->
+                            <!--<div ng-repeat="(key, dehu) in room.dehus track by $index">-->
+                                <!--{{dehu.id}}-->
+                            <!--</div>-->
                 </div>
             </div>
             <div class="panel-footer">
@@ -34,10 +35,11 @@
 
     </div>
 
+</div>
+
     <small class="pull-left"></small>
     <a class="btn btn-primary pull-left" ng-click="addDay()" <i class="fa fa-pencil"></i>
     <span >Add Day</span> <span>    </span>   </a>
     <a class="btn btn-primary" href="#/view/{{job.contactId}}"
     <span>Done</span></a>
-</div>
 </div>

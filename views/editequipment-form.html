@@ -1,5 +1,5 @@
 <style>
-    .center{
+    .center {
         width: 150px;
         margin: 40px auto;
         align-items: left;
@@ -10,58 +10,89 @@
 </div>
 <form name="form.equipmentForm" ng-submit="submitForm()" novalidate>
     <div class="modal-body">
-<label>Room: </label>
-<!-- TODO drop down and initial quantity is broke -->
-            <div>
-                <select data-ng-model="selectedItem" ng-change="changedValue(selectedItem)"
-                        data-ng-options="job.dayList[dayNum].rooms.indexOf(selectedItem) as selectedItem.name for selectedItem in job.dayList[dayNum].rooms" ">
+        <!-- TODO drop down and initial quantity is broke -->
+        <div>
+            <div ng-show="!roomChanged">
+                <label>Room: </label>
+
+                <select data-ng-model="selectedItem" ng-change="changedCurrentRoomValue(selectedItem)"
+                        data-ng-options="job.dayList[dayNum].rooms.indexOf(selectedItem) as selectedItem.name for selectedItem in job.dayList[dayNum].rooms"
+                ">
                 </select>
-
-                <!--<select data-ng-model="activeRoom" ng-change="changedValue(activeRoom)"-->
-                        <!--data-ng-options="room.name for room in job.dayList[dayNum].rooms ">-->
-                <!--</select>-->
             </div>
-        <div id="fields" ng-show="showFields"  disabled="true">
-           <div class="center">
-               <label>Fans on Site</label>
+            <!--<select data-ng-model="activeRoom" ng-change="changedValue(activeRoom)"-->
+            <!--data-ng-options="room.name for room in job.dayList[dayNum].rooms ">-->
+            <!--</select>-->
+        </div>
+        <div id="fields" ng-show="showFields" disabled="true">
+            <div class="center">
 
-               <div class="input-group">
+                <label>Fans on Site</label>
 
-                   <div ng-repeat="fan in todaysEquipment.rooms[currentRoomNum].fans">
-                       <h4>{{fan.id}} <button type="button"  ng-click="removeFan(fan)" class="btn btn-default btn-xs">
-                           <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                       </button></h4>
-                   </div>
-                   <select data-ng-model="sItem" ng-change="changeSelectedFanToAdd(sItem)"
-                           data-ng-options="sItem as sItem.id for sItem in company.equipment.fans">
-                   </select>
-                   <h4> <button type="button"  ng-click="addFan(sItem)" class="btn btn-default btn-xs">
-                       <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                   </button></h4>
+
+                    <div ng-repeat="equipment in todaysEquipment.rooms[currentRoomNum].equipment">
+
+                        <div ng-show="equipment.type == 'fan'">
+                            <h4>{{equipment.id}}
+                                <button type="button" ng-click="removeEquipment(equipment)"
+                                        class="btn btn-default btn-xs">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </button>
+                            </h4>
+                        </div>
+
+                    </div>
+
+
+                    <label>Dehus on Site</label>
+
+                    <div class="input-group">
+
+                        <div ng-repeat="equipment in todaysEquipment.rooms[currentRoomNum].equipment">
+
+                            <div ng-show="equipment.type == 'dehu'">
+                                <h4>{{equipment.id}}
+                                    <button type="button" ng-click="removeEquipment(equipment)"
+                                            class="btn btn-default btn-xs">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button>
+                                </h4>
+                            </div>
+
+                        </div>
+                        <hr>
+                        <label>Add Equipment</label>
+                        <select data-ng-model="sItem" ng-change="changeSelectedEquipmentToAdd(sItem)"
+                                data-ng-options="sItem as sItem.id for sItem in company.equipment">
+                        </select>
+                        <!-- TODO put a ng-show here ... cant have a add w/o a selection -->
+                        <button type="button" ng-click="addEquipment(sItem)"
+                                class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        </button>
+                        <!--<label>Dehumidifiers on Site</label>-->
+
+                        <!--<div class="input-group">-->
+
+                        <!--<div ng-repeat="dehu in todaysEquipment.rooms[currentRoomNum].dehus">-->
+                        <!--<h4>{{dehu.id}} <button type="button"  ng-click="removeDehu(dehu)" class="btn btn-default btn-xs">-->
+                        <!--<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>-->
+                        <!--</button></h4>-->
+                        <!--</div>-->
+                        <!--<select data-ng-model="sItem" ng-change="changeSelectedDehuToAdd(sItem)"-->
+                        <!--data-ng-options="sItem as sItem.id for sItem in company.equipment.dehus">-->
+                        <!--</select>-->
+                        <!--<h4> <button type="button"  ng-click="addDehu(sItem)" class="btn btn-default btn-xs">-->
+                        <!--<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>-->
+                        <!--</button></h4>-->
+                        <!--</div>-->
+                    </div>
+
             </div>
-
-               <label>Dehumidifiers on Site</label>
-
-               <div class="input-group">
-
-                   <div ng-repeat="dehu in todaysEquipment.rooms[currentRoomNum].dehus">
-                       <h4>{{dehu.id}} <button type="button"  ng-click="removeDehu(dehu)" class="btn btn-default btn-xs">
-                           <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                       </button></h4>
-                   </div>
-                   <select data-ng-model="sItem" ng-change="changeSelectedDehuToAdd(sItem)"
-                           data-ng-options="sItem as sItem.id for sItem in company.equipment.dehus">
-                   </select>
-                   <h4> <button type="button"  ng-click="addDehu(sItem)" class="btn btn-default btn-xs">
-                       <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                   </button></h4>
-               </div>
-           </div>
-</div>
-
-    </div>
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" ng-disabled="form.userForm.$invalid || !job.rooms || job.rooms < 1">OK</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary"
+                        ng-disabled="form.userForm.$invalid || !job.rooms || job.rooms < 1">OK
+                </button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
 </form>

@@ -49,9 +49,9 @@ angular.module("angularcrud")
                     //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
                 }
             },
-            updateJobEquipment: function (id, room, roomIndex, day, fans, dehus) {
+            updateJobEquipment: function (id, room, roomIndex, day, fans, dehus, equipment) {
                 if ($rootScope.online) {
-                    fireFactory.updateJobEquipment(id, room, roomIndex, day, fans, dehus);
+                    fireFactory.updateJobEquipment(id, room, roomIndex, day, fans, dehus, equipment);
                 }
                 else {
                     //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
@@ -177,8 +177,9 @@ angular.module("angularcrud")
                     for(var y = 0 ; y < rooms.length; y++){
                         var thisRoom = {}
                         thisRoom.name = rooms[y];
-                        thisRoom.fans = [];
-                        thisRoom.dehus = [];
+                        //thisRoom.fans = [];
+                        //thisRoom.dehus = [];
+                        thisRoom.equipment = [];
                         day1.rooms.push(thisRoom)
                     }
 
@@ -196,8 +197,9 @@ angular.module("angularcrud")
                                     console.log(' room name to add = ' + rooms[i])
                                     var thisRoom = {}
                                     thisRoom.name = rooms[i];
-                                    thisRoom.fans = [];
-                                    thisRoom.dehus = [];
+                                    //thisRoom.fans = [];
+                                    //thisRoom.dehus = [];
+                                    thisRoom.equipment = [];
                                     dayList[x].rooms.push(thisRoom);
                                 }
                             }
@@ -309,14 +311,16 @@ angular.module("angularcrud")
             getCompanyEquipment: function (successCallback) {
                 $http.get($rootScope.FBURL + "companyinfo" + ".json?format=export").success(successCallback);
             },
-            updateJobEquipment: function (id, room, roomIndex, day, fans, dehus) {
+            updateJobEquipment: function (id, room, roomIndex, day, fans, dehus, equipment) {
 
                 var stringyDay = day;
+                console.log('updating firebase with equipment ' + equipment)
                 $http({
                     url: $rootScope.FBURL + "angularcrud/" + id + "/dayList/" + day + "/rooms/" + roomIndex +".json?format=export",
                     data: {
                         fans: fans,
-                        dehus: dehus
+                        dehus: dehus,
+                        equipment: equipment
 
                     //    dayList: {
                     //        "/day": {room1 :

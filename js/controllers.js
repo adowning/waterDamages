@@ -148,9 +148,15 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
         $("#menu-settings").removeClass("active");
     }
     $scope.addNewJob = function (jobID) {
-        //TODO this needs to refresh page after job added
+        //TODO this needs to refresh page after job added .. such a fucking hack lol
         console.log('here ' + $scope.contacts)
         dataFactory.addJob(jobID, $scope.contacts);
+        var millisecondsToWait = 1500;
+        setTimeout(function () {
+            $route.reload();
+
+        }, millisecondsToWait);
+
     }
 
 });
@@ -225,122 +231,191 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 };
 
 var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equipmentForm, $route) {
-    fireFactory.getCompanyEquipment( function (data) {
-        $scope.company  = data;
+    fireFactory.getCompanyEquipment(function (data) {
+        $scope.company = data;
 
         $scope.form = {}
-    $scope.cancel = function () {
-        console.log('canceled out ')
-    }
-
-    if($scope.dayNum == null){
-        alert("error: day does not exist.")
-        return;
-    }
-
-    $scope.changeSelectedFanToAdd = function (fan){
-        $scope.selectedFanToAdd = fan;
-    }
-        $scope.changeSelectedDehuToAdd = function (dehu){
-            $scope.selectedDehuToAdd = dehu;
+        $scope.cancel = function () {
+            console.log('canceled out ')
         }
 
-    $scope.removeFan = function (fan) {
-        var found = false;
-        for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.length-1; i>=0; i--) {
-            if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans[i].id == fan.id){
-                $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.splice(i,1);
-                found = true;
-            }
-        }
-        if(!found){
-            alert("Error: equipment not found")
-        }
-    };
-
-    $scope.addFan = function (fan) {
-
-        var found = false;
-        if(!$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans){
-            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans = [];
-        }
-        console.log('l' + $scope.todaysEquipment.rooms.length)
-        //for( var a = 0; $scope.todaysEquipment.rooms.length; a++) {
-      //console.log(a)
-            //if($scope.todaysEquipment.rooms[a]) {
-            //    console.log('ok got the room with length ' + $scope.todaysEquipment.rooms[a].fans.length)
-                //for (var i = $scope.todaysEquipment.rooms[a].fans.length - 1; i >= 0; i--) {
-                //    if ($scope.todaysEquipment.rooms[a].fans[i].id == fan.id) {
-                //        console.log('found equipment in room ' + $scope.todaysEquipment.rooms[a])
-                //        found = true;
-                //    }
-                //}
-            //}
-        //}
-        if(!found){
-            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.push(fan)
-                console.log('item already added, not gonna add again')
-        }
-
-    };
-    $scope.removeDehu = function (dehu) {
-        var found = false;
-        for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.length-1; i>=0; i--) {
-            if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus[i].id == dehu.id){
-                $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.splice(i,1);
-                found = true;
-            }
-        }
-        if(!found){
-            alert("Error: equipment not found")
-        }
-    };
-
-    $scope.addDehu = function (dehu) {
-        var found = false;
-        if(!$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus){
-            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus = [];
-        }
-        for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.length-1; i>=0; i--) {
-            if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus[i].id == dehu.id){
-                found = true;
-            }
-        }
-        if(!found){
-            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.push(dehu)
-            console.log('item already added, not gonna add again')
-        }
-    };
-
-    $scope.submitForm = function () {
-        if($scope.canceled){
-            $route.reload;
+        if ($scope.dayNum == null) {
+            alert("error: day does not exist.")
             return;
         }
+        $scope.removeEquipment = function (equipment) {
+            var found = false;
+            for (var i = $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length - 1; i >= 0; i--) {
+                if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment[i].id == equipment.id) {
+                    $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.splice(i, 1);
+                    found = true;
+                }
+            }
+            if (!found) {
+                alert("Error: equipment not found")
+            }
+            console.log('removing equipment length = ' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
+        };
+
+        $scope.addEquipment = function (equipment) {
+
+            var found = false;
+            for (var a = $scope.todaysEquipment.rooms.length - 1; a >= 0; a--) {
+
+                if (!$scope.todaysEquipment.rooms[a].equipment) {
+                    $scope.todaysEquipment.rooms[a].equipment = [];
+                }
+            }
+            for (var a = $scope.todaysEquipment.rooms.length - 1; a >= 0; a--) {
+                if ($scope.todaysEquipment.rooms[a]) {
+                    for (var i = $scope.todaysEquipment.rooms[a].equipment.length - 1; i >= 0; i--) {
+                        if ($scope.todaysEquipment.rooms[a].equipment[i].id == equipment.id) {
+                            console.log('found equipment in room ' + $scope.todaysEquipment.rooms[a])
+                            found = true;
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.push(equipment)
+                console.log('item already added, not gonna add again')
+            } else {
+                alert('this equipment is already being used')
+            }
+            console.log('ADDING equipment length = ' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
+
+        };
+        $scope.changeSelectedEquipmentToAdd = function (equipment) {
+            $scope.selectedEquipment = equipment;
+        }
+        //$scope.removeFan = function (fan) {
+        //    var found = false;
+        //    for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.length-1; i>=0; i--) {
+        //        if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans[i].id == fan.id){
+        //            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.splice(i,1);
+        //            found = true;
+        //        }
+        //    }
+        //    if(!found){
+        //        alert("Error: equipment not found")
+        //    }
+        //};
+
+
+        //$scope.removeEquipment = function (dehu) {
+        //    var found = false;
+        //    for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length-1; i>=0; i--) {
+        //        if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment[i].id == dehu.id){
+        //            $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.splice(i,1);
+        //            found = true;
+        //        }
+        //    }
+        //    if(!found){
+        //        alert("Error: equipment not found")
+        //    }
+        //};
+
+
+        //$scope.addFan = function (fan) {
+        //
+        //    var found = false;
+        //    for( var a = $scope.todaysEquipment.rooms.length - 1; a >=0; a--) {
+        //
+        //        if (!$scope.todaysEquipment.rooms[a].fans) {
+        //            $scope.todaysEquipment.rooms[a].fans = [];
+        //        }
+        //    }
+        //    for( var a = $scope.todaysEquipment.rooms.length - 1; a >=0; a--) {
+        //        if($scope.todaysEquipment.rooms[a]) {
+        //            for (var i = $scope.todaysEquipment.rooms[a].fans.length - 1; i >= 0; i--) {
+        //                if ($scope.todaysEquipment.rooms[a].fans[i].id == fan.id) {
+        //                    console.log('found equipment in room ' + $scope.todaysEquipment.rooms[a])
+        //                    found = true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    if(!found){
+        //        $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.push(fan)
+        //            console.log('item already added, not gonna add again')
+        //    }else{
+        //        alert('this equipment is already being used')
+        //    }
+        //
+        //};
+        //$scope.removeDehu = function (dehu) {
+        //    var found = false;
+        //    for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.length-1; i>=0; i--) {
+        //        if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus[i].id == dehu.id){
+        //            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.splice(i,1);
+        //            found = true;
+        //        }
+        //    }
+        //    if(!found){
+        //        alert("Error: equipment not found")
+        //    }
+        //};
+
+        //$scope.addDehu = function (dehu) {
+        //    var found = false;
+        //    for( var a = $scope.todaysEquipment.rooms.length - 1; a >=0; a--) {
+        //
+        //        if (!$scope.todaysEquipment.rooms[a].dehus) {
+        //            $scope.todaysEquipment.rooms[a].dehus = [];
+        //        }
+        //    }
+        //    console.log('l' + $scope.todaysEquipment.rooms.length)
+        //    for( var a = 0; a < $scope.todaysEquipment.rooms.length; a++) {
+        //        if($scope.todaysEquipment.rooms[a]) {
+        //            for (var i = $scope.todaysEquipment.rooms[a].dehus.length - 1; i >= 0; i--) {
+        //                if ($scope.todaysEquipment.rooms[a].dehus[i].id == dehu.id) {
+        //                    console.log('found equipment in room ' + $scope.todaysEquipment.rooms[a])
+        //                    found = true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    if(!found){
+        //        $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.push(dehu)
+        //        console.log('item already added, not gonna add again')
+        //    }else{
+        //        alert('this equipment is already being used')
+        //    }
+        //};
+
+        $scope.submitForm = function () {
+            if ($scope.canceled) {
+                $route.reload;
+                return;
+            }
             $scope.df.updateJobEquipment(
                 $scope.job.contactId,
                 $scope.currentRoom,
                 $scope.currentRoomNum,
                 $scope.dayNum,
                 $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans,
-                $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus
+                $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus,
+                $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment
             )
             console.log('reloading route')
             //TODO needs fixed, this reloads before the data is updated
             // async bullshit
             //Fucking hack
             var millisecondsToWait = 1500;
-            setTimeout(function() {
+            setTimeout(function () {
                 $route.reload();
 
             }, millisecondsToWait);
-    };
+        };
 
-    $scope.cancel = function () {
-        console.log('just canceled')
-        $scope.canceled = true;
-        $modalInstance.dismiss('cancel');
-    };
+        $scope.cancel = function () {
+            console.log('just canceled')
+            $scope.roomChanged = false;
+            $scope.canceled = true;
+            $modalInstance.dismiss('cancel');
+            $route.reload();
+
+        };
     });
 
 };
@@ -414,11 +489,15 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
         $scope.job.contactId = $routeParams.contactId;
         $scope.showFields = false;
         $scope.currentRoom = "none";
-        $scope.changedValue = function (roomNum) {
+        $scope.roomChanged = false;
+
+        $scope.changedCurrentRoomValue = function (roomNum) {
+            console.log('changed room value')
             $scope.showFields = true;
             var roomObject = $scope.job.dayList[$scope.dayNum].rooms[roomNum]
             $scope.currentRoom = roomObject;
             $scope.currentRoomNum = roomNum;
+            $scope.roomChanged = true;
         }
 
 
@@ -458,14 +537,16 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
             var date = new Date($scope.job.dayList.slice(-1)[0].date);//gets last date in array
             date.setDate(date.getDate() + 1);//adds a day
             var newDay = {};
-            newDay.date = date;
-            newDay.rooms = [];
+            //newDay.date = date;
+            //newDay.rooms = [];
+            newDay.equipment = [];
 
-            for(var y = 0 ; y < $scope.job.rooms.length; y++){
+            for (var y = 0; y < $scope.job.rooms.length; y++) {
                 var thisRoom = {}
                 thisRoom.name = $scope.job.rooms[y];
-                thisRoom.fans = [];
-                thisRoom.dehus = [];
+                //thisRoom.fans = [];
+                //thisRoom.dehus = [];
+                thisRoom.equipment = [];
                 newDay.rooms.push(thisRoom)
             }
             $scope.job.dayList.push(newDay);
