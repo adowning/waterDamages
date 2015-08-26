@@ -56,8 +56,11 @@
         <div class="form-group">
             <label>Rooms</label>
             <div ng-repeat="room in job.rooms track by $index">
-                <h4>{{job.rooms[$index]}} <button type="button"  ng-click="removeRoom(room)" class="btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                <h4>{{job.rooms[$index]}}
+
+                    <!-- TODO (major) make it so we can remove rooms.. gonna be a pain but needed. -->
+                    <!--<button type="button"  ng-click="removeRoom(room)" class="btn btn-default btn-xs">-->
+                    <!--<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>-->
                 </button></h4>
             </div>
             <input type="text" name="room" class="form-control" ng-model="room">

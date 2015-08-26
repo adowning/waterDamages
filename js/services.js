@@ -41,9 +41,9 @@ angular.module("angularcrud")
             //        forageFactory.update(id, smId, name, address, phone1, phone2, email);
             //    }
             //},
-            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList) {
+            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList, roomChanged) {
                 if ($rootScope.online) {
-                    fireFactory.updateJob(id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList);
+                    fireFactory.updateJob(id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList, roomChanged);
                 }
                 else {
                     //forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
@@ -166,9 +166,8 @@ angular.module("angularcrud")
             // Note use of HTTP method PATCH.
             //    Updating Data with PATCH (https://firebase.com/docs/rest/guide/saving-data.html)
             //       Using a PATCH request, you can update specific children at a location without overwriting existing data.
-            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList) {
+            updateJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList, roomChanged) {
 
-                console.table(dayList)
                 console.table(rooms)
                 if (!dayList || dayList.length < 1) {
                     var day1 = {};
@@ -178,8 +177,8 @@ angular.module("angularcrud")
                     for(var y = 0 ; y < rooms.length; y++){
                         var thisRoom = {}
                         thisRoom.name = rooms[y];
-                        thisRoom.fans = 0;
-                        thisRoom.dehus = 0;
+                        thisRoom.fans = [];
+                        thisRoom.dehus = [];
                         day1.rooms.push(thisRoom)
                     }
 
@@ -187,33 +186,28 @@ angular.module("angularcrud")
                     var dayList = [];
                     dayList.push(day1);
                 } else {
-                    console.log('you gots some days')
+                    console.log('adding rooms to days')
+                    if(roomChanged){
+                        //console.log('rooms.length ' + rooms.length)
+                        for(var i = 0 ; i < rooms.length; i++){
+                            for(var x = 0 ; x < dayList.length; x++){
+                                if(!dayList[x].rooms[i]){
+                                    console.log('adding new room to all days')
+                                    console.log(' room name to add = ' + rooms[i])
+                                    var thisRoom = {}
+                                    thisRoom.name = rooms[i];
+                                    thisRoom.fans = [];
+                                    thisRoom.dehus = [];
+                                    dayList[x].rooms.push(thisRoom);
+                                }
+                            }
+
+                        }
+                    }else{
+                        console.log('no room change')
+                    }
 
                 }
-
-                //attach rooms to Daylist
-                //for(var i = 0 ; i < dayList.length; i++){
-                //    for(var y = 0 ; y < rooms.length; y++){
-                //        var thisRoom = {}
-                //        thisRoom.name = rooms[y];
-                //        thisRoom.fans = 0;
-                //        thisRoom.dehus = 0;
-                //        console.log('here ' + thisRoom.fans)
-                //        console.log('here ' + thisRoom)
-                //        dayList[i].rooms.push(thisRoom)
-                //    }
-                //}
-                //for(var day in dayList){
-                //    console.log('d '+day);
-                //    for(var room in rooms){
-                //        console.log('r  '+room);
-                //        dayList.push(room);
-                //    }
-                //}
-                //for (var room in rooms){
-                //  //  console.log('r '+room);
-                //}
-
                 $http({
                     url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
                     data: {
@@ -264,14 +258,58 @@ angular.module("angularcrud")
                         console.log(error)
                     });
             },
-
+            //addRoomToJob: function (id, smId, name, address, phone1, phone2, email, startDate, rooms, dayList, roomChanged) {
+            //
+            //    console.table(rooms)
+            //    if (!dayList || dayList.length < 1) {
+            //        var day1 = {};
+            //        day1.date = startDate;
+            //        day1.rooms = [];
+            //
+            //        for(var y = 0 ; y < rooms.length; y++){
+            //            var thisRoom = {}
+            //            thisRoom.name = rooms[y];
+            //            thisRoom.fans = [];
+            //            thisRoom.dehus = [];
+            //            day1.rooms.push(thisRoom)
+            //        }
+            //
+            //
+            //        var dayList = [];
+            //        dayList.push(day1);
+            //    } else {
+            //        console.log('adding rooms to days')
+            //        for(var y = 0 ; y < rooms.length; y++){
+            //            var thisRoom = {}
+            //            thisRoom.name = rooms[y];
+            //            thisRoom.fans = [];
+            //            thisRoom.dehus = [];
+            //            day1.rooms.push(thisRoom)
+            //        }
+            //    }
+            //    $http({
+            //        url: $rootScope.FBURL + "angularcrud/" + id + ".json?format=export",
+            //        data: {
+            //            startDate: startDate,
+            //            rooms: rooms,
+            //            dayList: dayList
+            //        },
+            //        method: "PATCH"
+            //    }).success(function (data, status, headers, config) {
+            //
+            //
+            //    }).error(function (error) {
+            //        console.log(error)
+            //    })
+            //
+            //        .error(function (error) {
+            //            console.log(error)
+            //        });
+            //},
+            getCompanyEquipment: function (successCallback) {
+                $http.get($rootScope.FBURL + "companyinfo" + ".json?format=export").success(successCallback);
+            },
             updateJobEquipment: function (id, room, roomIndex, day, fans, dehus) {
-console.log('id ' + id);
-                console.log('room ' + room);
-                console.log('roomIndex ' + roomIndex);
-                console.log('day ' + day);
-                console.log('fans ' + fans);
-                console.log('dehus ' + dehus);
 
                 var stringyDay = day;
                 $http({

@@ -174,18 +174,20 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
     $scope.form = {}
     $scope.cancel = function () {
     }
-
+    $scope.roomChanged = false;
     $scope.addRoom = function (room) {
         if (room.$modelValue) {
             if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
                 return;
             }
             $scope.job.rooms.push(room.$modelValue)
+            $scope.roomChanged = true;
         }
     }
 
     $scope.removeRoom = function (room) {
         $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
+        $scope.roomChanged = true;
     }
     $scope.submitForm = function () {
         //TODO this entire jobstartdate shit is hacky as fuck
@@ -195,7 +197,7 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
                 $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
                     $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
                     $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-                    $scope.form.userForm.startDate.$modelValue, $scope.job.rooms, $scope.job.dayList);
+                    $scope.form.userForm.startDate.$modelValue, $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
                 $modalInstance.close('closed');
                 return;
             }
@@ -222,48 +224,92 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
     };
 };
 
-var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $route) {
-    $scope.form = {}
+var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equipmentForm, $route) {
+    fireFactory.getCompanyEquipment( function (data) {
+        $scope.company  = data;
+
+        $scope.form = {}
     $scope.cancel = function () {
         console.log('canceled out ')
     }
+
     if($scope.dayNum == null){
         alert("error: day does not exist.")
         return;
     }
 
-    $scope.removeFan = function () {
-
-        if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].fans >= 1) {
-            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans -= 1;
-
-        }
-    };
-    $scope.addFan = function () {
-
-        if (!$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans) {
-            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans = 0;
+    $scope.changeSelectedFanToAdd = function (fan){
+        $scope.selectedFanToAdd = fan;
+    }
+        $scope.changeSelectedDehuToAdd = function (dehu){
+            $scope.selectedDehuToAdd = dehu;
         }
 
-        $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans += 1;
-
-    };
-
-    $scope.removeDehu = function () {
-        if (!$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus) {
-            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus = 0;
+    $scope.removeFan = function (fan) {
+        var found = false;
+        for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.length-1; i>=0; i--) {
+            if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans[i].id == fan.id){
+                $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.splice(i,1);
+                found = true;
+            }
         }
-
-        if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus >= 1) {
-            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus-= 1;
+        if(!found){
+            alert("Error: equipment not found")
         }
     };
 
-    $scope.addDehu = function () {
-        if (!$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus) {
-            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus = 0;
+    $scope.addFan = function (fan) {
+
+        var found = false;
+        if(!$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans){
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans = [];
         }
-        $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus += 1;
+        console.log('l' + $scope.todaysEquipment.rooms.length)
+        //for( var a = 0; $scope.todaysEquipment.rooms.length; a++) {
+      //console.log(a)
+            //if($scope.todaysEquipment.rooms[a]) {
+            //    console.log('ok got the room with length ' + $scope.todaysEquipment.rooms[a].fans.length)
+                //for (var i = $scope.todaysEquipment.rooms[a].fans.length - 1; i >= 0; i--) {
+                //    if ($scope.todaysEquipment.rooms[a].fans[i].id == fan.id) {
+                //        console.log('found equipment in room ' + $scope.todaysEquipment.rooms[a])
+                //        found = true;
+                //    }
+                //}
+            //}
+        //}
+        if(!found){
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.push(fan)
+                console.log('item already added, not gonna add again')
+        }
+
+    };
+    $scope.removeDehu = function (dehu) {
+        var found = false;
+        for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.length-1; i>=0; i--) {
+            if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus[i].id == dehu.id){
+                $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.splice(i,1);
+                found = true;
+            }
+        }
+        if(!found){
+            alert("Error: equipment not found")
+        }
+    };
+
+    $scope.addDehu = function (dehu) {
+        var found = false;
+        if(!$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus){
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus = [];
+        }
+        for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.length-1; i>=0; i--) {
+            if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus[i].id == dehu.id){
+                found = true;
+            }
+        }
+        if(!found){
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.push(dehu)
+            console.log('item already added, not gonna add again')
+        }
     };
 
     $scope.submitForm = function () {
@@ -271,7 +317,6 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
             $route.reload;
             return;
         }
-        if ($scope.form.equipmentForm.$valid) {
             $scope.df.updateJobEquipment(
                 $scope.job.contactId,
                 $scope.currentRoom,
@@ -289,12 +334,6 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
                 $route.reload();
 
             }, millisecondsToWait);
-
-        }
-        else {
-            $route.reload();
-
-        }
     };
 
     $scope.cancel = function () {
@@ -302,6 +341,8 @@ var EquipmentInstanceCtrl = function ($scope, $modalInstance, equipmentForm, $ro
         $scope.canceled = true;
         $modalInstance.dismiss('cancel');
     };
+    });
+
 };
 
 
@@ -423,8 +464,8 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
             for(var y = 0 ; y < $scope.job.rooms.length; y++){
                 var thisRoom = {}
                 thisRoom.name = $scope.job.rooms[y];
-                thisRoom.fans = 0;
-                thisRoom.dehus = 0;
+                thisRoom.fans = [];
+                thisRoom.dehus = [];
                 newDay.rooms.push(thisRoom)
             }
             $scope.job.dayList.push(newDay);

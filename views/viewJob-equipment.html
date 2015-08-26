@@ -9,20 +9,20 @@
             </div>
             <div class="list-group">
                 <div class="list-group-item">
-                    <!-- <h4 class="list-group-item-heading"><u>Equipment</u></h4> -->
                     <div ng-repeat="(key, room) in job.dayList[$index].rooms track by $index">
                         <div ng-show="key !== 'date' && key !== 'fans' && key !== 'dehus'">
                         <h4>{{room.name}}</h4>
-                        <label><b> 0{{room.fans}} fans 0{{room.dehus}} dehus</b></label>
-                    </div>
+                        <!--<label><b> 0{{room.fans}} fans 0{{room.dehus}} dehus</b></label>-->
+                            <h4>Fans:</h4>
+                            <div ng-repeat="(key, fan) in room.fans track by $index">
+                                {{fan.id}}
+                            </div>
+                            <h4>Dehus:</h4>
+                            <div ng-repeat="(key, dehu) in room.dehus track by $index">
+                                {{dehu.id}}
+                            </div>
                     </div>
                 </div>
-                <!--<div class="list-group-item">-->
-                <!--<h4 class="list-group-item-heading"><u>Work Performed</u></h4>-->
-                <!--<label>Living room: some shit</label><br>-->
-                <!--<label>Dining room: more shitdfdfdf</label>-->
-                <!--</div>-->
-
             </div>
             <div class="panel-footer">
                 <small class="pull-left"></small>
