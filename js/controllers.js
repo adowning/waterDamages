@@ -234,6 +234,18 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
     fireFactory.getCompanyEquipment(function (data) {
         $scope.company = data;
 
+        //TODO something needs to be done about entering company equipment so we dont get nubmers skipped in the array
+        //for now...
+        //incase we have missing numbers in our array lets not pass them into scope
+        var tempArray = [];
+
+        for(var i = 0; i < data.equipment.length; i++){
+            if(data.equipment[i]){
+                tempArray.push(data.equipment[i]);
+            }
+        }
+        $scope.company.equipment = tempArray;
+
         $scope.form = {}
         $scope.cancel = function () {
             console.log('canceled out ')
@@ -288,100 +300,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
         $scope.changeSelectedEquipmentToAdd = function (equipment) {
             $scope.selectedEquipment = equipment;
         }
-        //$scope.removeFan = function (fan) {
-        //    var found = false;
-        //    for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.length-1; i>=0; i--) {
-        //        if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans[i].id == fan.id){
-        //            $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.splice(i,1);
-        //            found = true;
-        //        }
-        //    }
-        //    if(!found){
-        //        alert("Error: equipment not found")
-        //    }
-        //};
 
-
-        //$scope.removeEquipment = function (dehu) {
-        //    var found = false;
-        //    for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length-1; i>=0; i--) {
-        //        if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment[i].id == dehu.id){
-        //            $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.splice(i,1);
-        //            found = true;
-        //        }
-        //    }
-        //    if(!found){
-        //        alert("Error: equipment not found")
-        //    }
-        //};
-
-
-        //$scope.addFan = function (fan) {
-        //
-        //    var found = false;
-        //    for( var a = $scope.todaysEquipment.rooms.length - 1; a >=0; a--) {
-        //
-        //        if (!$scope.todaysEquipment.rooms[a].fans) {
-        //            $scope.todaysEquipment.rooms[a].fans = [];
-        //        }
-        //    }
-        //    for( var a = $scope.todaysEquipment.rooms.length - 1; a >=0; a--) {
-        //        if($scope.todaysEquipment.rooms[a]) {
-        //            for (var i = $scope.todaysEquipment.rooms[a].fans.length - 1; i >= 0; i--) {
-        //                if ($scope.todaysEquipment.rooms[a].fans[i].id == fan.id) {
-        //                    console.log('found equipment in room ' + $scope.todaysEquipment.rooms[a])
-        //                    found = true;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    if(!found){
-        //        $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans.push(fan)
-        //            console.log('item already added, not gonna add again')
-        //    }else{
-        //        alert('this equipment is already being used')
-        //    }
-        //
-        //};
-        //$scope.removeDehu = function (dehu) {
-        //    var found = false;
-        //    for( var i=$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.length-1; i>=0; i--) {
-        //        if( $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus[i].id == dehu.id){
-        //            $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.splice(i,1);
-        //            found = true;
-        //        }
-        //    }
-        //    if(!found){
-        //        alert("Error: equipment not found")
-        //    }
-        //};
-
-        //$scope.addDehu = function (dehu) {
-        //    var found = false;
-        //    for( var a = $scope.todaysEquipment.rooms.length - 1; a >=0; a--) {
-        //
-        //        if (!$scope.todaysEquipment.rooms[a].dehus) {
-        //            $scope.todaysEquipment.rooms[a].dehus = [];
-        //        }
-        //    }
-        //    console.log('l' + $scope.todaysEquipment.rooms.length)
-        //    for( var a = 0; a < $scope.todaysEquipment.rooms.length; a++) {
-        //        if($scope.todaysEquipment.rooms[a]) {
-        //            for (var i = $scope.todaysEquipment.rooms[a].dehus.length - 1; i >= 0; i--) {
-        //                if ($scope.todaysEquipment.rooms[a].dehus[i].id == dehu.id) {
-        //                    console.log('found equipment in room ' + $scope.todaysEquipment.rooms[a])
-        //                    found = true;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    if(!found){
-        //        $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus.push(dehu)
-        //        console.log('item already added, not gonna add again')
-        //    }else{
-        //        alert('this equipment is already being used')
-        //    }
-        //};
 
         $scope.submitForm = function () {
             if ($scope.canceled) {
@@ -425,7 +344,6 @@ app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeP
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
-        //TODO fix json.parse rooms incase room are null it will crash everything down
         if ($scope.job.rooms) {
 
             //$scope.job.rooms = JSON.parse(data.rooms)
@@ -567,7 +485,6 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
     dataFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
-        //TODO fix json.parse rooms incase room are null it will crash everything down
         if ($scope.job.rooms) {
 
             //$scope.job.rooms = JSON.parse(data.rooms)

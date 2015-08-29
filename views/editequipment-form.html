@@ -28,7 +28,8 @@
             <div class="center">
                 <label>Fans on Site</label>
                     <div ng-repeat="equipment in todaysEquipment.rooms[currentRoomNum].equipment">
-
+                        <!--<h4>id:{{equipment.id}}</h4>-->
+                        <!--<h4>type:{{equipment.type}}</h4>-->
                         <div ng-show="equipment.type == 'fan'">
                             <h4>{{equipment.id}}
                                 <button type="button" ng-click="removeEquipment(equipment)"
@@ -41,7 +42,10 @@
                     </div>
                     <label>Dehus on Site</label>
                         <div ng-repeat="equipment in todaysEquipment.rooms[currentRoomNum].equipment">
-                            <div ng-show="equipment.type == 'dehu'">
+                            <!--<h4>id:{{equipment.id}}</h4>-->
+                            <!--<h4>type:{{equipment.type}}</h4>-->
+
+                                <div ng-show="equipment.type == 'dehu'">
                                 <h4>{{equipment.id}}
                                     <button type="button" ng-click="removeEquipment(equipment)"
                                             class="btn btn-default btn-xs">
