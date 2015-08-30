@@ -56,15 +56,17 @@
 
                         </div>
                         <hr>
+                <div ng-show="showAdd">
                         <label>Add Equipment</label>
                         <select data-ng-model="sItem" ng-change="changeSelectedEquipmentToAdd(sItem)"
-                                data-ng-options="sItem as sItem.id for sItem in company.equipment">
+                                data-ng-options="sItem as sItem.id for sItem in company.shop">
                         </select>
                         <!-- TODO put a ng-show here ... cant have a add w/o a selection -->
                         <button type="button" ng-click="addEquipment(sItem)"
                                 class="btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         </button>
+                    </div>
                         <!--<label>Dehumidifiers on Site</label>-->
 
                         <!--<div class="input-group">-->

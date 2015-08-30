@@ -46,33 +46,6 @@
 
                 <div class="list-group">
 
-                    <!-- list of sample data -->
-
-                    <!--<a class="list-group-item" href="#">-->
-                        <!--<img src="img/Joseph Barish.jpg" class="img-rounded pull-left">-->
-                        <!--<h4 class="list-group-item-heading">Barish, Joseph</h4>-->
-                        <!--<p class="list-group-item-text">Masung Corp.</p>-->
-                    <!--</a>-->
-
-                    <!--<a class="list-group-item" href="#">-->
-                        <!--<img src="img/Joseph Barish.jpg" class="img-rounded pull-left">-->
-                        <!--<h4 class="list-group-item-heading">Barish, Joseph</h4>-->
-                        <!--<p class="list-group-item-text">Masung Corp.</p>-->
-                    <!--</a>-->
-                    <!--<a class="list-group-item pjax" ng-repeat="(id, person) in contacts"-->
-                       <!--href="#/view/{{id}}">-->
-                        <!--<img src="views/img/person.jpg" class="img-rounded pull-left"/>-->
-                        <!--<h4 class="list-group-item-heading">{{person.firstname}}, {{person.lastname}}</h4>-->
-                        <!--<p class="list-group-item-text">Masung Corp.</p>-->
-                    <!--</a>-->
-
-
-                    <!--<a class="list-group-item" href="#/view/{{id}}" ng-repeat="(id, job) in contacts">-->
-                        <!--<img src="views/img/person.jpg" class="img-rounded pull-left">-->
-                        <!--<h4 class="list-group-item-heading">{{job.firstname}}, {{job.lastname}}</h4>-->
-
-                        <!--<p class="list-group-item-text">{{job.smNumber}} - {{job.address}}</p>-->
-                    <!--</a>-->
                     <div class="list-group">
 
                         <a class="list-group-item" href="#/view/{{id}}" ng-repeat="(id, job) in contacts">
@@ -88,14 +61,18 @@
                                     <p class="list-group-item-text">{{job.account.address1}}, {{job.account.city}} {{job.account.zip}}</p>
                                 </div>
                             </div>
+                            <div class="well">
+                                <small class="pull-left">fans: {{job.fans}}  dehus: {{job.dehus}}  other: xx</small>
 
+                            </div>
                         </a>
 
                     </div>
                 </div><!--list-group-->
 
                 <div class="panel-footer">
-                    <small class="pull-left">fans: xx  dehus: xx  other: xx</small>
+                    <small class="pull-left"><lable>Totals:</lable>
+                       <b> fans {{fansTotal}}  dehus {{dehusTotal}}  other: xx</b></small>
                     <a class="btn btn-link btn-xs pull-right" href="#">
                         Footer link</a>
                 </div>
@@ -111,11 +88,29 @@
                     <h3 class="panel-title">Equipment Locations</h3>
                 </div>
                 <div class="panel-body">
-                    <table id="equipmentLocationTable">
-                        <tr ng-repeat="x in equipmentLocations">
-                            <td>{{ x.equipmentType }}</td>
-                            <td>{{ x.jobName }}</td>
+                    <table class="table table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Fans</th>
+                            <th>Dehus</th>
+                            <th>Misc</th>
                         </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="(id, job) in contacts">
+                            <td>{{job.accountName}}</td>
+                            <td>{{job.fans}}</td>
+                            <td>{{job.dehus}}</td>
+                            <td>x</td>
+                        </tr>
+                        <tr>
+                            <td>SHOP</td>
+                            <td>{{shopFans}}</td>
+                            <td>{{shopDehus}}</td>
+                            <td>x</td>
+                        </tr>
+                        </tbody>
                     </table>
 
                 </div>
