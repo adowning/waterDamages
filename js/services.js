@@ -6,7 +6,7 @@ angular.module("angularcrud")
 	 * Our controllers interact with dataFactory which is a facade for remote server data or local storage. If we have
 	 * a network connection, we use our REST service, otherwise we use our local storage (browser storage) service.
 	 */
-	.factory("dataFactory", function ($rootScope, fireFactory, forageFactory, $location, DATAKEY, $localForage) {
+	.factory("dataFactory", function ($rootScope,  fireFactory, forageFactory, $location, DATAKEY, $localForage) {
 		return {
 			getAll:             function (successCallback) {
 				if ($rootScope.online) {
@@ -49,9 +49,10 @@ angular.module("angularcrud")
 					//forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
 				}
 			},
-			updateJobEquipment: function (id, room, roomIndex, day, fans, dehus, equipment) {
+			updateJobEquipment: function (id, room, roomIndex, day, fans, dehus, equipment, time) {
 				if ($rootScope.online) {
-					fireFactory.updateJobEquipment(id, room, roomIndex, day, fans, dehus, equipment);
+					console.log('tt ' + time)
+					fireFactory.updateJobEquipment(id, room, roomIndex, day, fans, dehus, equipment, time);
 				}
 				else {
 					//forageFactory.updateJob(id, smId, name, address, phone1, phone2, email);
@@ -145,7 +146,7 @@ angular.module("angularcrud")
 	})
 // Data interface, called by dataFactory for server storage. This is used when we have a network connection. For
 // firebase adding .json to the URL returns JSON format, ?format=export adds the .priority attribute to the output
-	.factory("fireFactory", function ($rootScope, $http, $location, $firebase) {
+	.factory("fireFactory", function ($rootScope, moment, $http, $location, $firebase) {
 		return {
 			getAll:              function (successCallback) {
 				//TODO hacky
@@ -273,34 +274,47 @@ angular.module("angularcrud")
 				$http.get($rootScope.FBURL + "companyinfo" + ".json?format=export").success(successCallback);
 			},
 			updateShopEquipment: function (equipment) {
-				console.log('asdflkasdjflaskdfj')
-				console.table(equipment)
-				if(!equipment){
+				if (!equipment) {
 					equipment = []
 				}
 				$http({
-				    url: $rootScope.FBURL + "companyinfo" +".json?format=export",
-				    data: {
-				          shop: equipment
+					url:    $rootScope.FBURL + "companyinfo" + ".json?format=export",
+					data:   {
+						shop: equipment
+					},
+					method: "PATCH"
+				});
 
-				    },
-				    method: "PATCH"
+				//	.success(function (data, status, headers, config) {
+				//    console.log('success')
+				//
+				//
+				//}).error(function (error) {
+				//    console.log(error)
+				//})
+				//
+				//    .error(function (error) {
+				//        console.log(error)
+				//    });
+			},
+			updateJobEquipment:  function (id, room, roomIndex, day, fans, dehus, equipment, time) {
+console.log('time in system ' + time)
+				$http({
+					url:    $rootScope.FBURL + "angularcrud/" + id + "/dayList/" + day + ".json?format=export",
+					data:   {
+						updatedAt: time
+					},
+					method: "PATCH"
 				}).success(function (data, status, headers, config) {
-				    console.log('success')
-
-
+		console.log('s	')
 				}).error(function (error) {
-				    console.log(error)
+					console.log(error)
 				})
 
-				    .error(function (error) {
-				        console.log(error)
-				    });
-			},
-			updateJobEquipment:  function (id, room, roomIndex, day, fans, dehus, equipment) {
+					.error(function (error) {
+						console.log(error)
+					});
 
-				var stringyDay = day;
-				console.log('updating firebase with equipment ' + equipment)
 				$http({
 					url:    $rootScope.FBURL + "angularcrud/" + id + "/dayList/" + day + "/rooms/" + roomIndex + ".json?format=export",
 					data:   {

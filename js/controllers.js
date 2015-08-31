@@ -59,7 +59,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 		});
 }]);
 app.constant('_', window._);
-
+app.constant("moment", moment);
 // Initial angularcrud data. This will be used by the reinitialize functionality.
 app.constant("SAMPLEDATA",
 	[
@@ -112,7 +112,7 @@ app.run(function ($window, $rootScope, $location, dataFactory) {
 /*
  * Controller for the listing page.
  */
-app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $localForage, fireFactory) {
+app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFactory, DATAKEY, $localForage, fireFactory) {
 	// Vars are set at rootScope, $scope will recursively search up to rootScope
 	if ($scope.FBURL === null) {
 		$location.path("/settings");
@@ -120,28 +120,74 @@ app.controller("ListCtrl", function ($scope, $location, dataFactory, DATAKEY, $l
 		fireFactory.getCompanyEquipment(function (data) {
 			$scope.company = data;
 
-			//TODO something needs to be done about entering company equipment so we dont get nubmers skipped in the array
-			//for now...
-			//incase we have missing numbers in our array lets not pass them into scope
-			var tempArray = [];
-			var shopFanTotal = 0;
+			$scope.changeSelectedEquipmentToEdit = function (equip){
+				console.log('asdf ' + equip.id );
+				$scope.selectedEquipmentToEdit = equip;
+			}
+
+			$scope.submitForm = function (form) {
+console.log('form ' + form.id.$modelValue );
+				//if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
+				//	$modalInstance.close('closed');
+				//	alert('This job needs at least one room')
+				//	return;
+				//}
+
+						//var sd = new moment($scope.form.userForm.startDate.$modelValue);
+						//console.log(sd.toString())
+						//console.table($scope.job.dayList)
+						//if($scope.job.dayList) {
+						//	for (var i = 0; i < $scope.job.dayList.length; i++) {
+						//		//console.log('daylist = ' + new moment($scope.job.dayList[i].date).toString())
+						//		var sd = new moment($scope.form.userForm.startDate.$modelValue);
+						//
+						//		var dateToCheck = new moment(sd.add('day', i).toString());
+						//		//console.log('dtc = ' + dateToCheck.toString())
+						//		$scope.job.dayList[i].date = dateToCheck.toString();
+						//	}
+						//}else{
+						//	var sd = new moment($scope.form.userForm.startDate.$modelValue);
+						//
+						//}
+						//var sd = new moment($scope.form.userForm.startDate.$modelValue);
+						//
+						//$scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+						//	$scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+						//	$scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+						//	sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
+						//$modalInstance.close('closed');
+						//return;
+
+					//if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
+					//	$modalInstance.close('closed');
+					//	alert('This job needs a start Date')
+					//	return;
+					//}
+					//if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
+					//	$modalInstance.close('closed');
+					//	alert('This job needs at least one room')
+					//	return;
+					//}
+
+
+			};
+				var tempArray     = [];
+			var shopFanTotal  = 0;
 			var shopDehuTotal = 0;
-			console.log('data.shop.length; ' + data.shop.length)
 			for (var i = 0; i < data.shop.length; i++) {
 				if (data.shop[i]) {
-					if(data.shop[i].type == 'fan'){
+					if (data.shop[i].type == 'fan') {
 						shopFanTotal++;
 					}
-					if(data.shop[i].type == 'dehu'){
+					if (data.shop[i].type == 'dehu') {
 						shopDehuTotal++;
 					}
 					tempArray.push(data.shop[i]);
 				}
 			}
-			$scope.shopFans = shopFanTotal;
-			$scope.shopDehus = shopDehuTotal;
+			$scope.shopFans     = shopFanTotal;
+			$scope.shopDehus    = shopDehuTotal;
 			$scope.company.shop = tempArray;
-			console.log($scope.company.shop.length)
 		});
 		dataFactory.getAll(function (data) {
 
@@ -223,7 +269,36 @@ app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams,
 
 	});
 	$scope.deleteJob = function () {
-		dataFactory.delete($scope.job.contactId)
+		console.log('deleting ' + $scope.job)
+		var dehus   = 0;
+		var fans    = 0;
+		var object  = $scope.job;
+		var dayList = object.dayList;
+		if (dayList) {
+			for (var j = 0; j < dayList.length; j++) {
+				var theseRooms = dayList[j].rooms;
+				for (var y = 0; y < theseRooms.length; y++) {
+					var equipmentList = theseRooms[y].equipment;
+					if (equipmentList) {
+						for (var x = 0; x < equipmentList.length; x++) {
+							var equipment = equipmentList[x];
+							if (equipment.type == 'dehu') {
+								dehus++;
+							}
+							if (equipment.type == 'fan') {
+								fans++;
+							}
+						}
+					}
+				}
+			}
+
+		}
+		if (fans > 0 || dehus > 0) {
+			alert('you cannot delete a job that still has equipment on it')
+		} else {
+			dataFactory.delete($scope.job.contactId)
+		}
 	}
 	$("#menu-list").removeClass("active");
 	$("#menu-new").removeClass("active");
@@ -236,6 +311,13 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 	$scope.cancel      = function () {
 	}
 	$scope.roomChanged = false;
+	var m = new moment($scope.job.startDate)
+
+	$scope.htmlStartDate2 = m.format('yyyy, MM, dd').toString()
+
+	$scope.htmlStartDate = {
+		value: new Date(m.format('YYYY, MM, DD').toString())
+	};
 	$scope.addRoom     = function (room) {
 		if (room.$modelValue) {
 			if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
@@ -251,14 +333,31 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 		$scope.roomChanged = true;
 	}
 	$scope.submitForm = function () {
-		//TODO this entire jobstartdate shit is hacky as fuck
 
 		if ($scope.form.userForm.$valid) {
 			if ($scope.form.userForm.startDate.$modelValue) {
+				var sd = new moment($scope.form.userForm.startDate.$modelValue);
+				console.log(sd.toString())
+				console.table($scope.job.dayList)
+				if($scope.job.dayList) {
+					for (var i = 0; i < $scope.job.dayList.length; i++) {
+						//console.log('daylist = ' + new moment($scope.job.dayList[i].date).toString())
+						var sd = new moment($scope.form.userForm.startDate.$modelValue);
+
+						var dateToCheck = new moment(sd.add('day', i).toString());
+						//console.log('dtc = ' + dateToCheck.toString())
+						$scope.job.dayList[i].date = dateToCheck.toString();
+					}
+				}else{
+					var sd = new moment($scope.form.userForm.startDate.$modelValue);
+
+				}
+				var sd = new moment($scope.form.userForm.startDate.$modelValue);
+
 				$scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
 					$scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
 					$scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-					$scope.form.userForm.startDate.$modelValue, $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
+					sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
 				$modalInstance.close('closed');
 				return;
 			}
@@ -289,7 +388,8 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 	fireFactory.getCompanyEquipment(function (data) {
 		$scope.showAdd = false;
 		$scope.company = data;
-
+		var time       = new moment().toString();
+		console.log('time ' + time)
 		//TODO something needs to be done about entering company equipment so we dont get nubmers skipped in the array
 		//for now...
 		//incase we have missing numbers in our array lets not pass them into scope
@@ -303,17 +403,17 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 		$scope.company.equipment = tempArray;
 
 		var tempArray = [];
-		if(data.shop){
+		if (data.shop) {
 			for (var i = 0; i < data.shop.length; i++) {
 				if (data.shop[i]) {
 					tempArray.push(data.shop[i]);
-					console.log('pushing '+ data.shop[i].id)
+					console.log('pushing ' + data.shop[i].id)
 				}
 			}
 		}
 
 		$scope.company.shop = tempArray;
-		if($scope.company.shop.length > 0){
+		if ($scope.company.shop.length > 0) {
 			$scope.showAdd = true;
 		}
 
@@ -375,19 +475,17 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 			var inShop = false;
 			for (var x = 0; x < $scope.company.shop.length; x++) {
 				if ($scope.company.shop[x].id == equipment.id) {
+					$scope.company.shop.splice(x, 1);
 					inShop = true;
 				}
-				}
-				if (!found && inShop ) {
-					console.log('s l ' + $scope.company.shop)
-
-					$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.push(equipment);
-					$scope.company.shop.pop(equipment);
-					console.log('s l ' + $scope.company.shop)
+			}
+			if (!found && inShop) {
+				$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.push(equipment);
 			} else {
 				alert('this equipment is already being used')
 			}
-			//console.log('ADDING equipment length = ' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
+			//console.log('ADDING equipment length = ' +
+			// $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
 
 			//remove equipment from shop
 		};
@@ -413,7 +511,8 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 				$scope.dayNum,
 				$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans,
 				$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus,
-				$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment
+				$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment,
+				time
 			)
 			console.log('reloading route')
 			//TODO needs fixed, this reloads before the data is updated
@@ -454,6 +553,8 @@ app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeP
 			$scope.job.rooms = new Array();
 		}
 		//TODO make a jobStartDate pretty object to show
+		console.log('osd ' + $scope.job.oldStartDate );
+		console.log('sd ' + $scope.job.startDate );
 		$scope.job.oldStartDate = $scope.job.startDate;
 
 		if (!$scope.job.startDate) {
@@ -549,13 +650,12 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
 		};
 		$scope.addDay   = function () {
 
-			var date = new Date($scope.job.dayList.slice(-1)[0].date);//gets last date in array
-			date.setDate(date.getDate() + 1);//adds a day
-			var newDay = {};
-			//newDay.date = date;
+			var date     = new moment($scope.job.dayList.slice(-1)[0].date);//gets last date in array
+			//date.setDate(date.getDate() + 1);//adds a day
+			date.add('days', 1)
+			var newDay   = {};
 			newDay.rooms = [];
-			//newDay.equipment = [];
-
+			newDay.date  = date.toString();
 			for (var y = 0; y < $scope.job.rooms.length; y++) {
 				var thisRoom  = {}
 				thisRoom.name = $scope.job.rooms[y];
@@ -599,7 +699,7 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
 		if (!$scope.job.rooms) {
 			$scope.job.rooms = new Array();
 		}
-		//TODO make a jobStartDate pretty object to show
+
 		$scope.job.oldStartDate = $scope.job.startDate;
 
 		if (!$scope.job.startDate) {
