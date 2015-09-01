@@ -270,7 +270,7 @@ angular.module("angularcrud")
 			// ".json?format=export", data: { startDate: startDate, rooms: rooms, dayList: dayList }, method: "PATCH"
 			// }).success(function (data, status, headers, config) {   }).error(function (error) { console.log(error)
 			// })  .error(function (error) { console.log(error) }); },
-			getCompanyEquipment: function (successCallback) {
+			getShopEquipment: function (successCallback) {
 				$http.get($rootScope.FBURL + "companyinfo" + ".json?format=export").success(successCallback);
 			},
 			updateShopEquipment: function (equipment) {
@@ -297,6 +297,8 @@ angular.module("angularcrud")
 				//        console.log(error)
 				//    });
 			},
+
+
 			updateJobEquipment:  function (id, room, roomIndex, day, fans, dehus, equipment, time) {
 console.log('time in system ' + time)
 				$http({

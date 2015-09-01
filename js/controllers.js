@@ -117,86 +117,113 @@ app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFact
 	if ($scope.FBURL === null) {
 		$location.path("/settings");
 	} else {
-		fireFactory.getCompanyEquipment(function (data) {
+		fireFactory.getShopEquipment(function (data) {
 			$scope.company = data;
 
-			$scope.changeSelectedEquipmentToEdit = function (equip){
-				console.log('asdf ' + equip.id );
+			$scope.changeSelectedEquipmentToEdit = function (equip) {
 				$scope.selectedEquipmentToEdit = equip;
+
+				var m = new moment($scope.selectedEquipmentToEdit.purchaseDate)
+
+				$scope.purchaseDate = {
+					value: new Date(m.format('YYYY, MM, DD').toString())
+				};
+
+				$scope.selectionIdBeforeChange = equip.id;
+				console.log('asdf ' + $scope.selectionIdBeforeChange);
 			}
 
-			$scope.submitForm = function (form) {
-console.log('form ' + form.id.$modelValue );
-				//if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
-				//	$modalInstance.close('closed');
-				//	alert('This job needs at least one room')
-				//	return;
-				//}
+			$scope.equipTypes = [
+				{type: 'fan'},
+				{type: 'dehu'},
+				{type: 'other'}
+			];
+			$scope.equipStatus = [
+				{status: 'Active'},
+				{status: 'Broken'},
+				{status: 'Lost'}
+			];
 
-						//var sd = new moment($scope.form.userForm.startDate.$modelValue);
-						//console.log(sd.toString())
-						//console.table($scope.job.dayList)
-						//if($scope.job.dayList) {
-						//	for (var i = 0; i < $scope.job.dayList.length; i++) {
-						//		//console.log('daylist = ' + new moment($scope.job.dayList[i].date).toString())
-						//		var sd = new moment($scope.form.userForm.startDate.$modelValue);
-						//
-						//		var dateToCheck = new moment(sd.add('day', i).toString());
-						//		//console.log('dtc = ' + dateToCheck.toString())
-						//		$scope.job.dayList[i].date = dateToCheck.toString();
-						//	}
-						//}else{
-						//	var sd = new moment($scope.form.userForm.startDate.$modelValue);
-						//
-						//}
-						//var sd = new moment($scope.form.userForm.startDate.$modelValue);
-						//
-						//$scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-						//	$scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-						//	$scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
-						//	sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
-						//$modalInstance.close('closed');
-						//return;
+			$scope.adding = false;
 
-					//if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
-					//	$modalInstance.close('closed');
-					//	alert('This job needs a start Date')
-					//	return;
-					//}
-					//if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
-					//	$modalInstance.close('closed');
-					//	alert('This job needs at least one room')
-					//	return;
-					//}
+			$scope.delete = function () {
+				console.log('deleting ' + $scope.selectionIdBeforeChange);
+				for (var i = 0; i < $scope.company.shop.length; i++) {
+					if ($scope.company.shop[i].id === $scope.selectionIdBeforeChange) {
+						$scope.company.shop.splice(i, 1);
+					}
+				}
+				fireFactory.updateShopEquipment(
+					$scope.company.shop
+				)
+				var millisecondsToWait = 1500;
+				setTimeout(function () {
+					$route.reload();
 
+				}, millisecondsToWait);
 
+			}
+			$scope.add = function () {
+				$scope.selectedEquipmentToEdit = {};
+				$scope.adding = true;
+			}
+			$scope.addingEquipment = function () {
+				console.log('asdf '  + $scope.selectedEquipmentToEdit.id);
+			}
+			$scope.cancel = function () {
+				console.log('canceling ');
+				$route.reload();
+
+			}
+
+			$scope.submit = function () {
+
+				var purchaseDate = new moment($scope.purchaseDate.value);
+				$scope.selectedEquipmentToEdit.purchaseDate = purchaseDate.toString()
+
+				if ($scope.selectedEquipmentToEdit.id && $scope.selectedEquipmentToEdit.type && $scope.selectedEquipmentToEdit.model
+					&& $scope.selectedEquipmentToEdit.purchaseDate && $scope.selectedEquipmentToEdit.status) {
+					fireFactory.updateShopEquipment(
+						$scope.company.shop
+					)
+					var millisecondsToWait = 1500;
+					setTimeout(function () {
+						$route.reload();
+
+					}, millisecondsToWait);
+
+				} else {
+					alert('Error: Not all equipment information was filled out, please redo form.')
+				}
 			};
-				var tempArray     = [];
-			var shopFanTotal  = 0;
+			var tempArray = [];
+			var shopFanTotal = 0;
 			var shopDehuTotal = 0;
-			for (var i = 0; i < data.shop.length; i++) {
-				if (data.shop[i]) {
-					if (data.shop[i].type == 'fan') {
-						shopFanTotal++;
+			if (data.shop) {
+				for (var i = 0; i < data.shop.length; i++) {
+					if (data.shop[i]) {
+						if (data.shop[i].type == 'fan') {
+							shopFanTotal++;
+						}
+						if (data.shop[i].type == 'dehu') {
+							shopDehuTotal++;
+						}
+						tempArray.push(data.shop[i]);
 					}
-					if (data.shop[i].type == 'dehu') {
-						shopDehuTotal++;
-					}
-					tempArray.push(data.shop[i]);
 				}
 			}
-			$scope.shopFans     = shopFanTotal;
-			$scope.shopDehus    = shopDehuTotal;
+			$scope.shopFans = shopFanTotal;
+			$scope.shopDehus = shopDehuTotal;
 			$scope.company.shop = tempArray;
 		});
 		dataFactory.getAll(function (data) {
 
-			var fansTotal  = 0;
+			var fansTotal = 0;
 			var dehusTotal = 0;
 			for (var job in data) {
-				var dehus   = 0;
-				var fans    = 0;
-				var object  = data[job];
+				var dehus = 0;
+				var fans = 0;
+				var object = data[job];
 				var dayList = object.dayList;
 				if (dayList) {
 					var theseRooms = dayList.slice(-1)[0].rooms;
@@ -217,29 +244,29 @@ console.log('form ' + form.id.$modelValue );
 						}
 					}
 				}
-				data[job].fans  = fans;
+				data[job].fans = fans;
 				data[job].dehus = dehus;
 
 			}
-			$scope.fansTotal  = fansTotal;
+			$scope.fansTotal = fansTotal;
 			$scope.dehusTotal = dehusTotal;
-			$scope.contacts   = data;
+			$scope.contacts = data;
 
 			// Save the retrieved data locally so it's available when we go offline
-			if ($scope.online) {
-				localforage.setItem(DATAKEY, DATAKEY, function (value) {
-				});
-				$localForage.setItem(DATAKEY, data);
-				//             bind($scope.contacts, data)
-
-			}
-			else {
-				// We are offline. localForage operations happen outside of Angular's view, tell Angular data changed
-				$localForage.getItem(DATAKEY).then(function (d) {
-					bind($scope.contacts, d);
-				});
-				$scope.$apply();
-			}
+			//if ($scope.online) {
+			//	localforage.setItem(DATAKEY, DATAKEY, function (value) {
+			//	});
+			//	$localForage.setItem(DATAKEY, data);
+			//	//             bind($scope.contacts, data)
+			//
+			//}
+			//else {
+			//	// We are offline. localForage operations happen outside of Angular's view, tell Angular data changed
+			//	$localForage.getItem(DATAKEY).then(function (d) {
+			//		bind($scope.contacts, d);
+			//	});
+			//	$scope.$apply();
+			//}
 		});
 
 		// Set our menu tab active and all others inactive
@@ -264,15 +291,15 @@ console.log('form ' + form.id.$modelValue );
 
 app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
 	dataFactory.getById($routeParams.contactId, function (data) {
-		$scope.job           = data;
+		$scope.job = data;
 		$scope.job.contactId = $routeParams.contactId;
 
 	});
 	$scope.deleteJob = function () {
 		console.log('deleting ' + $scope.job)
-		var dehus   = 0;
-		var fans    = 0;
-		var object  = $scope.job;
+		var dehus = 0;
+		var fans = 0;
+		var object = $scope.job;
 		var dayList = object.dayList;
 		if (dayList) {
 			for (var j = 0; j < dayList.length; j++) {
@@ -307,8 +334,8 @@ app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams,
 });
 
 var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
-	$scope.form        = {}
-	$scope.cancel      = function () {
+	$scope.form = {}
+	$scope.cancel = function () {
 	}
 	$scope.roomChanged = false;
 	var m = new moment($scope.job.startDate)
@@ -318,7 +345,7 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 	$scope.htmlStartDate = {
 		value: new Date(m.format('YYYY, MM, DD').toString())
 	};
-	$scope.addRoom     = function (room) {
+	$scope.addRoom = function (room) {
 		if (room.$modelValue) {
 			if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
 				return;
@@ -339,7 +366,7 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 				var sd = new moment($scope.form.userForm.startDate.$modelValue);
 				console.log(sd.toString())
 				console.table($scope.job.dayList)
-				if($scope.job.dayList) {
+				if ($scope.job.dayList) {
 					for (var i = 0; i < $scope.job.dayList.length; i++) {
 						//console.log('daylist = ' + new moment($scope.job.dayList[i].date).toString())
 						var sd = new moment($scope.form.userForm.startDate.$modelValue);
@@ -348,7 +375,7 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 						//console.log('dtc = ' + dateToCheck.toString())
 						$scope.job.dayList[i].date = dateToCheck.toString();
 					}
-				}else{
+				} else {
 					var sd = new moment($scope.form.userForm.startDate.$modelValue);
 
 				}
@@ -385,10 +412,10 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 };
 
 var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equipmentForm, $route) {
-	fireFactory.getCompanyEquipment(function (data) {
+	fireFactory.getShopEquipment(function (data) {
 		$scope.showAdd = false;
 		$scope.company = data;
-		var time       = new moment().toString();
+		var time = new moment().toString();
 		console.log('time ' + time)
 		//TODO something needs to be done about entering company equipment so we dont get nubmers skipped in the array
 		//for now...
@@ -417,7 +444,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 			$scope.showAdd = true;
 		}
 
-		$scope.form   = {}
+		$scope.form = {}
 		$scope.cancel = function () {
 			console.log('canceled out ')
 		}
@@ -441,7 +468,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 			console.log('removing equipment length = ' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
 		};
 
-		$scope.addEquipment                 = function (equipment) {
+		$scope.addEquipment = function (equipment) {
 
 			var found = false;
 			for (var a = $scope.todaysEquipment.rooms.length - 1; a >= 0; a--) {
@@ -498,9 +525,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 				$route.reload;
 				return;
 			}
-			//fireFactory.getCompanyEquipment(function (data) {
-			//});
-			//}
+
 			fireFactory.updateShopEquipment(
 				$scope.company.shop
 			)
@@ -528,7 +553,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 		$scope.cancel = function () {
 			console.log('just canceled')
 			$scope.roomChanged = false;
-			$scope.canceled    = true;
+			$scope.canceled = true;
 			$modalInstance.dismiss('cancel');
 			$route.reload();
 
@@ -539,7 +564,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 
 app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
 	dataFactory.getById($routeParams.contactId, function (data) {
-		$scope.job           = data;
+		$scope.job = data;
 		$scope.job.contactId = $routeParams.contactId;
 		if ($scope.job.rooms) {
 
@@ -553,8 +578,8 @@ app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeP
 			$scope.job.rooms = new Array();
 		}
 		//TODO make a jobStartDate pretty object to show
-		console.log('osd ' + $scope.job.oldStartDate );
-		console.log('sd ' + $scope.job.startDate );
+		console.log('osd ' + $scope.job.oldStartDate);
+		console.log('sd ' + $scope.job.startDate);
 		$scope.job.oldStartDate = $scope.job.startDate;
 
 		if (!$scope.job.startDate) {
@@ -564,7 +589,7 @@ app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeP
 			$scope.day1Show = true;
 		}
 		$scope.formDisabled = false;
-		$scope.df           = dataFactory;
+		$scope.df = dataFactory;
 		//$scope.job.contactId = $routeParams.contactId;
 		// We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
 		if (!$scope.online) {
@@ -603,19 +628,19 @@ app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeP
 app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
 
 	dataFactory.getById($routeParams.contactId, function (data) {
-		$scope.job           = data;
+		$scope.job = data;
 		$scope.job.contactId = $routeParams.contactId;
-		$scope.showFields    = false;
-		$scope.currentRoom   = "none";
-		$scope.roomChanged   = false;
+		$scope.showFields = false;
+		$scope.currentRoom = "none";
+		$scope.roomChanged = false;
 
 		$scope.changedCurrentRoomValue = function (roomNum) {
 			console.log('changed room value')
-			$scope.showFields     = true;
-			var roomObject        = $scope.job.dayList[$scope.dayNum].rooms[roomNum]
-			$scope.currentRoom    = roomObject;
+			$scope.showFields = true;
+			var roomObject = $scope.job.dayList[$scope.dayNum].rooms[roomNum]
+			$scope.currentRoom = roomObject;
 			$scope.currentRoomNum = roomNum;
-			$scope.roomChanged    = true;
+			$scope.roomChanged = true;
 		}
 
 		$scope.df = dataFactory;
@@ -625,9 +650,9 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
 		}
 
 		$scope.showForm = function (day) {
-			$scope.dayNum          = day;
+			$scope.dayNum = day;
 			$scope.todaysEquipment = $scope.job.dayList[$scope.dayNum];
-			$scope.showFields      = false;
+			$scope.showFields = false;
 
 			var modalInstance = $modal.open({
 				templateUrl: 'views/editequipment-form.html',
@@ -648,16 +673,16 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
 				console.info('Modal dismissed at: ' + new Date());
 			});
 		};
-		$scope.addDay   = function () {
+		$scope.addDay = function () {
 
-			var date     = new moment($scope.job.dayList.slice(-1)[0].date);//gets last date in array
+			var date = new moment($scope.job.dayList.slice(-1)[0].date);//gets last date in array
 			//date.setDate(date.getDate() + 1);//adds a day
 			date.add('days', 1)
-			var newDay   = {};
+			var newDay = {};
 			newDay.rooms = [];
-			newDay.date  = date.toString();
+			newDay.date = date.toString();
 			for (var y = 0; y < $scope.job.rooms.length; y++) {
-				var thisRoom  = {}
+				var thisRoom = {}
 				thisRoom.name = $scope.job.rooms[y];
 				//thisRoom.fans = [];
 				//thisRoom.dehus = [];
@@ -686,7 +711,7 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
 
 app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
 	dataFactory.getById($routeParams.contactId, function (data) {
-		$scope.job           = data;
+		$scope.job = data;
 		$scope.job.contactId = $routeParams.contactId;
 		if ($scope.job.rooms) {
 
@@ -709,7 +734,7 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
 			$scope.day1Show = true;
 		}
 		$scope.formDisabled = false;
-		$scope.df           = dataFactory;
+		$scope.df = dataFactory;
 		//$scope.job.contactId = $routeParams.contactId;
 		// We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
 		if (!$scope.online) {

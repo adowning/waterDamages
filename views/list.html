@@ -175,15 +175,26 @@
                     <!--<hr />-->
 
                     <tabset justified="true">
-                        <tab heading="Edit">
-                            <label>Select</label>
-                            <select data-ng-model="sItem" ng-change="changeSelectedEquipmentToEdit(sItem)"
-                                    data-ng-options="sItem as sItem.id for sItem in company.equipment">
-                            </select>
+                        <tab heading="Edit or Add">
+                            <br>
 
+                            <div ng-show="!selectedEquipmentToEdit">
+                                <label>Edit</label>
+                                <select data-ng-model="sItem" ng-change="changeSelectedEquipmentToEdit(sItem)"
+                                        data-ng-options="sItem as sItem.id for sItem in company.shop">
+                                </select>
+                            </div>
+                            <br>
+
+                            <div ng-show="!selectedEquipmentToEdit">
+                                <label>Add</label>
+                                <button class="btn btn-primary" ng-click="add()">Add
+                                </button>
+                            </div>
                             <div ng-show="selectedEquipmentToEdit">
-                                <form name="form.equipEditForm" ng-submit="submitForm()" novalidate>
+                                <form name="form.equipEditForm" ng-submit="submit()" novalidate>
                                     <div class="form-group">
+
                                         <label>ID</label>
                                         <input type="text" name="id" class="form-control"
                                                ng-model="selectedEquipmentToEdit.id" value="selectedEquipmentToEdit.id"
@@ -192,453 +203,516 @@
                                         <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
                                            class="help-block">An id is required.</p>
                                     </div>
+                                    <div class="form-group">
 
+                                        <label>Type</label>
+                                        <select ng-model="selectedEquipmentToEdit.type" required>
+                                            <option ng-repeat="obj in equipTypes" value="{{obj.type}}">{{obj.type}}
+                                            </option>
+                                        </select>
 
-                                    <button type="submit" class="btn btn-primary" ng-click="submitForm(form.equipEditForm)"
+                                        <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
+                                           class="help-block">An id is required.</p>
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label>Model</label>
+                                        <input type="text" name="model" class="form-control"
+                                               ng-model="selectedEquipmentToEdit.model"
+                                               value="selectedEquipmentToEdit.model"
+                                               required>
+
+                                        <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
+                                           class="help-block">An id is required.</p>
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label>Date of Purchase</label>
+                                        <!--<input type="date" name="purchaseDate" class="form-control"-->
+                                        <!--ng-model="selectedEquipmentToEdit.purchaseDate"-->
+                                        <!--value="selectedEquipmentToEdit.purchaseDate"-->
+                                        <!--required>-->
+                                        <input type="date" id="purchaseDate" class="form-control" name="purchaseDate"
+                                               ng-model="purchaseDate.value"
+
+                                               placeholder="yyyy-MM-dd" required/>
+
+                                        <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
+                                           class="help-block">An id is required.</p>
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label>Status</label>
+                                        <select ng-model="selectedEquipmentToEdit.status" required>
+                                            <option ng-repeat="obj in equipStatus" value="{{obj.status}}">
+                                                {{obj.status}}
+                                            </option>
+                                        </select>
+
+                                        <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
+                                           class="help-block">An id is required.</p>
+
+                                    </div>
+<span ng-show="adding">
+     <button class="btn btn-success" ng-click="addingEquipment()"
+             ng-disabled="form.equipEditForm.$invalid">Add
+     </button>
+</span>
+<span ng-show="!adding">
+                                    <button type="submit" class="btn btn-success" ng-click="submit"
                                             ng-disabled="form.equipEditForm.$invalid">Update
                                     </button>
+</span>
+                                    <button class="btn btn-primary" ng-click="cancel()
+                                    ">Cancel
+                                    </button>
+<span ng-show="!adding">
+
+                                    <button class="btn btn-danger" ng-click="delete()
+                                    ">Delete
+                                    </button>
+    </span>
                                 </form>
                             </div>
                         </tab>
-                        <tab heading="Add/Remove">Short Labeled Justified content</tab>
-                        <tab heading="Settings">Long Labeled Justified content</tab>
+                        <tab heading="Options">Long Labeled Justified content</tab>
                     </tabset>
                 </div>
 
             </div>
 
             <!--contact details -->
-            <div id="contactCard">
+            <!--<div id="contactCard">-->
 
-                <div class="panel panel-default">
-                    <div class="panel-heading clearfix">
-                        <h3 class="panel-title pull-left">Contact Details</h3>
+            <!--<div class="panel panel-default">-->
+            <!--<div class="panel-heading clearfix">-->
+            <!--<h3 class="panel-title pull-left">Contact Details</h3>-->
 
-                        <div class="btn-group pull-right visible-xs">
-                            <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#editModal">
-                                <i class="fa fa-pencil"></i><span>Edit</span>
-                            </a>
-                        </div>
-                        <a class="btn btn-primary pull-right hidden-xs" href="#" data-toggle="modal"
-                           data-target="#editModal">
-                            <i class="fa fa-pencil"></i><span>Edit</span>
-                        </a>
-                    </div>
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <!--<img src="img/Sofia Acey.jpg" class="img-rounded pull-left">-->
-                            <label>Name</label>
-                            <h4 class="list-group-item-heading">Acey, Sofia</h4>
-                        </div>
+            <!--<div class="btn-group pull-right visible-xs">-->
+            <!--<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#editModal">-->
+            <!--<i class="fa fa-pencil"></i><span>Edit</span>-->
+            <!--</a>-->
+            <!--</div>-->
+            <!--<a class="btn btn-primary pull-right hidden-xs" href="#" data-toggle="modal"-->
+            <!--data-target="#editModal">-->
+            <!--<i class="fa fa-pencil"></i><span>Edit</span>-->
+            <!--</a>-->
+            <!--</div>-->
+            <!--<div class="list-group">-->
+            <!--<div class="list-group-item">-->
+            <!--&lt;!&ndash;<img src="img/Sofia Acey.jpg" class="img-rounded pull-left">&ndash;&gt;-->
+            <!--<label>Name</label>-->
+            <!--<h4 class="list-group-item-heading">Acey, Sofia</h4>-->
+            <!--</div>-->
 
-                        <div class="list-group-item">
-                            <label>Company</label>
-                            <h4 class="list-group-item-heading">Masung Corp.</h4>
-                        </div>
+            <!--<div class="list-group-item">-->
+            <!--<label>Company</label>-->
+            <!--<h4 class="list-group-item-heading">Masung Corp.</h4>-->
+            <!--</div>-->
 
-                        <div class="list-group-item">
-                            <label>Job Title</label>
-                            <h4 class="list-group-item-heading">Finance Director (ZCT)</h4>
-                        </div>
+            <!--<div class="list-group-item">-->
+            <!--<label>Job Title</label>-->
+            <!--<h4 class="list-group-item-heading">Finance Director (ZCT)</h4>-->
+            <!--</div>-->
 
-                        <div class="list-group-item">
-                            <label>Department</label>
-                            <h4 class="list-group-item-heading">Finance</h4>
-                        </div>
+            <!--<div class="list-group-item">-->
+            <!--<label>Department</label>-->
+            <!--<h4 class="list-group-item-heading">Finance</h4>-->
+            <!--</div>-->
 
-                        <a class="list-group-item" href="tel://+1 650-555-0055">
-                            <label>Phone</label>
-                            <h4 class="list-group-item-heading">+1 650-555-0055</h4>
-                        </a>
+            <!--<a class="list-group-item" href="tel://+1 650-555-0055">-->
+            <!--<label>Phone</label>-->
+            <!--<h4 class="list-group-item-heading">+1 650-555-0055</h4>-->
+            <!--</a>-->
 
-                        <a class="list-group-item" href="mailto:Sofia.Acey@masung.com">
-                            <label>Email</label>
-                            <h4 class="list-group-item-heading">Sofia.Acey@masung.com</h4>
-                        </a>
+            <!--<a class="list-group-item" href="mailto:Sofia.Acey@masung.com">-->
+            <!--<label>Email</label>-->
+            <!--<h4 class="list-group-item-heading">Sofia.Acey@masung.com</h4>-->
+            <!--</a>-->
 
-                    </div>
+            <!--</div>-->
 
-                    <div class="panel-footer">
-                        <small class="pull-left">Built with Bootcards - Base Card</small>
-                        <a class="btn btn-link btn-xs pull-right" href="#">
-                            Card footer link</a>
-                    </div>
-                </div>
+            <!--<div class="panel-footer">-->
+            <!--<small class="pull-left">Built with Bootcards - Base Card</small>-->
+            <!--<a class="btn btn-link btn-xs pull-right" href="#">-->
+            <!--Card footer link</a>-->
+            <!--</div>-->
+            <!--</div>-->
 
-            </div>
-            <!--contact card-->
+            <!--</div>-->
+            <!--&lt;!&ndash;contact card&ndash;&gt;-->
 
-            <!--rich text card sample-->
-            <div class="panel panel-default bootcards-richtext">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Rich Text Card Heading</h3>
-                </div>
-                <div class="panel-body">
-                    <p class="lead">Lead body copy vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-                        auctor. Duis mollis, est non commodo luctus.</p>
+            <!--&lt;!&ndash;rich text card sample&ndash;&gt;-->
+            <!--<div class="panel panel-default bootcards-richtext">-->
+            <!--<div class="panel-heading">-->
+            <!--<h3 class="panel-title">Rich Text Card Heading</h3>-->
+            <!--</div>-->
+            <!--<div class="panel-body">-->
+            <!--<p class="lead">Lead body copy vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor-->
+            <!--auctor. Duis mollis, est non commodo luctus.</p>-->
 
-                    <h1>Heading 1</h1>
+            <!--<h1>Heading 1</h1>-->
 
-                    <h2>Heading 2</h2>
+            <!--<h2>Heading 2</h2>-->
 
-                    <h3>Heading 3</h3>
-                    <h4>Heading 4</h4>
-                    <h5>Heading 5</h5>
-                    <h6>Heading 6</h6>
+            <!--<h3>Heading 3</h3>-->
+            <!--<h4>Heading 4</h4>-->
+            <!--<h5>Heading 5</h5>-->
+            <!--<h6>Heading 6</h6>-->
 
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lobortis pretium nisl. Etiam at
-                        vestibulum purus, sit amet blandit mi. Duis enim lectus, tempus nec varius sed, sollicitudin
-                        quis velit. Fusce quis sem porttitor, euismod ante vitae, ultricies erat.</p>
-                    <ul>
-                        <li>Duis cursus dui et turpis gravida sollicitudin.</li>
-                        <li>Donec eget mauris feugiat, euismod purus nec, feugiat neque.</li>
-                        <li>Nunc erat est, molestie eget magna in, consectetur euismod lorem.</li>
-                    </ul>
-                    <ol>
-                        <li>Sed luctus congue orci quis tempus.</li>
-                        <li>Praesent in viverra lorem.</li>
-                        <li>Suspendisse augue lacus, porta quis imperdiet at, posuere vel nulla.</li>
-                    </ol>
-                    <div>
-                        <!-- Standard button -->
-                        <button type="button" class="btn btn-default">Default</button>
-                        <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-                        <button type="button" class="btn btn-primary">Primary</button>
-                        <!-- Indicates a successful or positive action -->
-                        <button type="button" class="btn btn-success">Success</button>
-                        <!-- Contextual button for informational alert messages -->
-                        <button type="button" class="btn btn-info">Info</button>
-                        <!-- Indicates caution should be taken with this action -->
-                        <button type="button" class="btn btn-warning">Warning</button>
-                        <!-- Indicates a dangerous or potentially negative action -->
-                        <button type="button" class="btn btn-danger">Danger</button>
-                        <!-- Deemphasize a button by making it look like a link while maintaining button behavior -->
-                        <button type="button" class="btn btn-link">Link</button>
-                        <button type="button" class="btn btn-primary" disabled="disabled">Disabled</button>
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    <small>Built with Bootcards - Rich Text Card</small>
-                </div>
-            </div>
-            <!--end rich text card-->
+            <!--<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lobortis pretium nisl. Etiam at-->
+            <!--vestibulum purus, sit amet blandit mi. Duis enim lectus, tempus nec varius sed, sollicitudin-->
+            <!--quis velit. Fusce quis sem porttitor, euismod ante vitae, ultricies erat.</p>-->
+            <!--<ul>-->
+            <!--<li>Duis cursus dui et turpis gravida sollicitudin.</li>-->
+            <!--<li>Donec eget mauris feugiat, euismod purus nec, feugiat neque.</li>-->
+            <!--<li>Nunc erat est, molestie eget magna in, consectetur euismod lorem.</li>-->
+            <!--</ul>-->
+            <!--<ol>-->
+            <!--<li>Sed luctus congue orci quis tempus.</li>-->
+            <!--<li>Praesent in viverra lorem.</li>-->
+            <!--<li>Suspendisse augue lacus, porta quis imperdiet at, posuere vel nulla.</li>-->
+            <!--</ol>-->
+            <!--<div>-->
+            <!--&lt;!&ndash; Standard button &ndash;&gt;-->
+            <!--<button type="button" class="btn btn-default">Default</button>-->
+            <!--&lt;!&ndash; Provides extra visual weight and identifies the primary action in a set of buttons &ndash;&gt;-->
+            <!--<button type="button" class="btn btn-primary">Primary</button>-->
+            <!--&lt;!&ndash; Indicates a successful or positive action &ndash;&gt;-->
+            <!--<button type="button" class="btn btn-success">Success</button>-->
+            <!--&lt;!&ndash; Contextual button for informational alert messages &ndash;&gt;-->
+            <!--<button type="button" class="btn btn-info">Info</button>-->
+            <!--&lt;!&ndash; Indicates caution should be taken with this action &ndash;&gt;-->
+            <!--<button type="button" class="btn btn-warning">Warning</button>-->
+            <!--&lt;!&ndash; Indicates a dangerous or potentially negative action &ndash;&gt;-->
+            <!--<button type="button" class="btn btn-danger">Danger</button>-->
+            <!--&lt;!&ndash; Deemphasize a button by making it look like a link while maintaining button behavior &ndash;&gt;-->
+            <!--<button type="button" class="btn btn-link">Link</button>-->
+            <!--<button type="button" class="btn btn-primary" disabled="disabled">Disabled</button>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="panel-footer">-->
+            <!--<small>Built with Bootcards - Rich Text Card</small>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--&lt;!&ndash;end rich text card&ndash;&gt;-->
 
-        </div>
-        <!--list-details-->
+            <!--</div>-->
+            <!--&lt;!&ndash;list-details&ndash;&gt;-->
 
-    </div>
-    <!--row-->
+            <!--</div>-->
+            <!--&lt;!&ndash;row&ndash;&gt;-->
 
 
-</div><!--container-->
+            <!--</div>&lt;!&ndash;container&ndash;&gt;-->
 
-<!-- fixed tabbed footer -->
-<div class="navbar navbar-default navbar-fixed-bottom">
+            <!--&lt;!&ndash; fixed tabbed footer &ndash;&gt;-->
+            <!--<div class="navbar navbar-default navbar-fixed-bottom">-->
 
-    <div class="container">
+            <!--<div class="container">-->
 
-        <div class="bootcards-desktop-footer clearfix">
-            <p class="pull-left">Bootcards</p>
-        </div>
+            <!--<div class="bootcards-desktop-footer clearfix">-->
+            <!--<p class="pull-left">Bootcards</p>-->
+            <!--</div>-->
 
-        <div class="btn-group">
-            <a href="#" class="btn btn-default">
-                <i class="fa fa-2x fa-dashboard"></i>Dashboard
-            </a>
-            <a href="starter-template.html" class="btn btn-default active">
-                <i class="fa fa-2x fa-users"></i>Contacts
-            </a>
-            <a href="az-picker.html" class="btn btn-default">
-                <i class="fa fa-2x fa-font"></i>AZ Picker
-            </a>
-        </div>
-    </div>
+            <!--<div class="btn-group">-->
+            <!--<a href="#" class="btn btn-default">-->
+            <!--<i class="fa fa-2x fa-dashboard"></i>Dashboard-->
+            <!--</a>-->
+            <!--<a href="starter-template.html" class="btn btn-default active">-->
+            <!--<i class="fa fa-2x fa-users"></i>Contacts-->
+            <!--</a>-->
+            <!--<a href="az-picker.html" class="btn btn-default">-->
+            <!--<i class="fa fa-2x fa-font"></i>AZ Picker-->
+            <!--</a>-->
+            <!--</div>-->
+            <!--</div>-->
 
-</div><!--footer-->
+            <!--</div>&lt;!&ndash;footer&ndash;&gt;-->
 
-<!--  new job modal-->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+            <!--&lt;!&ndash;  new job modal&ndash;&gt;-->
+            <!--<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">-->
+            <!--<div class="modal-dialog">-->
+            <!--<div class="modal-content">-->
 
-            <!--<form class="form-horizontal" method="POST" action="/contacts/{{contact.id}}" data-pjax="#main">-->
-            <!--<form class="form-horizontal" method="POST" action="" data-pjax="#main">-->
+            <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="/contacts/{{contact.id}}" data-pjax="#main">&ndash;&gt;-->
+            <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="" data-pjax="#main">&ndash;&gt;-->
 
-            <div class="modal-header">
+            <!--<div class="modal-header">-->
 
-                <div class="btn-group pull-left">
-                    <button class="btn btn-danger" data-dismiss="modal">
-                        Cancel
-                    </button>
-                </div>
+            <!--<div class="btn-group pull-left">-->
+            <!--<button class="btn btn-danger" data-dismiss="modal">-->
+            <!--Cancel-->
+            <!--</button>-->
+            <!--</div>-->
 
-                <div class="btn-group pull-right">
-                    <button class="btn btn-success" data-dismiss="modal">
-                        <i class="fa fa-check"></i>Save
-                    </button>
-                </div>
+            <!--<div class="btn-group pull-right">-->
+            <!--<button class="btn btn-success" data-dismiss="modal">-->
+            <!--<i class="fa fa-check"></i>Save-->
+            <!--</button>-->
+            <!--</div>-->
 
-                <h4 class="modal-title">
-                    Edit Contact
-                </h4>
-            </div>
+            <!--<h4 class="modal-title">-->
+            <!--Edit Contact-->
+            <!--</h4>-->
+            <!--</div>-->
 
-            <div class="modal-body">
-                <input type="hidden" name="companyId" value="{{contact.companyId}}">
-                <input type="hidden" name="_method" value="put">
+            <!--<div class="modal-body">-->
+            <!--<input type="hidden" name="companyId" value="{{contact.companyId}}">-->
+            <!--<input type="hidden" name="_method" value="put">-->
 
-                <div class="form-group">
-                    <label class="col-xs-4 control-label">First Name</label>
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">First Name</label>-->
 
-                    <div class="col-xs-8">
-                        <input type="text" name="firstName" class="form-control" placeholder="First Name"
-                               value="Sofia">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-4 control-label">Last Name</label>
+            <!--<div class="col-xs-8">-->
+            <!--<input type="text" name="firstName" class="form-control" placeholder="First Name"-->
+            <!--value="Sofia">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">Last Name</label>-->
 
-                    <div class="col-xs-8">
-                        <input type="text" name="lastName" class="form-control" placeholder="Last Name"
-                               value="Acey">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-4 control-label">Company</label>
+            <!--<div class="col-xs-8">-->
+            <!--<input type="text" name="lastName" class="form-control" placeholder="Last Name"-->
+            <!--value="Acey">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">Company</label>-->
 
-                    <div class="col-xs-8">
-                        <input type="text" name="department" class="form-control" placeholder="Department"
-                               value="Masung Corp.">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-4 control-label">Phone</label>
+            <!--<div class="col-xs-8">-->
+            <!--<input type="text" name="department" class="form-control" placeholder="Department"-->
+            <!--value="Masung Corp.">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">Phone</label>-->
 
-                    <div class="col-xs-8">
-                        <input type="text" name="phone" class="form-control"
-                               placeholder="Phone"
-                               value="+1 650-555-0055">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-4 control-label">Email</label>
+            <!--<div class="col-xs-8">-->
+            <!--<input type="text" name="phone" class="form-control"-->
+            <!--placeholder="Phone"-->
+            <!--value="+1 650-555-0055">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">Email</label>-->
 
-                    <div class="col-xs-8">
-                        <input type="email" name="email" class="form-control" placeholder="Email"
-                               value="Sofia.Acey@masung.com">
-                    </div>
-                </div>
+            <!--<div class="col-xs-8">-->
+            <!--<input type="email" name="email" class="form-control" placeholder="Email"-->
+            <!--value="Sofia.Acey@masung.com">-->
+            <!--</div>-->
+            <!--</div>-->
 
-            </div>
-            </form>
+            <!--</div>-->
+            <!--</form>-->
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger btn-block"
-                        onclick="bootcards.confirmDelete('contact'); return false;">
-                    <i class="fa fa-trash-o"></i>
-                    Delete Contact
-                </button>
-            </div>
+            <!--<div class="modal-footer">-->
+            <!--<button type="button" class="btn btn-danger btn-block"-->
+            <!--onclick="bootcards.confirmDelete('contact'); return false;">-->
+            <!--<i class="fa fa-trash-o"></i>-->
+            <!--Delete Contact-->
+            <!--</button>-->
+            <!--</div>-->
 
-        </div>
-        <!--modal-content-->
-    </div>
-</div><!--modal-->
+            <!--</div>-->
+            <!--&lt;!&ndash;modal-content&ndash;&gt;-->
+            <!--</div>-->
+            <!--</div>&lt;!&ndash;modal&ndash;&gt;-->
 
-<!--edit job modal-->
-<!--<div class="modal fade" id="newJobModal" tabindex="-1" role="dialog" aria-labelledby="newJobModal" aria-hidden="true">-->
-<!--<div id="messages" class="alert alert-success" data-ng-show="messages" data-ng-bind="messages"></div>-->
-<!--<div class="modal-dialog">-->
-<!--<div class="modal-content">-->
-<!--<form name="helpForm" novalidate role="form">-->
-<!--<div id="name" class="form-group">-->
-<!--<label for="name">Your Name </label>-->
-<!--<span class="label label-danger"-->
-<!--data-ng-show="submitted && helpForm.name.$error.required">Required!</span>-->
-<!--<input type="text" name="name"  data-ng-model="job.firstname" class="form-control" required/>-->
-<!--</div>-->
+            <!--edit job modal-->
+            <!--<div class="modal fade" id="newJobModal" tabindex="-1" role="dialog" aria-labelledby="newJobModal" aria-hidden="true">-->
+            <!--<div id="messages" class="alert alert-success" data-ng-show="messages" data-ng-bind="messages"></div>-->
+            <!--<div class="modal-dialog">-->
+            <!--<div class="modal-content">-->
+            <!--<form name="helpForm" novalidate role="form">-->
+            <!--<div id="name" class="form-group">-->
+            <!--<label for="name">Your Name </label>-->
+            <!--<span class="label label-danger"-->
+            <!--data-ng-show="submitted && helpForm.name.$error.required">Required!</span>-->
+            <!--<input type="text" name="name"  data-ng-model="job.firstname" class="form-control" required/>-->
+            <!--</div>-->
 
-<!--<div id="email" class="form-group">-->
-<!--<label for="email">Your E-mail address</label>-->
-<!--<span class="label label-danger" data-ng-show="submitted && helpForm.email.$error.required">Required!</span>-->
-<!--<span class="label label-danger"-->
-<!--data-ng-show="submitted && helpForm.$error.email">Invalid email!</span>-->
-<!--<input type="email" name="email" data-ng-model="email" class="form-control" required/>-->
-<!--</div>-->
+            <!--<div id="email" class="form-group">-->
+            <!--<label for="email">Your E-mail address</label>-->
+            <!--<span class="label label-danger" data-ng-show="submitted && helpForm.email.$error.required">Required!</span>-->
+            <!--<span class="label label-danger"-->
+            <!--data-ng-show="submitted && helpForm.$error.email">Invalid email!</span>-->
+            <!--<input type="email" name="email" data-ng-model="email" class="form-control" required/>-->
+            <!--</div>-->
 
-<!-- -->
+            <!-- -->
 
-<!--<div id="url" class="form-group">-->
-<!--<label for="url">URL of Relevant Page</label>-->
-<!--<span class="label label-danger"-->
-<!--data-ng-show="submitted && helpForm.$error.url">Invalid URL format!</span>-->
-<!--<input type="url" name="url" data-ng-model="url" class="form-control"/>-->
-<!--</div>-->
+            <!--<div id="url" class="form-group">-->
+            <!--<label for="url">URL of Relevant Page</label>-->
+            <!--<span class="label label-danger"-->
+            <!--data-ng-show="submitted && helpForm.$error.url">Invalid URL format!</span>-->
+            <!--<input type="url" name="url" data-ng-model="url" class="form-control"/>-->
+            <!--</div>-->
 
-<!--<div id="comments" class="form-group">-->
-<!--<label for="comments">Description</label>-->
-<!--<span class="label label-danger" data-ng-show="submitted && helpForm.comments.$error.required">Required!</span>-->
-<!--<textarea name="comments" data-ng-model="comments" class="form-control" required></textarea>-->
-<!--</div>-->
+            <!--<div id="comments" class="form-group">-->
+            <!--<label for="comments">Description</label>-->
+            <!--<span class="label label-danger" data-ng-show="submitted && helpForm.comments.$error.required">Required!</span>-->
+            <!--<textarea name="comments" data-ng-model="comments" class="form-control" required></textarea>-->
+            <!--</div>-->
 
-<!--<button data-ng-disabled="progress.active()" data-ng-click="submit(helpForm)" class="btn btn-default">-->
-<!--Submit-->
-<!--</button>-->
-<!--</form>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
-<!--<div class="modal fade" id="newJobModal" tabindex="-1" role="dialog" aria-labelledby="newJobModal" aria-hidden="true">-->
-<!--<div class="modal-dialog">-->
-<!--<div class="modal-content">-->
+            <!--<button data-ng-disabled="progress.active()" data-ng-click="submit(helpForm)" class="btn btn-default">-->
+            <!--Submit-->
+            <!--</button>-->
+            <!--</form>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="modal fade" id="newJobModal" tabindex="-1" role="dialog" aria-labelledby="newJobModal" aria-hidden="true">-->
+            <!--<div class="modal-dialog">-->
+            <!--<div class="modal-content">-->
 
-<!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="/contacts/{{contact.id}}" data-pjax="#main">&ndash;&gt;-->
-<!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="" data-pjax="#main">&ndash;&gt;-->
+            <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="/contacts/{{contact.id}}" data-pjax="#main">&ndash;&gt;-->
+            <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="" data-pjax="#main">&ndash;&gt;-->
 
-<!--<div class="modal-header">-->
+            <!--<div class="modal-header">-->
 
-<!--<div class="btn-group pull-left">-->
-<!--<button class="btn btn-danger" data-dismiss="modal">-->
-<!--Cancel-->
-<!--</button>-->
-<!--</div>-->
+            <!--<div class="btn-group pull-left">-->
+            <!--<button class="btn btn-danger" data-dismiss="modal">-->
+            <!--Cancel-->
+            <!--</button>-->
+            <!--</div>-->
 
-<!--<div class="btn-group pull-right">-->
-<!--<button class="btn btn-success" data-dismiss="modal" ng-click="savingNewJob()">-->
-<!--<i class="fa fa-check"></i>Save-->
-<!--</button>-->
-<!--</div>-->
+            <!--<div class="btn-group pull-right">-->
+            <!--<button class="btn btn-success" data-dismiss="modal" ng-click="savingNewJob()">-->
+            <!--<i class="fa fa-check"></i>Save-->
+            <!--</button>-->
+            <!--</div>-->
 
-<!--<h4 class="modal-title">-->
-<!--New Job-->
-<!--</h4>-->
-<!--</div>-->
+            <!--<h4 class="modal-title">-->
+            <!--New Job-->
+            <!--</h4>-->
+            <!--</div>-->
 
-<!--<div class="modal-body">-->
-<!--<input type="hidden" name="companyId" value="{{contact.companyId}}">-->
-<!--<input type="hidden" name="companyId" value="">-->
-<!--<input type="hidden" name="_method" value="put">-->
-<!--<div class="form-group">-->
-<!--<label class="col-xs-4 control-label">Job#</label>-->
-<!--<div class="col-xs-8">-->
-<!--<input type="text" name="jobNumber" class="form-control" placeholder="Job#"-->
-<!--value="">-->
-<!--</div>-->
-<!--</div>-->
-<!--<div class="form-group">-->
-<!--<label class="col-xs-4 control-label">First Name</label>-->
-<!--<div class="col-xs-8">-->
-<!--<input type="text" name="firstName" class="form-control" placeholder="First Name"-->
-<!--value="">-->
-<!--</div>-->
-<!--</div>-->
-<!--<div class="form-group">-->
-<!--<label class="col-xs-4 control-label">Last Name</label>-->
-<!--<div class="col-xs-8">-->
-<!--<input type="text" name="lastName" class="form-control" placeholder="Last Name"-->
-<!--value="">-->
-<!--</div>-->
-<!--</div>-->
-<!--<div class="form-group">-->
-<!--<label class="col-xs-4 control-label">Phone</label>-->
-<!--<div class="col-xs-8">-->
-<!--<input type="text" name="phone" class="form-control"-->
-<!--placeholder="Phone"-->
-<!--value="">-->
-<!--</div>-->
-<!--</div>-->
-<!--<div class="form-group">-->
-<!--<label class="col-xs-4 control-label">Phone 2</label>-->
-<!--<div class="col-xs-8">-->
-<!--<input type="text" name="phone2" class="form-control"-->
-<!--placeholder="Phone"-->
-<!--value="">-->
-<!--</div>-->
-<!--</div>-->
-<!--<div class="form-group">-->
-<!--<label class="col-xs-4 control-label">Email</label>-->
-<!--<div class="col-xs-8">-->
-<!--<input type="email" name="email" class="form-control" placeholder="Email"-->
-<!--value="">-->
-<!--</div>-->
-<!--</div>-->
+            <!--<div class="modal-body">-->
+            <!--<input type="hidden" name="companyId" value="{{contact.companyId}}">-->
+            <!--<input type="hidden" name="companyId" value="">-->
+            <!--<input type="hidden" name="_method" value="put">-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">Job#</label>-->
+            <!--<div class="col-xs-8">-->
+            <!--<input type="text" name="jobNumber" class="form-control" placeholder="Job#"-->
+            <!--value="">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">First Name</label>-->
+            <!--<div class="col-xs-8">-->
+            <!--<input type="text" name="firstName" class="form-control" placeholder="First Name"-->
+            <!--value="">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">Last Name</label>-->
+            <!--<div class="col-xs-8">-->
+            <!--<input type="text" name="lastName" class="form-control" placeholder="Last Name"-->
+            <!--value="">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">Phone</label>-->
+            <!--<div class="col-xs-8">-->
+            <!--<input type="text" name="phone" class="form-control"-->
+            <!--placeholder="Phone"-->
+            <!--value="">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">Phone 2</label>-->
+            <!--<div class="col-xs-8">-->
+            <!--<input type="text" name="phone2" class="form-control"-->
+            <!--placeholder="Phone"-->
+            <!--value="">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<label class="col-xs-4 control-label">Email</label>-->
+            <!--<div class="col-xs-8">-->
+            <!--<input type="email" name="email" class="form-control" placeholder="Email"-->
+            <!--value="">-->
+            <!--</div>-->
+            <!--</div>-->
 
-<!--</div>-->
-<!--</form>-->
+            <!--</div>-->
+            <!--</form>-->
 
-<!--<div class="modal-footer">-->
-<!--<button type="button" class="btn btn-danger btn-block"-->
-<!--onclick="bootcards.confirmDelete('contact'); return false;">-->
-<!--<i class="fa fa-trash-o"></i>-->
-<!--Delete Contact-->
-<!--</button>-->
-<!--</div>-->
+            <!--<div class="modal-footer">-->
+            <!--<button type="button" class="btn btn-danger btn-block"-->
+            <!--onclick="bootcards.confirmDelete('contact'); return false;">-->
+            <!--<i class="fa fa-trash-o"></i>-->
+            <!--Delete Contact-->
+            <!--</button>-->
+            <!--</div>-->
 
-<!--</div>&lt;!&ndash;modal-content&ndash;&gt;-->
-<!--</div>-->
-<!--</div>&lt;!&ndash;modal&ndash;&gt;-->
+            <!--</div>&lt;!&ndash;modal-content&ndash;&gt;-->
+            <!--</div>-->
+            <!--</div>&lt;!&ndash;modal&ndash;&gt;-->
 
-<!-- Bootstrap & jQuery core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+            <!-- Bootstrap & jQuery core JavaScript
+            ================================================== -->
+            <!-- Placed at the end of the document so the pages load faster -->
+            <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+            <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
-<!-- Bootcards JS -->
-<script src="../src/js/bootcards.js"></script>
+            <!-- Bootcards JS -->
+            <script src="../src/js/bootcards.js"></script>
 
-<!--recommended: FTLabs FastClick library-->
-<script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
+            <!--recommended: FTLabs FastClick library-->
+            <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
 
-<script type="text/javascript">
-    /*
-     * Initialize Bootcards.
-     *
-     * Parameters:
-     * - offCanvasBackdrop (boolean): show a backdrop when the offcanvas is shown
-     * - offCanvasHideOnMainClick (boolean): hide the offcanvas menu on clicking outside the off canvas
-     * - enableTabletPortraitMode (boolean): enable single pane mode for tablets in portraitmode
-     * - disableRubberBanding (boolean): disable the iOS rubber banding effect
-     * - disableBreakoutSelector (string) : for iOS apps that are added to the home screen:
-     jQuery selector to target links for which a fix should be added to not
-     allow those links to break out of fullscreen mode.
-     */
+            <script type="text/javascript">
+                /*
+                 * Initialize Bootcards.
+                 *
+                 * Parameters:
+                 * - offCanvasBackdrop (boolean): show a backdrop when the offcanvas is shown
+                 * - offCanvasHideOnMainClick (boolean): hide the offcanvas menu on clicking outside the off canvas
+                 * - enableTabletPortraitMode (boolean): enable single pane mode for tablets in portraitmode
+                 * - disableRubberBanding (boolean): disable the iOS rubber banding effect
+                 * - disableBreakoutSelector (string) : for iOS apps that are added to the home screen:
+                 jQuery selector to target links for which a fix should be added to not
+                 allow those links to break out of fullscreen mode.
+                 */
 
-    bootcards.init({
-        offCanvasBackdrop:        true,
-        offCanvasHideOnMainClick: true,
-        enableTabletPortraitMode: true,
-        disableRubberBanding:     true,
-        disableBreakoutSelector:  'a.no-break-out'
-    });
-    //enable FastClick
-    window.addEventListener('load', function () {
-        FastClick.attach(document.body);
-    }, false);
-    //activate the sub-menu options in the offcanvas menu
-    $('.collapse').collapse();
-    //theme switcher: only needed for this sample page to set the active CSS
-    $('input[name=themeSwitcher]').on('change', function (ev) {
-        var theme          = $(ev.target).val();
-        var themeCSSLoaded = false;
-        $.each(document.styleSheets, function (idx, css) {
-            var href = css.href;
-            if (href.indexOf('bootcards') > -1) {
-                if (href.indexOf(theme) > -1) {
-                    themeCSSLoaded = true;
-                    css.disabled   = false;
-                } else {
-                    css.disabled = true;
-                }
-            }
-        });
-        if (!themeCSSLoaded) {
-            $("<link/>", {
-                rel:  "stylesheet",
-                type: "text/css",
-                href: "//cdnjs.cloudflare.com/ajax/libs/bootcards/1.1.1/css/bootcards-" + theme + ".min.css"
-            }).appendTo("head");
-        }
+                bootcards.init({
+                    offCanvasBackdrop:        true,
+                    offCanvasHideOnMainClick: true,
+                    enableTabletPortraitMode: true,
+                    disableRubberBanding:     true,
+                    disableBreakoutSelector:  'a.no-break-out'
+                });
+                //enable FastClick
+                window.addEventListener('load', function () {
+                    FastClick.attach(document.body);
+                }, false);
+                //activate the sub-menu options in the offcanvas menu
+                $('.collapse').collapse();
+                //theme switcher: only needed for this sample page to set the active CSS
+                $('input[name=themeSwitcher]').on('change', function (ev) {
+                    var theme = $(ev.target).val();
+                    var themeCSSLoaded = false;
+                    $.each(document.styleSheets, function (idx, css) {
+                        var href = css.href;
+                        if (href.indexOf('bootcards') > -1) {
+                            if (href.indexOf(theme) > -1) {
+                                themeCSSLoaded = true;
+                                css.disabled = false;
+                            } else {
+                                css.disabled = true;
+                            }
+                        }
+                    });
+                    if (!themeCSSLoaded) {
+                        $("<link/>", {
+                            rel:  "stylesheet",
+                            type: "text/css",
+                            href: "//cdnjs.cloudflare.com/ajax/libs/bootcards/1.1.1/css/bootcards-" + theme + ".min.css"
+                        }).appendTo("head");
+                    }
 
-    });
-</script>
+                });
+            </script>
