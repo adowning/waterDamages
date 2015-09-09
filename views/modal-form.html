@@ -17,7 +17,20 @@
             <p ng-show="form.userForm.address.$error.minlength" class="help-block">Address is too short.</p>
             <p ng-show="form.userForm.address.$error.maxlength" class="help-block">Address is too long.</p>
         </div>
- 
+
+        <div class="form-group">
+            <label>City</label>
+            <input type="text" name="city" class="form-control" ng-model="job.account.city" value="job.account.city" ng-minlength="2" ng-maxlength="30" required>
+            <p ng-show="form.userForm.address.$error.minlength" class="help-block">City is too short.</p>
+            <p ng-show="form.userForm.address.$error.maxlength" class="help-block">City is too long.</p>
+
+
+        <div class="form-group">
+            <label>Zipcode</label>
+            <input type="text" name="zipcode" class="form-control" ng-model="job.account.zip" value="job.account.zip" ng-minlength="5" ng-maxlength="5" required>
+            <p ng-show="form.userForm.address.$error.minlength" class="help-block">Zipcode is too short.</p>
+            <p ng-show="form.userForm.address.$error.maxlength" class="help-block">Zipcode is too long.</p>
+        </div>
          <!-- PHONE1 -->
         <div class="form-group">
             <label>Phone 1</label>

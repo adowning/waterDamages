@@ -292,6 +292,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFact
 app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
 	dataFactory.getById($routeParams.contactId, function (data) {
 		$scope.job = data;
+        console.log(data)
 		$scope.job.contactId = $routeParams.contactId;
 
 	});
@@ -383,7 +384,8 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 
 				$scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
 					$scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-					$scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue,
+					$scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue, $scope.form.userForm.city.$modelValue,
+                    $scope.form.userForm.zipcode.$modelValue,
 					sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
 				$modalInstance.close('closed');
 				return;

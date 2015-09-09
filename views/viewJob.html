@@ -26,8 +26,8 @@
         </div>
         Job #  {{job.orderNumber}} <br>
         {{job.account.accountName}}<br> {{job.account.address1}}<br>
-        CityFixMe{{job.account.city}}
-        , ZipFixMe{{job.account.zip}}<br><br>
+        {{job.account.city}}
+        , {{job.account.zipcode}}<br><br>
         <a href="tel://" +{{job.phone1}}>
             <h4 class="list-group-item-heading"> {{job.account.phone1}}</h4>
         </a>
