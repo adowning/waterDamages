@@ -275,6 +275,42 @@
                                 </form>
                             </div>
                         </tab>
+                        <tab heading="List">
+                            <div class="panel panel-default bootcards-richtext">
+                                <!--<div class="panel-heading">-->
+                                    <!--<h3 class="panel-title">Equipment Locations</h3>-->
+                                <!--</div>-->
+                                <div class="panel-body">
+                                    <table class="table table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <th>Status</th>
+                                            <th>ID</th>
+                                            <th>Type</th>
+                                            <th>Model</th>
+                                            <th>Purchase Date</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="(id, job) in contacts">
+                                            <td>{{job.accountName}}</td>
+                                            <td>{{job.fans}}</td>
+                                            <td>{{job.dehus}}</td>
+                                            <td>x</td>
+                                        </tr>
+                                        <tr>
+                                            <td>SHOP</td>
+                                            <td>{{shopFans}}</td>
+                                            <td>{{shopDehus}}</td>
+                                            <td>x</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </tab>
+
                         <tab heading="Options">Long Labeled Justified content</tab>
                     </tabset>
                 </div>

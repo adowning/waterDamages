@@ -202,10 +202,10 @@ app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFact
 			if (data.shop) {
 				for (var i = 0; i < data.shop.length; i++) {
 					if (data.shop[i]) {
-						if (data.shop[i].type == 'fan') {
+						if (data.shop[i].type == 'fan' && data.shop[i].status == "Active") {
 							shopFanTotal++;
 						}
-						if (data.shop[i].type == 'dehu') {
+						if (data.shop[i].type == 'dehu' && data.shop[i].status == "Active") {
 							shopDehuTotal++;
 						}
 						tempArray.push(data.shop[i]);
