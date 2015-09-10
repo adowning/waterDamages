@@ -13,7 +13,7 @@
                         <h4>{{room.name}}</h4>
                         <!--<label><b> 0{{room.fans}} fans 0{{room.dehus}} dehus</b></label>-->
                             <div ng-repeat="(key, equipment) in room.equipment track by $index">
-                              {{equipment.id}}
+                             {{equipment.id}} - {{equipment.type}}
                             </div>
                             <!--<h4>Fans:</h4>-->
                             <!--<div ng-repeat="(key, fan) in room.fans track by $index">-->

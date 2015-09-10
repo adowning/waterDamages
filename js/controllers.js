@@ -197,23 +197,27 @@ app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFact
 				}
 			};
 			var tempArray = [];
-			var shopFanTotal = 0;
-			var shopDehuTotal = 0;
+			var shopFans = [];
+			var shopDehus = [];
 			if (data.shop) {
 				for (var i = 0; i < data.shop.length; i++) {
 					if (data.shop[i]) {
 						if (data.shop[i].type == 'fan' && data.shop[i].status == "Active") {
-							shopFanTotal++;
+							shopFans.push(data.shop[i].id)
 						}
 						if (data.shop[i].type == 'dehu' && data.shop[i].status == "Active") {
-							shopDehuTotal++;
+							shopDehus.push(data.shop[i].id)
+
 						}
+						var tempDate = new moment(data.shop[i].purchaseDate)
+						console.log(tempDate.format('MM/DD/YYYY'))
+						data.shop[i].prettyDate = tempDate.format('MM/DD/YYYY');
 						tempArray.push(data.shop[i]);
 					}
 				}
 			}
-			$scope.shopFans = shopFanTotal;
-			$scope.shopDehus = shopDehuTotal;
+			$scope.shopFans = shopFans;
+			$scope.shopDehus = shopDehus;
 			$scope.company.shop = tempArray;
 		});
 		dataFactory.getAll(function (data) {
@@ -221,8 +225,8 @@ app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFact
 			var fansTotal = 0;
 			var dehusTotal = 0;
 			for (var job in data) {
-				var dehus = 0;
-				var fans = 0;
+				var dehuList = [];
+				var fanList = [];
 				var object = data[job];
 				var dayList = object.dayList;
 				if (dayList) {
@@ -233,19 +237,20 @@ app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFact
 							for (var x = 0; x < equipmentList.length; x++) {
 								var equipment = equipmentList[x];
 								if (equipment.type == 'dehu') {
-									dehus++;
+									dehuList.push(equipment.id)
+
 									dehusTotal++;
 								}
 								if (equipment.type == 'fan') {
-									fans++;
 									fansTotal++;
+									fanList.push(equipment.id)
 								}
 							}
 						}
 					}
 				}
-				data[job].fans = fans;
-				data[job].dehus = dehus;
+				data[job].fanList = fanList;
+				data[job].dehuList = dehuList;
 
 			}
 			$scope.fansTotal = fansTotal;

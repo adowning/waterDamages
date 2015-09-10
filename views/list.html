@@ -108,14 +108,17 @@
                         <tbody>
                         <tr ng-repeat="(id, job) in contacts">
                             <td>{{job.accountName}}</td>
-                            <td>{{job.fans}}</td>
-                            <td>{{job.dehus}}</td>
+                            <td data-toggle="tooltip" data-placement="right" title="{{job.fanList}}">{{job.fanList.length}}</td>
+                            <td data-toggle="tooltip" data-placement="right" title="{{job.dehuList}}">{{job.dehuList.length}}</td>
+
                             <td>x</td>
                         </tr>
                         <tr>
                             <td>SHOP</td>
-                            <td>{{shopFans}}</td>
-                            <td>{{shopDehus}}</td>
+                            <td data-toggle="tooltip" data-placement="right" title="{{shopFans}}">{{shopFans.length}}</td>
+
+                            <td data-toggle="tooltip" data-placement="right" title="{{shopDehus}}">{{shopDehus.length}}</td>
+
                             <td>x</td>
                         </tr>
                         </tbody>
@@ -292,17 +295,14 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr ng-repeat="(id, job) in contacts">
-                                            <td>{{job.accountName}}</td>
-                                            <td>{{job.fans}}</td>
-                                            <td>{{job.dehus}}</td>
-                                            <td>x</td>
-                                        </tr>
-                                        <tr>
-                                            <td>SHOP</td>
-                                            <td>{{shopFans}}</td>
-                                            <td>{{shopDehus}}</td>
-                                            <td>x</td>
+                                        <tr ng-repeat="equip in company.shop">
+
+                                            <td>{{equip.status}}</td>
+                                            <td>{{equip.id}}</td>
+                                            <td>{{equip.type}}</td>
+                                            <td>{{equip.model}}</td>
+                                            <td>{{equip.prettyDate}}</td>
+
                                         </tr>
                                         </tbody>
                                     </table>
