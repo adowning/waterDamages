@@ -109,9 +109,6 @@ app.run(function ($window, $rootScope, $location, dataFactory) {
 	$rootScope.FBURL = localStorage.getItem("FBURL");
 });
 
-/*
- * Controller for the listing page.
- */
 app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFactory, DATAKEY, $localForage, fireFactory) {
 	// Vars are set at rootScope, $scope will recursively search up to rootScope
 	if ($scope.FBURL === null) {
@@ -339,6 +336,242 @@ app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams,
 	$("#menu-settings").removeClass("active");
 });
 
+app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
+	dataFactory.getById($routeParams.contactId, function (data) {
+		$scope.job = data;
+		$scope.job.contactId = $routeParams.contactId;
+		if ($scope.job.rooms) {
+
+			//$scope.job.rooms = JSON.parse(data.rooms)
+		} else {
+			console.log('got noes rooms ')
+			$scope.job.rooms = new Array();
+
+		}
+		if (!$scope.job.rooms) {
+			$scope.job.rooms = new Array();
+		}
+		//TODO make a jobStartDate pretty object to show
+		console.log('osd ' + $scope.job.oldStartDate);
+		console.log('sd ' + $scope.job.startDate);
+		$scope.job.oldStartDate = $scope.job.startDate;
+
+		if (!$scope.job.startDate) {
+			$scope.day1Show = false;
+
+		} else {
+			$scope.day1Show = true;
+		}
+		$scope.formDisabled = false;
+		$scope.df = dataFactory;
+		//$scope.job.contactId = $routeParams.contactId;
+		// We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
+		if (!$scope.online) {
+			$scope.$apply();
+		}
+
+		$scope.showForm = function () {
+
+			var modalInstance = $modal.open({
+				templateUrl: 'views/modal-form.html',
+				controller:  ModalInstanceCtrl,
+				scope:       $scope,
+				resolve:     {
+					userForm: function () {
+						return $scope.userForm;
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+				//TODO this doesnt feel right
+				$location.path('/')
+			}, function () {
+				console.info('Modal dismissed at: ' + new Date());
+			});
+		};
+	});
+
+	$("#menu-list").removeClass("active");
+	$("#menu-new").removeClass("active");
+	$("#menu-loaddata").removeClass("active");
+	$("#menu-settings").removeClass("active");
+});
+
+app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
+
+	dataFactory.getById($routeParams.contactId, function (data) {
+		$scope.job = data;
+		$scope.job.contactId = $routeParams.contactId;
+		$scope.showFields = false;
+		$scope.currentRoom = "none";
+		$scope.roomChanged = false;
+
+		$scope.changedCurrentRoomValue = function (roomNum) {
+			console.log('changed room value')
+			$scope.showFields = true;
+			var roomObject = $scope.job.dayList[$scope.dayNum].rooms[roomNum]
+			$scope.currentRoom = roomObject;
+			$scope.currentRoomNum = roomNum;
+			$scope.roomChanged = true;
+		}
+
+		$scope.df = dataFactory;
+
+		if (!$scope.online) {
+			$scope.$apply();
+		}
+
+		$scope.showForm = function (day) {
+			$scope.dayNum = day;
+			$scope.todaysEquipment = $scope.job.dayList[$scope.dayNum];
+			$scope.showFields = false;
+
+			var modalInstance = $modal.open({
+				templateUrl: 'views/editequipment-form.html',
+				controller:  EquipmentInstanceCtrl,
+				scope:       $scope,
+				resolve:     {
+					equipmentForm: function () {
+						return $scope.equipmentForm;
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+				//TODO this doesnt feel right
+				$location.path('/')
+			}, function () {
+				console.info('Modal dismissed at: ' + new Date());
+			});
+		};
+
+		$scope.showLaborForm = function (day) {
+			console.log('showing labor')
+			$scope.dayNum = day;
+			//$scope.todaysEquipment = $scope.job.dayList[$scope.dayNum];
+			$scope.showFields = false;
+
+			var modalInstance = $modal.open({
+				templateUrl: 'views/editlabor-form.html',
+				controller:  LaborInstanceCtrl,
+				scope:       $scope,
+				resolve:     {
+					laborForm: function () {
+						return $scope.laborForm;
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+				//TODO this doesnt feel right
+				$location.path('/')
+			}, function () {
+				console.info('Modal dismissed at: ' + new Date());
+			});
+		};
+		$scope.addDay = function () {
+
+			var date = new moment($scope.job.dayList.slice(-1)[0].date);//gets last date in array
+			//date.setDate(date.getDate() + 1);//adds a day
+			date.add('days', 1)
+			var newDay = {};
+			newDay.rooms = [];
+			newDay.date = date.toString();
+			for (var y = 0; y < $scope.job.rooms.length; y++) {
+				var thisRoom = {}
+				thisRoom.name = $scope.job.rooms[y];
+				//thisRoom.fans = [];
+				//thisRoom.dehus = [];
+				thisRoom.equipment = [];
+				newDay.rooms.push(thisRoom)
+			}
+			$scope.job.dayList.push(newDay);
+			$scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.job.account.accountName,
+				$scope.job.account.address1, $scope.job.account.phone1,
+				$scope.job.account.phone2, $scope.job.account.email,
+				$scope.job.startDate, $scope.job.rooms, $scope.job.dayList);
+		};
+	});
+
+	//now load other jobs so when adding equipment
+	//we can see if it is already being used
+	dataFactory.getAll(function (data) {
+		$scope.allJobs = data;
+	});
+
+	$("#menu-list").removeClass("active");
+	$("#menu-new").removeClass("active");
+	$("#menu-loaddata").removeClass("active");
+	$("#menu-settings").removeClass("active");
+});
+
+app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
+	dataFactory.getById($routeParams.contactId, function (data) {
+		$scope.job = data;
+		$scope.job.contactId = $routeParams.contactId;
+		if ($scope.job.rooms) {
+
+			//$scope.job.rooms = JSON.parse(data.rooms)
+		} else {
+			console.log('got noes rooms ')
+			$scope.job.rooms = new Array();
+
+		}
+		if (!$scope.job.rooms) {
+			$scope.job.rooms = new Array();
+		}
+
+		$scope.job.oldStartDate = $scope.job.startDate;
+
+		if (!$scope.job.startDate) {
+			$scope.day1Show = false;
+
+		} else {
+			$scope.day1Show = true;
+		}
+		$scope.formDisabled = false;
+		$scope.df = dataFactory;
+		//$scope.job.contactId = $routeParams.contactId;
+		// We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
+		if (!$scope.online) {
+			$scope.$apply();
+		}
+
+		$scope.showForm = function () {
+
+			var modalInstance = $modal.open({
+				templateUrl: 'views/modal-form.html',
+				controller:  ModalInstanceCtrl,
+				scope:       $scope,
+				resolve:     {
+					userForm: function () {
+						return $scope.userForm;
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+				//TODO this doesnt feel right
+				$location.path('/')
+			}, function () {
+				console.info('Modal dismissed at: ' + new Date());
+			});
+		};
+
+	});
+
+	$("#menu-list").removeClass("active");
+	$("#menu-new").removeClass("active");
+	$("#menu-loaddata").removeClass("active");
+	$("#menu-settings").removeClass("active");
+});
+
+
 var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 	$scope.form = {}
 	$scope.cancel = function () {
@@ -388,10 +621,10 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 				var sd = new moment($scope.form.userForm.startDate.$modelValue);
 
 				$scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-					$scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-					$scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue, $scope.form.userForm.city.$modelValue,
-                    $scope.form.userForm.zipcode.$modelValue,
-					sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
+						$scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+						$scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue, $scope.form.userForm.city.$modelValue,
+						$scope.form.userForm.zipcode.$modelValue,
+						sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
 				$modalInstance.close('closed');
 				return;
 			}
@@ -534,17 +767,17 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 			}
 
 			fireFactory.updateShopEquipment(
-				$scope.company.shop
+					$scope.company.shop
 			)
 			$scope.df.updateJobEquipment(
-				$scope.job.contactId,
-				$scope.currentRoom,
-				$scope.currentRoomNum,
-				$scope.dayNum,
-				$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans,
-				$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus,
-				$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment,
-				time
+					$scope.job.contactId,
+					$scope.currentRoom,
+					$scope.currentRoomNum,
+					$scope.dayNum,
+					$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans,
+					$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus,
+					$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment,
+					time
 			)
 			console.log('reloading route')
 			//TODO needs fixed, this reloads before the data is updated
@@ -569,279 +802,223 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
 
 };
 
-app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
-	dataFactory.getById($routeParams.contactId, function (data) {
-		$scope.job = data;
-		$scope.job.contactId = $routeParams.contactId;
-		if ($scope.job.rooms) {
+var LaborInstanceCtrl = function ($scope, fireFactory, $modalInstance, laborForm, $route) {
+	fireFactory.getShopEquipment(function (data) {
+		$scope.showAdd = false;
+		$scope.company = data;
+		var time = new moment().toString();
+		console.log('time ' + time)
+		//TODO something needs to be done about entering company equipment so we dont get nubmers skipped in the array
+		//for now...
+		//incase we have missing numbers in our array lets not pass them into scope
+		var tempArray = [];
 
-			//$scope.job.rooms = JSON.parse(data.rooms)
-		} else {
-			console.log('got noes rooms ')
-			$scope.job.rooms = new Array();
-
-		}
-		if (!$scope.job.rooms) {
-			$scope.job.rooms = new Array();
-		}
-		//TODO make a jobStartDate pretty object to show
-		console.log('osd ' + $scope.job.oldStartDate);
-		console.log('sd ' + $scope.job.startDate);
-		$scope.job.oldStartDate = $scope.job.startDate;
-
-		if (!$scope.job.startDate) {
-			$scope.day1Show = false;
-
-		} else {
-			$scope.day1Show = true;
-		}
-		$scope.formDisabled = false;
-		$scope.df = dataFactory;
-		//$scope.job.contactId = $routeParams.contactId;
-		// We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
-		if (!$scope.online) {
-			$scope.$apply();
-		}
-
-		$scope.showForm = function () {
-
-			var modalInstance = $modal.open({
-				templateUrl: 'views/modal-form.html',
-				controller:  ModalInstanceCtrl,
-				scope:       $scope,
-				resolve:     {
-					userForm: function () {
-						return $scope.userForm;
-					}
-				}
-			});
-
-			modalInstance.result.then(function (selectedItem) {
-				$scope.selected = selectedItem;
-				//TODO this doesnt feel right
-				$location.path('/')
-			}, function () {
-				console.info('Modal dismissed at: ' + new Date());
-			});
-		};
-	});
-
-	$("#menu-list").removeClass("active");
-	$("#menu-new").removeClass("active");
-	$("#menu-loaddata").removeClass("active");
-	$("#menu-settings").removeClass("active");
-});
-
-app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
-
-	dataFactory.getById($routeParams.contactId, function (data) {
-		$scope.job = data;
-		$scope.job.contactId = $routeParams.contactId;
-		$scope.showFields = false;
-		$scope.currentRoom = "none";
-		$scope.roomChanged = false;
-
-		$scope.changedCurrentRoomValue = function (roomNum) {
-			console.log('changed room value')
-			$scope.showFields = true;
-			var roomObject = $scope.job.dayList[$scope.dayNum].rooms[roomNum]
-			$scope.currentRoom = roomObject;
-			$scope.currentRoomNum = roomNum;
-			$scope.roomChanged = true;
-		}
-
-		$scope.df = dataFactory;
-
-		if (!$scope.online) {
-			$scope.$apply();
-		}
-
-		$scope.showForm = function (day) {
-			$scope.dayNum = day;
-			$scope.todaysEquipment = $scope.job.dayList[$scope.dayNum];
-			$scope.showFields = false;
-
-			var modalInstance = $modal.open({
-				templateUrl: 'views/editequipment-form.html',
-				controller:  EquipmentInstanceCtrl,
-				scope:       $scope,
-				resolve:     {
-					equipmentForm: function () {
-						return $scope.equipmentForm;
-					}
-				}
-			});
-
-			modalInstance.result.then(function (selectedItem) {
-				$scope.selected = selectedItem;
-				//TODO this doesnt feel right
-				$location.path('/')
-			}, function () {
-				console.info('Modal dismissed at: ' + new Date());
-			});
-		};
-		$scope.addDay = function () {
-
-			var date = new moment($scope.job.dayList.slice(-1)[0].date);//gets last date in array
-			//date.setDate(date.getDate() + 1);//adds a day
-			date.add('days', 1)
-			var newDay = {};
-			newDay.rooms = [];
-			newDay.date = date.toString();
-			for (var y = 0; y < $scope.job.rooms.length; y++) {
-				var thisRoom = {}
-				thisRoom.name = $scope.job.rooms[y];
-				//thisRoom.fans = [];
-				//thisRoom.dehus = [];
-				thisRoom.equipment = [];
-				newDay.rooms.push(thisRoom)
+		for (var i = 0; i < data.equipment.length; i++) {
+			if (data.equipment[i]) {
+				tempArray.push(data.equipment[i]);
 			}
-			$scope.job.dayList.push(newDay);
-			$scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.job.account.accountName,
-				$scope.job.account.address1, $scope.job.account.phone1,
-				$scope.job.account.phone2, $scope.job.account.email,
-				$scope.job.startDate, $scope.job.rooms, $scope.job.dayList);
+		}
+		$scope.company.equipment = tempArray;
+
+		var tempArray = [];
+		if (data.shop) {
+			for (var i = 0; i < data.shop.length; i++) {
+				if (data.shop[i]) {
+					tempArray.push(data.shop[i]);
+					console.log('pushing ' + data.shop[i].id)
+				}
+			}
+		}
+
+		$scope.company.shop = tempArray;
+		if ($scope.company.shop.length > 0) {
+			$scope.showAdd = true;
+		}
+
+		$scope.form = {}
+		$scope.cancel = function () {
+			console.log('canceled out ')
+		}
+
+		if ($scope.dayNum == null) {
+			alert("error: day does not exist.")
+			return;
+		}
+		$scope.removeEquipment = function (equipment) {
+			var found = false;
+			for (var i = $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length - 1; i >= 0; i--) {
+				if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment[i].id == equipment.id) {
+					$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.splice(i, 1);
+					$scope.company.shop.push(equipment)
+					found = true;
+				}
+			}
+			if (!found) {
+				alert("Error: equipment not found")
+			}
+			console.log('removing equipment length = ' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
 		};
-	});
 
-	//now load other jobs so when adding equipment
-	//we can see if it is already being used
-	dataFactory.getAll(function (data) {
-		$scope.allJobs = data;
-	});
+		$scope.addEquipment = function (equipment) {
 
-	$("#menu-list").removeClass("active");
-	$("#menu-new").removeClass("active");
-	$("#menu-loaddata").removeClass("active");
-	$("#menu-settings").removeClass("active");
-});
+			var found = false;
+			for (var a = $scope.todaysEquipment.rooms.length - 1; a >= 0; a--) {
 
-app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
-	dataFactory.getById($routeParams.contactId, function (data) {
-		$scope.job = data;
-		$scope.job.contactId = $routeParams.contactId;
-		if ($scope.job.rooms) {
-
-			//$scope.job.rooms = JSON.parse(data.rooms)
-		} else {
-			console.log('got noes rooms ')
-			$scope.job.rooms = new Array();
-
-		}
-		if (!$scope.job.rooms) {
-			$scope.job.rooms = new Array();
-		}
-
-		$scope.job.oldStartDate = $scope.job.startDate;
-
-		if (!$scope.job.startDate) {
-			$scope.day1Show = false;
-
-		} else {
-			$scope.day1Show = true;
-		}
-		$scope.formDisabled = false;
-		$scope.df = dataFactory;
-		//$scope.job.contactId = $routeParams.contactId;
-		// We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
-		if (!$scope.online) {
-			$scope.$apply();
-		}
-
-		$scope.showForm = function () {
-
-			var modalInstance = $modal.open({
-				templateUrl: 'views/modal-form.html',
-				controller:  ModalInstanceCtrl,
-				scope:       $scope,
-				resolve:     {
-					userForm: function () {
-						return $scope.userForm;
+				if (!$scope.todaysEquipment.rooms[a].equipment) {
+					$scope.todaysEquipment.rooms[a].equipment = [];
+				}
+			}
+			for (var job in $scope.allJobs) {
+				var thisJob = $scope.allJobs[job];
+				if (thisJob.dayList) {
+					for (var x = 0; x < thisJob.dayList.length; x++) {
+						var thisDay = thisJob.dayList[x];
+						if (thisDay) {
+							for (var a = thisDay.rooms.length - 1; a >= 0; a--) {
+								if (thisDay.rooms[a]) {
+									if (thisDay.rooms[a].equipment) {
+										for (var i = thisDay.rooms[a].equipment.length - 1; i >= 0; i--) {
+											if (thisDay.rooms[a].equipment[i].id == equipment.id) {
+												found = true;
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
-			});
+			}
+			//make sure the equipment is in the shop
+			var inShop = false;
+			for (var x = 0; x < $scope.company.shop.length; x++) {
+				if ($scope.company.shop[x].id == equipment.id) {
+					$scope.company.shop.splice(x, 1);
+					inShop = true;
+				}
+			}
+			if (!found && inShop) {
+				$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.push(equipment);
+			} else {
+				alert('this equipment is already being used')
+			}
+			//console.log('ADDING equipment length = ' +
+			// $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
 
-			modalInstance.result.then(function (selectedItem) {
-				$scope.selected = selectedItem;
-				//TODO this doesnt feel right
-				$location.path('/')
-			}, function () {
-				console.info('Modal dismissed at: ' + new Date());
-			});
+			//remove equipment from shop
 		};
-
-	});
-
-	$("#menu-list").removeClass("active");
-	$("#menu-new").removeClass("active");
-	$("#menu-loaddata").removeClass("active");
-	$("#menu-settings").removeClass("active");
-});
-
-/*
- * Controller for the new contact page.
- */
-app.controller("NewCtrl", function ($scope, dataFactory) {
-	$scope.contact = {}; // Initialize a blank object for the data entry form to use
-	console.log('new job creation')
-	// Function to run on Save button click
-	$scope.save = function () {
-		dataFactory.add($scope.contact.firstname, $scope.contact.lastname);
-	};
-
-	// Set our menu tab active and all others inactive
-	$("#menu-list").removeClass("active");
-	$("#menu-new").addClass("active");
-	$("#menu-loaddata").removeClass("active");
-	$("#menu-settings").removeClass("active");
-});
-
-/*
- * Controller for reinitializing the database.
- */
-app.controller("LoadCtrl", function (SAMPLEDATA, fireFactory) {
-	//TODO may need to put back in ?
-	//fireFactory.updateAllContacts(SAMPLEDATA);
-});
-
-/*
- * Controller for the settings page.
- */
-app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
-	$scope.settings = {};
-	// Set default value to be used for form input field
-	if ($scope.FBURL === null) {
-		$scope.settings.firebaseurl = "https://andrewscleaning.firebaseio.com/";
-	} else {
-		$scope.settings.firebaseurl = $scope.FBURL;
-	}
-
-	$scope.save = function () {
-		// Really should test that url is a valid Firebase data url
-
-		// Make sure URL ends with "/"
-		if ($scope.settings.firebaseurl.slice(-1) !== "/") {
-			$scope.settings.firebaseurl += "/";
+		$scope.changeSelectedEquipmentToAdd = function (equipment) {
+			$scope.selectedEquipment = equipment;
 		}
 
-		localStorage.setItem("FBURL", $scope.settings.firebaseurl);    // Persist the URL to localStorage for future use
-		$rootScope.FBURL = $scope.settings.firebaseurl;                // Set the app runtime URL variable
+		$scope.submitForm = function () {
+			if ($scope.canceled) {
+				$route.reload;
+				return;
+			}
 
-		// Re-enable other tabs now that we have a URL
-		$("#menu-list").removeClass("disabled");
-		$("#menu-new").removeClass("disabled");
-		$("#menu-loaddata").removeClass("disabled");
+			fireFactory.updateShopEquipment(
+					$scope.company.shop
+			)
+			$scope.df.updateJobEquipment(
+					$scope.job.contactId,
+					$scope.currentRoom,
+					$scope.currentRoomNum,
+					$scope.dayNum,
+					$scope.todaysEquipment.rooms[$scope.currentRoomNum].fans,
+					$scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus,
+					$scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment,
+					time
+			)
+			console.log('reloading route')
+			//TODO needs fixed, this reloads before the data is updated
+			// async bullshit
+			//Fucking hack
+			var millisecondsToWait = 1500;
+			setTimeout(function () {
+				$route.reload();
 
-		$location.path("/"); // Go to list screen which will load data from the server
-	};
+			}, millisecondsToWait);
+		};
 
-	// Disable other menu items until a valid data url is entered and make settings tab active with all others inactive
-	$("#menu-list").addClass("disabled").removeClass("active");
-	$("#menu-new").addClass("disabled").removeClass("active");
-	$("#menu-loaddata").addClass("disabled").removeClass("active");
-	$("#menu-settings").addClass("active");
-});
+		$scope.cancel = function () {
+			console.log('just canceled')
+			$scope.roomChanged = false;
+			$scope.canceled = true;
+			$modalInstance.dismiss('cancel');
+			$route.reload();
+
+		};
+	});
+
+};
 
 
 
+///*
+// * Controller for the new contact page.
+// */
+//app.controller("NewCtrl", function ($scope, dataFactory) {
+//	$scope.contact = {}; // Initialize a blank object for the data entry form to use
+//	console.log('new job creation')
+//	// Function to run on Save button click
+//	$scope.save = function () {
+//		dataFactory.add($scope.contact.firstname, $scope.contact.lastname);
+//	};
+//
+//	// Set our menu tab active and all others inactive
+//	$("#menu-list").removeClass("active");
+//	$("#menu-new").addClass("active");
+//	$("#menu-loaddata").removeClass("active");
+//	$("#menu-settings").removeClass("active");
+//});
+//
+///*
+// * Controller for reinitializing the database.
+// */
+//app.controller("LoadCtrl", function (SAMPLEDATA, fireFactory) {
+//	//TODO may need to put back in ?
+//	//fireFactory.updateAllContacts(SAMPLEDATA);
+//});
+//
+///*
+// * Controller for the settings page.
+// */
+//app.controller("SettingsCtrl", function ($scope, $rootScope, $location) {
+//	$scope.settings = {};
+//	// Set default value to be used for form input field
+//	if ($scope.FBURL === null) {
+//		$scope.settings.firebaseurl = "https://andrewscleaning.firebaseio.com/";
+//	} else {
+//		$scope.settings.firebaseurl = $scope.FBURL;
+//	}
+//
+//	$scope.save = function () {
+//		// Really should test that url is a valid Firebase data url
+//
+//		// Make sure URL ends with "/"
+//		if ($scope.settings.firebaseurl.slice(-1) !== "/") {
+//			$scope.settings.firebaseurl += "/";
+//		}
+//
+//		localStorage.setItem("FBURL", $scope.settings.firebaseurl);    // Persist the URL to localStorage for future use
+//		$rootScope.FBURL = $scope.settings.firebaseurl;                // Set the app runtime URL variable
+//
+//		// Re-enable other tabs now that we have a URL
+//		$("#menu-list").removeClass("disabled");
+//		$("#menu-new").removeClass("disabled");
+//		$("#menu-loaddata").removeClass("disabled");
+//
+//		$location.path("/"); // Go to list screen which will load data from the server
+//	};
+//
+//	// Disable other menu items until a valid data url is entered and make settings tab active with all others inactive
+//	$("#menu-list").addClass("disabled").removeClass("active");
+//	$("#menu-new").addClass("disabled").removeClass("active");
+//	$("#menu-loaddata").addClass("disabled").removeClass("active");
+//	$("#menu-settings").addClass("active");
+//});
+//
+//
+//
 
