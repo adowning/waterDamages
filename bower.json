@@ -29,7 +29,9 @@
     "localforage": "~1.2.1",
     "angular-bootstrap": "~0.13.0",
     "bootcards": "~1.1.2",
-    "angular-modal-service": "~0.6.6"
+    "angular-modal-service": "~0.6.6",
+    "gmaps": "~0.4.19"
+
   },
   "moduleType": [
     "amd",

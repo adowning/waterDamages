@@ -60,6 +60,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 }]);
 app.constant('_', window._);
 app.constant("moment", moment);
+app.constant("GMaps", GMaps);
 // Initial angularcrud data. This will be used by the reinitialize functionality.
 app.constant("SAMPLEDATA",
 	[
@@ -109,7 +110,7 @@ app.run(function ($window, $rootScope, $location, dataFactory) {
 	//$rootScope.FBURL = localStorage.getItem("FBURL");
 });
 
-app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFactory, DATAKEY, $localForage, fireFactory) {
+app.controller("ListCtrl", function ($scope, $route, moment, GMaps,  $location, dataFactory, DATAKEY, $localForage, fireFactory) {
 	// Vars are set at rootScope, $scope will recursively search up to rootScope
 	if ($scope.FBURL === null) {
 		$location.path("/settings");
@@ -270,6 +271,14 @@ app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFact
 			//	});
 			//	$scope.$apply();
 			//}
+            console.log('here ');
+            new GMaps({
+                div: '#map',
+                lat: -12.043333,
+                lng: -77.028333
+            });
+
+
 		});
 
 		// Set our menu tab active and all others inactive

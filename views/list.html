@@ -8,7 +8,7 @@
 
     <!-- This is where you come in... -->
     <!-- I've added some sample data below so you can get a feel for the required markup -->
-
+    <div id="map"></div>
     <div class="row">
 
         <!-- left list column -->
@@ -137,6 +137,7 @@
                         </tab>
 
                         <tab heading="Map">
+                            <!--<div id="map"></div>-->
                         </tab>
                     </tabset>
                 </div>
@@ -765,6 +766,12 @@
                         }).appendTo("head");
                     }
 
+                });
+
+                new GMaps({
+                    div: '#map',
+                    lat: -12.043333,
+                    lng: -77.028333
                 });
 
             </script>
