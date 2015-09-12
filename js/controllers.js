@@ -106,7 +106,7 @@ app.run(function ($window, $rootScope, $location, dataFactory) {
 	// the returned value will be null. If null the list screen will redirect us to the settings page where it
 	// can be set.
 	// If key isn't found null is returned
-	$rootScope.FBURL = localStorage.getItem("FBURL");
+	//$rootScope.FBURL = localStorage.getItem("FBURL");
 });
 
 app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFactory, DATAKEY, $localForage, fireFactory) {
