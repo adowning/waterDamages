@@ -15,7 +15,6 @@
                 <div class="list-group-item">
                     <div ng-repeat="(key, room) in job.dayList[$index].rooms track by $index">
                         <h4>{{room.name}}</h4>
-                        <!--<label><b> 0{{room.fans}} fans 0{{room.dehus}} dehus</b></label>-->
                             <div ng-repeat="(key, equipment) in room.equipment track by $index">
                              {{equipment.id}} - {{equipment.type}}
                             </div>

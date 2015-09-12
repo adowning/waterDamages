@@ -294,8 +294,8 @@ app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFact
 app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
 	dataFactory.getById($routeParams.contactId, function (data) {
 		$scope.job = data;
-        console.log(data)
 		$scope.job.contactId = $routeParams.contactId;
+		console.log('rs '+ data.dayList[0].rooms);
 
 	});
 	$scope.deleteJob = function () {
@@ -352,8 +352,6 @@ app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeP
 			$scope.job.rooms = new Array();
 		}
 		//TODO make a jobStartDate pretty object to show
-		console.log('osd ' + $scope.job.oldStartDate);
-		console.log('sd ' + $scope.job.startDate);
 		$scope.job.oldStartDate = $scope.job.startDate;
 
 		if (!$scope.job.startDate) {
@@ -366,9 +364,9 @@ app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeP
 		$scope.df = dataFactory;
 		//$scope.job.contactId = $routeParams.contactId;
 		// We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
-		if (!$scope.online) {
-			$scope.$apply();
-		}
+		//if (!$scope.online) {
+		//	$scope.$apply();
+		//}
 
 		$scope.showForm = function () {
 
@@ -407,7 +405,7 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
 		$scope.showFields = false;
 		$scope.currentRoom = "none";
 		$scope.roomChanged = false;
-
+		console.log('rooms '+data.dayList[0].rooms);
 		$scope.changedCurrentRoomValue = function (roomNum) {
 			console.log('changed room value')
 			$scope.showFields = true;
@@ -492,7 +490,7 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
 			$scope.job.dayList.push(newDay);
 			$scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.job.account.accountName,
 				$scope.job.account.address1, $scope.job.account.phone1,
-				$scope.job.account.phone2, $scope.job.account.email,
+				$scope.job.account.phone2, $scope.job.account.email, $scope.job.account.city, $scope.job.account.zip,
 				$scope.job.startDate, $scope.job.rooms, $scope.job.dayList);
 		};
 	});
@@ -619,11 +617,10 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
 
 				}
 				var sd = new moment($scope.form.userForm.startDate.$modelValue);
-
 				$scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
 						$scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
 						$scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue, $scope.form.userForm.city.$modelValue,
-						$scope.form.userForm.zipcode.$modelValue,
+						$scope.form.userForm.zip.$modelValue,
 						sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
 				$modalInstance.close('closed');
 				return;

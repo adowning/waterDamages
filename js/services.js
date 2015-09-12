@@ -51,7 +51,6 @@ angular.module("angularcrud")
             },
             updateJobEquipment: function (id, room, roomIndex, day, fans, dehus, equipment, time) {
                 if ($rootScope.online) {
-                    console.log('tt ' + time)
                     fireFactory.updateJobEquipment(id, room, roomIndex, day, fans, dehus, equipment, time);
                 }
                 else {
@@ -171,16 +170,18 @@ angular.module("angularcrud")
             updateJob: function (id, smId, name, address, phone1, phone2, email, city, zipcode, startDate, rooms, dayList, roomChanged) {
 
                 //TODO clean out all that bullshit job info?
+                console.log('city '+city );
+                console.log('zipcodee '+zipcode);
+                console.log('rs '+rooms);
                 if (!dayList || dayList.length < 1) {
+                    console.log('has day ');
                     var day1 = {};
                     day1.date = startDate;
                     day1.rooms = [];
-
+                    console.log('here '+rooms[0].name);
                     for (var y = 0; y < rooms.length; y++) {
                         var thisRoom = {}
                         thisRoom.name = rooms[y];
-                        //thisRoom.fans = [];
-                        //thisRoom.dehus = [];
                         thisRoom.equipment = [];
                         day1.rooms.push(thisRoom)
                     }
@@ -278,8 +279,14 @@ angular.module("angularcrud")
                 $http.get($rootScope.FBURL + "companyinfo" + ".json?format=export").success(successCallback);
             },
             updateShopEquipment: function (equipment) {
+                console.log('updating shop eq ');
+                console.log(equipment)
                 if (!equipment) {
                     equipment = []
+                    //var dummyEq = {};
+                    //dummyEq.id = "system";
+                    //dummyEq.status = "Broken"
+                    //    equipment.push(dummyEq)
                 }
                 $http({
                     url: $rootScope.FBURL + "companyinfo" + ".json?format=export",
