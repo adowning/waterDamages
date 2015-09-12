@@ -227,24 +227,25 @@ app.controller("ListCtrl", function ($scope, $route, moment, $location, dataFact
 				var object = data[job];
 				var dayList = object.dayList;
 				if (dayList) {
-					var theseRooms = dayList.slice(-1)[0].rooms;
-					for (var y = 0; y < theseRooms.length; y++) {
-						var equipmentList = theseRooms[y].equipment;
-						if (equipmentList) {
-							for (var x = 0; x < equipmentList.length; x++) {
-								var equipment = equipmentList[x];
-								if (equipment.type == 'dehu') {
-									dehuList.push(equipment.id)
-
-									dehusTotal++;
-								}
-								if (equipment.type == 'fan') {
-									fansTotal++;
-									fanList.push(equipment.id)
-								}
-							}
-						}
-					}
+                    for(var i = 0; i < dayList.length; i++) {
+                        var theseRooms = dayList[i].rooms;
+                        for (var y = 0; y < theseRooms.length; y++) {
+                            var equipmentList = theseRooms[y].equipment;
+                            if (equipmentList) {
+                                for (var x = 0; x < equipmentList.length; x++) {
+                                    var equipment = equipmentList[x];
+                                    if (equipment.type == 'dehu') {
+                                        dehuList.push(equipment.id)
+                                        dehusTotal++;
+                                    }
+                                    if (equipment.type == 'fan') {
+                                        fansTotal++;
+                                        fanList.push(equipment.id)
+                                    }
+                                }
+                            }
+                        }
+                    }
 				}
 				data[job].fanList = fanList;
 				data[job].dehuList = dehuList;

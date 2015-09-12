@@ -4,11 +4,8 @@
     <list default="true" id="0d6709c0-74f3-425a-8f95-3eb712fca7ce" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/controllers.js" afterPath="$PROJECT_DIR$/js/controllers.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/services.js" afterPath="$PROJECT_DIR$/js/services.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/modal-form.html" afterPath="$PROJECT_DIR$/views/modal-form.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/viewJob-basics.html" afterPath="$PROJECT_DIR$/views/viewJob-basics.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/viewJob-equipment.html" afterPath="$PROJECT_DIR$/views/viewJob-equipment.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/viewJob.html" afterPath="$PROJECT_DIR$/views/viewJob.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/editequipment-form.html" afterPath="$PROJECT_DIR$/views/editequipment-form.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/list.html" afterPath="$PROJECT_DIR$/views/list.html" />
     </list>
     <ignored path="AngularCRUD-Firebase.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -32,75 +29,30 @@
       <file leaf-file-name="list.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/list.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.0">
-              <caret line="64" column="56" selection-start-line="64" selection-start-column="54" selection-end-line="64" selection-end-column="56" />
+            <state vertical-scroll-proportion="-229.34483">
+              <caret line="739" column="61" selection-start-line="739" selection-start-column="61" selection-end-line="739" selection-end-column="61" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="viewJob-equipment.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/viewJob-equipment.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.740741">
-              <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="controllers.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="controllers.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="8.868853">
-              <caret line="298" column="0" selection-start-line="298" selection-start-column="0" selection-end-line="298" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.6200215">
+              <caret line="238" column="0" selection-start-line="238" selection-start-column="0" selection-end-line="238" selection-end-column="0" />
               <folding>
-                <element signature="e#3639#8677#0" expanded="false" />
-                <element signature="e#15013#16474#0" expanded="false" />
-                <element signature="e#16555#19013#0" expanded="false" />
+                <element signature="e#581#1582#0" expanded="false" />
+                <element signature="e#1757#1960#0" expanded="false" />
+                <element signature="e#2237#3514#0" expanded="false" />
+                <element signature="e#9301#10464#0" expanded="false" />
+                <element signature="e#10584#12100#0" expanded="false" />
+                <element signature="e#12223#15412#0" expanded="false" />
+                <element signature="e#15523#16984#0" expanded="false" />
+                <element signature="e#17065#19523#0" expanded="false" />
+                <element signature="e#19624#23808#0" expanded="false" />
+                <element signature="e#23901#28085#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="services.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/js/services.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4131403">
-              <caret line="284" column="0" selection-start-line="284" selection-start-column="0" selection-end-line="284" selection-end-column="0" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="viewJob-basics.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/viewJob-basics.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-8.068966">
-              <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="viewJob.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/viewJob.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.637931">
-              <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="modal-form.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/modal-form.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.0">
-              <caret line="30" column="86" selection-start-line="30" selection-start-column="83" selection-end-line="30" selection-end-column="86" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -139,17 +91,17 @@
         <option value="$PROJECT_DIR$/views/view-equipment.html" />
         <option value="$PROJECT_DIR$/views/view.html" />
         <option value="$PROJECT_DIR$/lib/lodash.js" />
-        <option value="$PROJECT_DIR$/views/editequipment-form.html" />
         <option value="$PROJECT_DIR$/lib/moment.js" />
         <option value="$PROJECT_DIR$/index.html" />
-        <option value="$PROJECT_DIR$/views/list.html" />
         <option value="$PROJECT_DIR$/views/editlabor-form.html" />
         <option value="$PROJECT_DIR$/views/modal-form.html" />
-        <option value="$PROJECT_DIR$/js/controllers.js" />
         <option value="$PROJECT_DIR$/views/viewJob-basics.html" />
         <option value="$PROJECT_DIR$/views/viewJob.html" />
         <option value="$PROJECT_DIR$/views/viewJob-equipment.html" />
         <option value="$PROJECT_DIR$/js/services.js" />
+        <option value="$PROJECT_DIR$/views/editequipment-form.html" />
+        <option value="$PROJECT_DIR$/views/list.html" />
+        <option value="$PROJECT_DIR$/js/controllers.js" />
       </list>
     </option>
   </component>
@@ -224,6 +176,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="AngularCRUD-Firebase" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="waterDamages" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -528,9 +494,9 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="24" column="32" selection-start-line="24" selection-start-column="32" selection-end-line="24" selection-end-column="32" />
           <folding>
-            <element signature="e#3639#8677#0" expanded="false" />
-            <element signature="e#15013#16474#0" expanded="false" />
-            <element signature="e#16555#19013#0" expanded="false" />
+            <element signature="e#3639#9187#0" expanded="false" />
+            <element signature="e#15523#16984#0" expanded="false" />
+            <element signature="e#17065#19523#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -777,13 +743,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/editequipment-form.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25">
-          <caret line="62" column="33" selection-start-line="60" selection-start-column="23" selection-end-line="62" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-8.0">
@@ -799,37 +758,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.0">
-          <caret line="64" column="56" selection-start-line="64" selection-start-column="54" selection-end-line="64" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/modal-form.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.0">
+        <state vertical-scroll-proportion="0.33295062">
           <caret line="30" column="86" selection-start-line="30" selection-start-column="83" selection-end-line="30" selection-end-column="86" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/controllers.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="8.868853">
-          <caret line="298" column="0" selection-start-line="298" selection-start-column="0" selection-end-line="298" selection-end-column="0" />
-          <folding>
-            <element signature="e#3639#8677#0" expanded="false" />
-            <element signature="e#15013#16474#0" expanded="false" />
-            <element signature="e#16555#19013#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/viewJob-basics.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.068966">
+        <state vertical-scroll-proportion="0.53731346">
           <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
           <folding />
         </state>
@@ -837,7 +776,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/viewJob.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.637931">
+        <state vertical-scroll-proportion="0.44202065">
           <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
           <folding />
         </state>
@@ -853,10 +792,45 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/services.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4131403">
+        <state vertical-scroll-proportion="-11.967742">
           <caret line="284" column="0" selection-start-line="284" selection-start-column="0" selection-end-line="284" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/editequipment-form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.39494833">
+          <caret line="66" column="28" selection-start-line="66" selection-start-column="28" selection-end-line="66" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-229.34483">
+          <caret line="739" column="61" selection-start-line="739" selection-start-column="61" selection-end-line="739" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/controllers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6200215">
+          <caret line="238" column="0" selection-start-line="238" selection-start-column="0" selection-end-line="238" selection-end-column="0" />
+          <folding>
+            <element signature="e#581#1582#0" expanded="false" />
+            <element signature="e#1757#1960#0" expanded="false" />
+            <element signature="e#2237#3514#0" expanded="false" />
+            <element signature="e#9301#10464#0" expanded="false" />
+            <element signature="e#10584#12100#0" expanded="false" />
+            <element signature="e#12223#15412#0" expanded="false" />
+            <element signature="e#15523#16984#0" expanded="false" />
+            <element signature="e#17065#19523#0" expanded="false" />
+            <element signature="e#19624#23808#0" expanded="false" />
+            <element signature="e#23901#28085#0" expanded="false" />
           </folding>
         </state>
       </provider>
