@@ -3,13 +3,13 @@
 
 <!-- slide in off canvas menu (mobile only) -->
 
-
+<!--<div id="map"></div>-->
 <div class="container bootcards-container push-right">
 
     <!-- This is where you come in... -->
     <!-- I've added some sample data below so you can get a feel for the required markup -->
-    <div id="map"></div>
     <div class="row">
+        <!--<div style="height:100px;"  id="map"></div>-->
 
         <!-- left list column -->
         <div class="col-sm-5 bootcards-list" id="list" data-title="Contacts">
@@ -136,8 +136,13 @@
                             </table>
                         </tab>
 
-                        <tab heading="Map">
-                            <!--<div id="map"></div>-->
+                        <tab heading="Map" select="alertMe()">
+                            <!--<div style="heigth:400px; width:400px; min-height:400px;min-width:400px;max-heigth:400px; max-width:400px;"  id="map"></div>-->
+
+                            <div id="map"></div>
+
+
+                            <!--</div>-->
                         </tab>
                     </tabset>
                 </div>
@@ -768,11 +773,7 @@
 
                 });
 
-                new GMaps({
-                    div: '#map',
-                    lat: -12.043333,
-                    lng: -77.028333
-                });
-
             </script>
-            </div></div></div>
+        </div>
+    </div>
+</div>

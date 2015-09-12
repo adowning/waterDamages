@@ -82,6 +82,7 @@ angular.module("angularcrud")
                         console.log('completed')
                     },
                     success: function (json) {
+                        console.log(json)
                         thisJob = json.items[0];
                         $.ajax({
                             type: "GET",

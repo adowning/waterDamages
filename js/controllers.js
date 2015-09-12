@@ -115,6 +115,9 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps,  $location, 
 	if ($scope.FBURL === null) {
 		$location.path("/settings");
 	} else {
+        var map = {};
+
+
 		fireFactory.getShopEquipment(function (data) {
 			$scope.company = data;
 
@@ -175,7 +178,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps,  $location, 
 			}
 
 			$scope.submit = function () {
-
+console.log('adsf ' + $scope.selectedEquipmentToEdit.purchaseDate);
 				var purchaseDate = new moment($scope.purchaseDate.value);
 				$scope.selectedEquipmentToEdit.purchaseDate = purchaseDate.toString()
 
@@ -220,6 +223,15 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps,  $location, 
 		});
 		dataFactory.getAll(function (data) {
 
+            map = new GMaps({
+                div: '#map',
+                height: '400px',
+                width: '550px',
+                zoom: 12,
+                lat:  32.311730,
+                lng: -95.264658
+            });
+
 			var fansTotal = 0;
 			var dehusTotal = 0;
 			for (var job in data) {
@@ -250,8 +262,25 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps,  $location, 
 				}
 				data[job].fanList = fanList;
 				data[job].dehuList = dehuList;
+                var address = data[job].account.address1 + " " + data[job].account.city + ", " + data[job].account.zip;
+                console.log(address);
 
+                GMaps.geocode({
+                    address: address,
+                    callback: function(results, status) {
+                        if (status == 'OK') {
+                            var latlng = results[0].geometry.location;
+                            //map.setCenter(latlng.lat(), latlng.lng());
+                            map.addMarker({
+                                lat: latlng.lat(),
+                                lng: latlng.lng(),
+                                infoWindow: { content: "<b>"+data[job].accountName+"</b><br>" + data[job].fanList + "<br>" + data[job].dehuList }
+                            });
+                        }
+                    }
+                });
 			}
+            map.setCenter(32.311730, -95.264658, function(callback){console.log('setting center')})
 			$scope.fansTotal = fansTotal;
 			$scope.dehusTotal = dehusTotal;
 			$scope.contacts = data;
@@ -271,17 +300,20 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps,  $location, 
 			//	});
 			//	$scope.$apply();
 			//}
-            console.log('here ');
-            new GMaps({
-                div: '#map',
-                lat: -12.043333,
-                lng: -77.028333
-            });
+
+
+            //var addressString =
+
 
 
 		});
+        $scope.alertMe = function() {
+            setTimeout(function() {
+                map.refresh();
 
-		// Set our menu tab active and all others inactive
+            });
+        };
+        // Set our menu tab active and all others inactive
 		$("#menu-list").addClass("active");
 		$("#menu-new").removeClass("active");
 		$("#menu-loaddata").removeClass("active");
