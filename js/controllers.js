@@ -97,7 +97,7 @@ app.run(function ($window, $rootScope, $location, dataFactory) {
 
 	// Variable containing network status, note we don't (but should) test access to our_data.firebaseio.com
 	$rootScope.online = $window.navigator.onLine;
-
+	$rootScope.FBURL = "https://andrewscleaning.firebaseio.com/"
 	// Set our on/off line functions as event listeners
 	$window.addEventListener("offline", onOffline, false);
 	$window.addEventListener("online", onOnline, false);
