@@ -50,8 +50,8 @@ app.config(['$routeProvider', function ($routeProvider) {
 		})
 
 		.when("/settings", {
-			controller:  "SettingsCtrl",
-			templateUrl: "./views/settings.html"
+			controller:  "ListCtrl",
+			templateUrl: "./views/list.html"
 		})
 
 		.otherwise({
