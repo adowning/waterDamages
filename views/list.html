@@ -17,14 +17,14 @@
                 <div class="panel-body">
                     <div class="search-form">
                         <div class="row">
-                            <div class="col-xs-9">
+                            <div class="col-xs-8">
                                 <div class="form-group">
                                     <input type="text" ng-model="jobLookup" class="form-control"
                                            placeholder="Job Number">
                                     <i class="fa fa-search"></i>
                                 </div>
                             </div>
-                            <div class="col-xs-3">
+                            <div class="col-xs-4">
                                 <a class="btn btn-primary btn-block"
                                    ng-click="addNewJob(jobLookup)"
                                 >
@@ -59,8 +59,13 @@
                                     <!--<p class="list-group-item-text">{{job.address}}</p>-->
                                 </div>
                                 <div class="col-sm-6">
-                                    <p class="list-group-item-text">job# {{job.orderNumber}}</p>
+                                    <div ng-show="job.startDate">
+                                        <p class="list-group-item-text">{{job.prettyStartDate}}</p>
 
+                                    </div>
+                                    <div ng-show="!job.startDate">
+                                        <span style="color:red">Needs startdate</span>
+                                    </div>
                                     <p class="list-group-item-text">{{job.account.address1}}, {{job.account.city}}
                                         {{job.account.zip}}</p>
                                 </div>
@@ -171,7 +176,7 @@
 
             <div class="panel panel-default bootcards-richtext">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Edit Equipment</h3>
+                    <h3 class="panel-title">Edit Shop Equipment</h3>
                 </div>
                 <div class="panel-body">
 
@@ -199,6 +204,45 @@
                     <!--<hr />-->
 
                     <tabset justified="true">
+
+                        <tab heading="List">
+                            <div ng-show="company.shop.length < 1">
+                                <div class="alert alert-danger" role="alert">You have no equipment in your shop.</div>
+                            </div>
+                            <div ng-show="company.shop.length >= 1">
+
+                            <div class="panel panel-default bootcards-richtext">
+                                <!--<div class="panel-heading">-->
+                                <!--<h3 class="panel-title">Equipment Locations</h3>-->
+                                <!--</div>-->
+                                <div class="panel-body">
+                                    <table class="table table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <th>Status</th>
+                                            <th>ID</th>
+                                            <th>Type</th>
+                                            <th>Model</th>
+                                            <th>Purchase Date</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="equip in company.shop">
+
+                                            <td>{{equip.status}}</td>
+                                            <td>{{equip.id}}</td>
+                                            <td>{{equip.type}}</td>
+                                            <td>{{equip.model}}</td>
+                                            <td>{{equip.prettyDate}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                                </div>
+                        </tab>
                         <tab heading="Edit or Add">
                             <br>
 
@@ -299,39 +343,6 @@
                                 </form>
                             </div>
                         </tab>
-                        <tab heading="List">
-                            <div class="panel panel-default bootcards-richtext">
-                                <!--<div class="panel-heading">-->
-                                <!--<h3 class="panel-title">Equipment Locations</h3>-->
-                                <!--</div>-->
-                                <div class="panel-body">
-                                    <table class="table table-condensed">
-                                        <thead>
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>ID</th>
-                                            <th>Type</th>
-                                            <th>Model</th>
-                                            <th>Purchase Date</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr ng-repeat="equip in company.shop">
-
-                                            <td>{{equip.status}}</td>
-                                            <td>{{equip.id}}</td>
-                                            <td>{{equip.type}}</td>
-                                            <td>{{equip.model}}</td>
-                                            <td>{{equip.prettyDate}}</td>
-
-                                        </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                            </div>
-                        </tab>
-
                         <tab heading="Options">Long Labeled Justified content</tab>
                     </tabset>
                 </div>

@@ -31,7 +31,6 @@
     "bootcards": "~1.1.2",
     "angular-modal-service": "~0.6.6",
     "gmaps": "~0.4.19"
-
   },
   "moduleType": [
     "amd",

@@ -145,8 +145,8 @@ angular.module("angularcrud")
             }
         }
     })
-// Data interface, called by dataFactory for server storage. This is used when we have a network connection. For
-// firebase adding .json to the URL returns JSON format, ?format=export adds the .priority attribute to the output
+    // Data interface, called by dataFactory for server storage. This is used when we have a network connection. For
+    // firebase adding .json to the URL returns JSON format, ?format=export adds the .priority attribute to the output
     .factory("fireFactory", function ($rootScope, moment, $http, $location, $firebase) {
         return {
             getAll: function (successCallback) {
@@ -171,15 +171,15 @@ angular.module("angularcrud")
             updateJob: function (id, smId, name, address, phone1, phone2, email, city, zipcode, startDate, rooms, dayList, roomChanged) {
 
                 //TODO clean out all that bullshit job info?
-                console.log('city '+city );
-                console.log('zipcodee '+zipcode);
-                console.log('rs '+rooms);
+                console.log('city ' + city);
+                console.log('zipcodee ' + zipcode);
+                console.log('rs ' + rooms);
                 if (!dayList || dayList.length < 1) {
                     console.log('has day ');
                     var day1 = {};
                     day1.date = startDate;
                     day1.rooms = [];
-                    console.log('here '+rooms[0].name);
+                    console.log('here ' + rooms[0].name);
                     for (var y = 0; y < rooms.length; y++) {
                         var thisRoom = {}
                         thisRoom.name = rooms[y];
@@ -259,8 +259,8 @@ angular.module("angularcrud")
                     });
 
                 }).error(function (error) {
-                    console.log(error)
-                })
+                        console.log(error)
+                    })
 
                     .error(function (error) {
                         console.log(error)
@@ -322,8 +322,8 @@ angular.module("angularcrud")
                 }).success(function (data, status, headers, config) {
                     console.log('s	')
                 }).error(function (error) {
-                    console.log(error)
-                })
+                        console.log(error)
+                    })
 
                     .error(function (error) {
                         console.log(error)
@@ -370,8 +370,8 @@ angular.module("angularcrud")
                     //});
 
                 }).error(function (error) {
-                    console.log(error)
-                })
+                        console.log(error)
+                    })
 
                     .error(function (error) {
                         console.log(error)
@@ -396,10 +396,10 @@ angular.module("angularcrud")
             //},
             add: function (first, last) {
                 $http.post($rootScope.FBURL + "angularcrud/" + ".json?format=export", {
-                    firstname: first,
-                    lastname: last,
-                    ".priority": last.toLowerCase() + " " + first.toLowerCase()
-                })
+                        firstname: first,
+                        lastname: last,
+                        ".priority": last.toLowerCase() + " " + first.toLowerCase()
+                    })
                     .success(function () {
                         $location.path("/");
                     });
@@ -457,7 +457,7 @@ angular.module("angularcrud")
         }
     })
 
-// Data interface called by dataFactory for local storage. This is used when we don't have a network connection.
+    // Data interface called by dataFactory for local storage. This is used when we don't have a network connection.
     .factory("forageFactory", function ($rootScope, $location, DATAKEY, $localForage) {
         return {
             getAll: function (successCallback) {
