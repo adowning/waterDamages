@@ -61,11 +61,16 @@
                                 <div class="col-sm-6">
                                     <div ng-show="job.startDate">
                                         <p class="list-group-item-text">{{job.prettyStartDate}}</p>
+                                        <div ng-show="!job.rooms">
+                                            <span style="color:red">Needs a room</span>
+                                        </div>
 
                                     </div>
                                     <div ng-show="!job.startDate">
                                         <span style="color:red">Needs startdate</span>
                                     </div>
+
+
                                     <p class="list-group-item-text">{{job.account.address1}}, {{job.account.city}}
                                         {{job.account.zip}}</p>
                                 </div>
@@ -95,7 +100,6 @@
 
         <!--list details column-->
         <div class="col-sm-7 bootcards-cards hidden-xs">
-
             <div class="panel panel-default bootcards-richtext">
                 <div class="panel-heading">
                     <h3 class="panel-title">Equipment Locations</h3>
@@ -104,6 +108,8 @@
 
                     <tabset justified="true">
                         <tab heading="List">
+                            <div class="panel panel-default bootcards-richtext">
+                                <div class="panel-body">
                             <table class="table table-condensed">
                                 <thead>
                                 <tr>
@@ -139,6 +145,7 @@
                                 </tr>
                                 </tbody>
                             </table>
+                                    </div></div>
                         </tab>
 
                         <tab heading="Map" select="alertMe()">
@@ -152,56 +159,12 @@
                     </tabset>
                 </div>
             </div>
-            <!--end rich text card-->
-            <!--<div class="panel panel-default bootcards-richtext">-->
-            <!--<div class="panel-heading">-->
-            <!--<h3 class="panel-title">About this page</h3>-->
-            <!--</div>-->
-            <!--<div class="panel-body">-->
-            <!--<p>This page shows you how to create a master/detail view using Bootcards. Main features:</p>-->
-            <!--<ul>-->
-            <!--<li>Markup based on <a href="http://getbootstrap.com" target="_blank">Bootstrap 3+</a>.</li>-->
-            <!--<li>Near-native iOS and Android look (there's one for Desktop too).</li>-->
-            <!--<li>Fixed header and footer.</li>-->
-            <!--<li>Independent scrolling columns.</li>-->
-            <!--<li>Automatic single pane portrait mode (similar to the iOS Mail app): make sure you also view this page using a tablet and rotate to portrait.</li>-->
-            <!--<li>Off-canvas menu. On this page it is configured to push the main content away, it can also be configured as an overlay.</li>-->
-            <!--</ul>-->
-            <!--<p>-->
-            <!--This is only a sample page: it is not meant to be fully functional. We've used <a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome</a> for the icons and have include FTLabs' <a href="https://github.com/ftlabs/fastclick" target="_blank">FastClick</a> library to make tapping links on iOS faster.-->
-            <!--</p>-->
-
-            <!--</div>-->
-            <!--</div>&lt;!&ndash;end rich text card&ndash;&gt;-->
 
             <div class="panel panel-default bootcards-richtext">
                 <div class="panel-heading">
                     <h3 class="panel-title">Edit Shop Equipment</h3>
                 </div>
                 <div class="panel-body">
-
-
-                    <!--<tabset>-->
-                    <!--<tab heading="Static title">Static content</tab>-->
-                    <!--<tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">-->
-                    <!--{{tab.content}}-->
-                    <!--</tab>-->
-                    <!--<tab select="alertMe()">-->
-                    <!--<tab-heading>-->
-                    <!--<i class="glyphicon glyphicon-bell"></i> Alert!-->
-                    <!--</tab-heading>-->
-                    <!--I've got an HTML heading, and a select callback. Pretty cool!-->
-                    <!--</tab>-->
-                    <!--</tabset>-->
-
-                    <!--<hr />-->
-
-                    <!--<tabset vertical="true" type="pills">-->
-                    <!--<tab heading="Vertical 1">Vertical content 1</tab>-->
-                    <!--<tab heading="Vertical 2">Vertical content 2</tab>-->
-                    <!--</tabset>-->
-
-                    <!--<hr />-->
 
                     <tabset justified="true">
 
@@ -212,9 +175,6 @@
                             <div ng-show="company.shop.length >= 1">
 
                             <div class="panel panel-default bootcards-richtext">
-                                <!--<div class="panel-heading">-->
-                                <!--<h3 class="panel-title">Equipment Locations</h3>-->
-                                <!--</div>-->
                                 <div class="panel-body">
                                     <table class="table table-condensed">
                                         <thead>
@@ -233,7 +193,7 @@
                                             <td>{{equip.id}}</td>
                                             <td>{{equip.type}}</td>
                                             <td>{{equip.model}}</td>
-                                            <td>{{equip.prettyDate}}</td>
+                                            <td>{{equip.prettyPurchaseDate}}</td>
 
                                         </tr>
                                         </tbody>
@@ -274,7 +234,7 @@
                                     <div class="form-group">
 
                                         <label>Type</label>
-                                        <select ng-model="selectedEquipmentToEdit.type" required>
+                                        <select name="type" ng-model="selectedEquipmentToEdit.type" required>
                                             <option ng-repeat="obj in equipTypes" value="{{obj.type}}">{{obj.type}}
                                             </option>
                                         </select>
@@ -311,7 +271,7 @@
                                     <div class="form-group">
 
                                         <label>Status</label>
-                                        <select ng-model="selectedEquipmentToEdit.status" required>
+                                        <select name="status" ng-model="selectedEquipmentToEdit.status" required>
                                             <option ng-repeat="obj in equipStatus" value="{{obj.status}}">
                                                 {{obj.status}}
                                             </option>
@@ -322,7 +282,7 @@
 
                                     </div>
 <span ng-show="adding">
-     <button class="btn btn-success" ng-click="addingEquipment()"
+     <button class="btn btn-success" ng-click="addingEquipment(form.equipEditForm)"
              ng-disabled="form.equipEditForm.$invalid">Add
      </button>
 </span>

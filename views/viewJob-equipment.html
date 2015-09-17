@@ -1,55 +1,62 @@
 <div id="contactCard" disabled="true">
-
-<div id="days" ng-show="job.startDate && job.rooms.length >= 1"  disabled="true">
-    <div ng-repeat="days in job.dayList track by $index">
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <h3 class="panel-title pull-left">
-                    <b> Day {{$index + 1}}</b>  ({{job.dayList[$index].date}})</h3>
-            </div>
-            <tabset justified="true">
-                <tab heading="Equipment">
-
-
-            <div class="list-group">
-                <div class="list-group-item">
-                    <div ng-repeat="(key, room) in job.dayList[$index].rooms track by $index">
-                        <h4>{{room.name}}</h4>
-                            <div ng-repeat="(key, equipment) in room.equipment track by $index">
-                             {{equipment.id}} - {{equipment.type}}
+    <div id="days" ng-show="job.startDate && job.rooms.length >= 1" disabled="true">
+        <div ng-repeat="days in job.dayList track by $index">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">
+                        <b> Day {{$index + 1}}</b> ({{job.dayList[$index].date}})</h3>
+                </div>
+                <tabset justified="true">
+                    <tab heading="Equipment">
+                        <div class="panel-body">
+                            <div ng-repeat="(key, room) in job.dayList[$index].rooms track by $index">
+                                <h5><u>Room {{$index +1}} - {{room.name}}</u></h5>
+                                <div ng-repeat="(key, equipment) in room.equipment track by $index">
+                                    {{equipment.id}} - {{equipment.type}}
+                                </div>
                             </div>
-                </div>
+                        </div>
+                        <div class="panel-footer">
+                            <small class="pull-left"></small>
+                            <a class="btn btn-primary pull-right" ng-click="showForm($index)" <i
+                                class="fa fa-pencil"></i>
+                            <span>Edit</span></a>
+                        </div>
+                    </tab>
+                    <tab heading="Labor">
+                        <div class="panel-body">
+                            <div ng-repeat="(key, room) in job.dayList[$index].rooms track by $index">
+                                <h5><u>Room {{$index +1}} - {{room.name}}</u></h5>
+                                <div ng-show="room.labor">
+                                    <table class="table table-condensed">
+                                        <th>Work</th>
+                                        <th>Amount</th>
+                                        <tr ng-repeat="(key, labor) in room.labor track by $index">
+                                            <td>{{key}}</td>
+                                            <td>{{labor}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div ng-show="!room.labor"><span style="color:red">No labor performed</span></div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <small class="pull-left"></small>
+                            <a class="btn btn-primary pull-right" ng-click="showLaborForm($index)" <i
+                                class="fa fa-pencil"></i>
+                            <span>Edit</span></a>
+                        </div>
+                    </tab>
+                </tabset>
             </div>
-                </div>
-                    <div class="panel-footer">
-                        <small class="pull-left"></small>
-                        <a class="btn btn-primary pull-right" ng-click="showForm($index)" <i class="fa fa-pencil"></i>
-                        <span >Edit</span></a>
-                    </div>
-                </tab>
-                <tab heading="Labor">
-                    <div class="panel-footer">
-                        <small class="pull-left"></small>
-                        <a class="btn btn-primary pull-right" ng-click="showLaborForm($index)" <i class="fa fa-pencil"></i>
-                        <span >Edit</span></a>
-                    </div>
-                </tab>
-            </tabset>
-            <!--<div class="panel-footer">-->
-                <!--<small class="pull-left"></small>-->
-                <!--<a class="btn btn-primary pull-right" ng-click="showForm($index)" <i class="fa fa-pencil"></i>-->
-                <!--<span >Edit</span></a>-->
-            <!--</div>-->
         </div>
-
-
     </div>
 
-</div>
-
-    <small class="pull-left"></small>
-    <a class="btn btn-primary pull-left" ng-click="addDay()" <i class="fa fa-pencil"></i>
-    <span >Add Day</span> <span>    </span>   </a>
+    <a class="btn btn-primary" ng-click="addDay()" <i class="fa fa-pencil"></i>
+    <span>Add Day</span></a>
+    <a class="btn btn-primary" ng-click="completeWork()" <i class="fa fa-pencil"></i>
+    <span>Mark Completed</span></a>
     <a class="btn btn-primary" href="#/view/{{job.contactId}}"
     <span>Done</span></a>
+
 </div>

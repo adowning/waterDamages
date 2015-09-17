@@ -1,15 +1,7 @@
 "use strict";
 
-/* We need a dot in the $scope variable. We cannot just create $scope.contactId and use it
- * with a ng-xx directive, instead we create contactId as a contact property ($scope.contact.contactId).
- *
- * http://zcourts.com/2013/05/31/angularjs-if-you-dont-have-a-dot-youre-doing-it-wrong/
- */
-
-// Define our application module.
 var app = angular.module("angularcrud", ["ui.bootstrap", "ngRoute", "ngMessages", "firebase", 'LocalForageModule', 'ajoslin.promise-tracker']);
 
-// Configure our applications routing.
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
         .when("/", {
@@ -61,30 +53,17 @@ app.config(['$routeProvider', function ($routeProvider) {
 app.constant('_', window._);
 app.constant("moment", moment);
 app.constant("GMaps", GMaps);
-// Initial angularcrud data. This will be used by the reinitialize functionality.
-app.constant("SAMPLEDATA",
-    [
-        {"firstname": "Fred", "lastname": "Flintstone"},
-        {"firstname": "Wilma", "lastname": "Flintstone"},
-        {"firstname": "Barney", "lastname": "Rubble"},
-        {"firstname": "Betty", "lastname": "Rubble"}
-    ]);
-
-// Offline data storage key used by localForage. This will be the document key in IndexedDB.
 app.constant("DATAKEY", "AngularCrudData");
 
-// Called on application start up. We use this to do application setup.
-app.run(function ($window, $rootScope, $location, dataFactory) {
+app.run(function ($window, $rootScope, $location, fireFactory) {
 
     // Function to run when we transition to being online
     function onOnline() {
         $rootScope.$apply(function () {
             // If we were previously offline, push all local changes to the server
-            if (!$rootScope.online) {
-                //TODO removed this... had to do with local shit, may need to return for something else
-                //dataFactory.updateAllContacts();
-                // $scope.$apply();
-            }
+            //if (!$rootScope.online) {
+            //    $rootScope.online = false;
+            //}
             $rootScope.online = true;
         });
     }
@@ -110,7 +89,7 @@ app.run(function ($window, $rootScope, $location, dataFactory) {
     //$rootScope.FBURL = localStorage.getItem("FBURL");
 });
 
-app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, dataFactory, DATAKEY, $localForage, fireFactory) {
+app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
     // Vars are set at rootScope, $scope will recursively search up to rootScope
     if ($scope.FBURL === null) {
         $location.path("/settings");
@@ -124,7 +103,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, d
             $scope.changeSelectedEquipmentToEdit = function (equip) {
                 $scope.selectedEquipmentToEdit = equip;
 
-                var m = new moment($scope.selectedEquipmentToEdit.purchaseDate)
+                var m = new moment($scope.selectedEquipmentToEdit.purchaseDate.value)
 
                 $scope.purchaseDate = {
                     value: new Date(m.format('YYYY, MM, DD').toString())
@@ -167,8 +146,15 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, d
                 $scope.selectedEquipmentToEdit = {};
                 $scope.adding = true;
             }
-            $scope.addingEquipment = function () {
-                console.log('adding ' + $scope.selectedEquipmentToEdit.id);
+            $scope.addingEquipment = function (asdf) {
+                //console.log('adding ' + $scope.selectedEquipmentToEdit.id);
+                $scope.equipmentBeingAdded = asdf;
+                var m = new moment($scope.equipmentBeingAdded.purchaseDate.value)
+
+                $scope.purchaseDate = {
+                    value: new Date(m.format('YYYY, MM, DD').toString())
+                };
+                console.log('asdf' + asdf)
             }
             $scope.cancel = function () {
                 console.log('canceling ');
@@ -177,22 +163,58 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, d
             }
 
             $scope.submit = function () {
-                var purchaseDate = new moment($scope.purchaseDate.value);
-                $scope.selectedEquipmentToEdit.purchaseDate = purchaseDate.toString()
+                if($scope.equipmentBeingAdded) {
+                    var newEquipment = {};
+                    newEquipment.id = $scope.equipmentBeingAdded.id.$viewValue;
+                    newEquipment.purchaseDate = {}
+                    newEquipment.purchaseDate.value = $scope.equipmentBeingAdded.purchaseDate.$viewValue;
+                    newEquipment.type = $scope.equipmentBeingAdded.type.$viewValue;
+                    newEquipment.model = $scope.equipmentBeingAdded.model.$viewValue;
+                    newEquipment.status = $scope.equipmentBeingAdded.status.$viewValue;
 
-                if ($scope.selectedEquipmentToEdit.id && $scope.selectedEquipmentToEdit.type && $scope.selectedEquipmentToEdit.model
-                    && $scope.selectedEquipmentToEdit.purchaseDate && $scope.selectedEquipmentToEdit.status) {
-                    fireFactory.updateShopEquipment(
-                        $scope.company.shop
-                    )
-                    var millisecondsToWait = 1500;
-                    setTimeout(function () {
-                        $route.reload();
+                    var tempDate = new moment($scope.equipmentBeingAdded.purchaseDate.$viewValue)
+                    newEquipment.prettyPurchaseDate = tempDate.format('MM/DD/YYYY');
+                    $scope.company.shop.push(newEquipment)
 
-                    }, millisecondsToWait);
+                    if ($scope.equipmentBeingAdded.id.$viewValue && $scope.equipmentBeingAdded.type.$viewValue &&
+                        $scope.equipmentBeingAdded.model.$viewValue
+                        && $scope.equipmentBeingAdded.purchaseDate.$viewValue && $scope.equipmentBeingAdded.status.$viewValue) {
+                        fireFactory.updateShopEquipment(
+                            $scope.company.shop
+                        )
+                        var millisecondsToWait = 1500;
+                        setTimeout(function () {
+                            $route.reload();
 
-                } else {
-                    alert('Error: Not all equipment information was filled out, please redo form.')
+                        }, millisecondsToWait);
+
+                    } else {
+                        alert('Error: Not all equipment information was filled out, please redo form.')
+                        return;
+                    }
+                    return;
+                }
+                if($scope.selectedEquipmentToEdit) {
+                    $scope.selectedEquipmentToEdit.purchaseDate.value = $scope.purchaseDate.value;
+
+                    var tempDate = new moment($scope.purchaseDate.value)
+                    $scope.selectedEquipmentToEdit.prettyPurchaseDate = tempDate.format('MM/DD/YYYY');
+
+                    if ($scope.selectedEquipmentToEdit.purchaseDate.value && $scope.selectedEquipmentToEdit.id &&
+                        $scope.selectedEquipmentToEdit.type
+                        && $scope.selectedEquipmentToEdit.model && $scope.selectedEquipmentToEdit.status) {
+                        fireFactory.updateShopEquipment(
+                            $scope.company.shop
+                        )
+                        var millisecondsToWait = 1500;
+                        setTimeout(function () {
+                            $route.reload();
+
+                        }, millisecondsToWait);
+
+                    } else {
+                        alert('Error: Not all equipment information was filled out, please redo form.')
+                    }
                 }
             };
             var tempArray = [];
@@ -218,7 +240,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, d
             $scope.shopDehus = shopDehus;
             $scope.company.shop = tempArray;
         });
-        dataFactory.getAll(function (data) {
+        fireFactory.getAll(function (data) {
 
             map = new GMaps({
                 div: '#map',
@@ -261,8 +283,13 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, d
                 }
                 data[job].fanList = fanList;
                 data[job].dehuList = dehuList;
-                var tempDate = new moment(data[job].startDate)
-                data[job].prettyStartDate = tempDate.format('MM/DD/YYYY');
+
+                var d = new Date(data[job].startDate)
+                if(tempDate){
+                    var tempDate = new moment(d.toISOString())
+                    data[job].prettyStartDate = tempDate.format('MM/DD/YYYY');
+                }
+
 
                 var address = {};
                 address.add = data[job].account.address1 + " " + data[job].account.city + ", " + data[job].account.zip;
@@ -276,7 +303,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, d
             })
             for (var i = 0; i < addresses.length; i++) {
                 geoCode(addresses[i], GMaps, map, function () {
-                    console.log('done geocoding')
+
                 });
             }
             $scope.fansTotal = fansTotal;
@@ -299,7 +326,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, d
     $scope.addNewJob = function (jobID) {
         //TODO this needs to refresh page after job added .. such a fucking hack lol
         console.log('adding new job ' + $scope.contacts)
-        dataFactory.addJob(jobID, $scope.contacts);
+        fireFactory.addJob(jobID, $scope.contacts);
         var millisecondsToWait = 1500;
         setTimeout(function () {
             $route.reload();
@@ -310,12 +337,10 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, d
 
 });
 
-app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
-    dataFactory.getById($routeParams.contactId, function (data) {
+app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
+    fireFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
-        console.log('rs ' + data.dayList[0].rooms);
-
     });
     $scope.deleteJob = function () {
         console.log('deleting ' + $scope.job)
@@ -346,7 +371,7 @@ app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams,
         if (fans > 0 || dehus > 0) {
             alert('you cannot delete a job that still has equipment on it')
         } else {
-            dataFactory.delete($scope.job.contactId)
+            fireFactory.delete($scope.job.contactId)
         }
     }
     $("#menu-list").removeClass("active");
@@ -355,8 +380,8 @@ app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams,
     $("#menu-settings").removeClass("active");
 });
 
-app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
-    dataFactory.getById($routeParams.contactId, function (data) {
+app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
+    fireFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
         if ($scope.job.rooms) {
@@ -380,7 +405,7 @@ app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeP
             $scope.day1Show = true;
         }
         $scope.formDisabled = false;
-        $scope.df = dataFactory;
+        $scope.df = fireFactory;
         //$scope.job.contactId = $routeParams.contactId;
         // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
         //if (!$scope.online) {
@@ -416,9 +441,9 @@ app.controller("ViewJobBasicsCtrl", function ($modal, $scope, $location, $routeP
     $("#menu-settings").removeClass("active");
 });
 
-app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
+app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
 
-    dataFactory.getById($routeParams.contactId, function (data) {
+    fireFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
         $scope.showFields = false;
@@ -434,7 +459,7 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
             $scope.roomChanged = true;
         }
 
-        $scope.df = dataFactory;
+        $scope.df = fireFactory;
 
         if (!$scope.online) {
             $scope.$apply();
@@ -493,7 +518,6 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
         $scope.addDay = function () {
 
             var date = new moment($scope.job.dayList.slice(-1)[0].date);//gets last date in array
-            //date.setDate(date.getDate() + 1);//adds a day
             date.add('days', 1)
             var newDay = {};
             newDay.rooms = [];
@@ -501,8 +525,6 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
             for (var y = 0; y < $scope.job.rooms.length; y++) {
                 var thisRoom = {}
                 thisRoom.name = $scope.job.rooms[y];
-                //thisRoom.fans = [];
-                //thisRoom.dehus = [];
                 thisRoom.equipment = [];
                 newDay.rooms.push(thisRoom)
             }
@@ -516,7 +538,7 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
 
     //now load other jobs so when adding equipment
     //we can see if it is already being used
-    dataFactory.getAll(function (data) {
+    fireFactory.getAll(function (data) {
         $scope.allJobs = data;
     });
 
@@ -526,8 +548,8 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
     $("#menu-settings").removeClass("active");
 });
 
-app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, dataFactory, $filter, $http) {
-    dataFactory.getById($routeParams.contactId, function (data) {
+app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
+    fireFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
         if ($scope.job.rooms) {
@@ -551,7 +573,7 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, da
             $scope.day1Show = true;
         }
         $scope.formDisabled = false;
-        $scope.df = dataFactory;
+        $scope.df = fireFactory;
         //$scope.job.contactId = $routeParams.contactId;
         // We are offline. Localforage operations happen outside of Angular's view, tell Angular data changed
         if (!$scope.online) {
@@ -969,21 +991,6 @@ var LaborInstanceCtrl = function ($scope, fireFactory, $modalInstance, laborForm
 
 };
 
-//GMaps.geocode({
-//    address: address,
-//    callback: function (results, status) {
-//        console.log(address + " " + Math.floor(Date.now()))
-//        if (status == 'OK') {
-//            var latlng = results[0].geometry.location;
-//            //map.setCenter(latlng.lat(), latlng.lng());
-//            map.addMarker({
-//                lat: latlng.lat(),
-//                lng: latlng.lng(),
-//                infoWindow: {content: "<b>" + data[job].accountName + "</b><br>" + data[job].fanList + "<br>" + data[job].dehuList}
-//            });
-//        }
-//    }
-//});
 function geoCode(address, GMaps, map, callback) {
     var coords = [];
     var currAddress;
