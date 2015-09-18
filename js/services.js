@@ -60,7 +60,7 @@ angular.module("angularcrud")
                                                 $location.path("/");
                                             });
 
-                                    }else{
+                                    } else {
                                         var exists = false;
 
                                         for (var x in currentJobs) {
@@ -94,6 +94,8 @@ angular.module("angularcrud")
                                 var companyID = thisJob.companyID;
                                 var createdBy = thisJob.createdBy;
                                 var accountID = thisJob.accountID;
+                                var orderNumber = thisJob.orderNumber;
+                                var orderType = thisJob.orderType;
 
                                 thisJob = {};
                                 thisJob.accountName = account.accountName;
@@ -102,8 +104,10 @@ angular.module("angularcrud")
                                 thisJob.workCompleted = false;
                                 thisJob.invoiced = false;
                                 thisJob.companyID = companyID;
+                                thisJob.orderNumber = orderNumber;
                                 thisJob.account = account;
                                 thisJob.createdBy = createdBy;
+                                thisJob.orderType = orderType;
                                 $location.path("/");
                             }
                         });
@@ -213,7 +217,7 @@ angular.module("angularcrud")
                     method: "PATCH"
                 });
             },
-            updateJobEquipment: function (id, room, roomIndex, day, fans, dehus, equipment, time) {
+            updateJobEquipment: function (id, room, roomIndex, day, fans, dehus, equipment, labor, time) {
 
                 $http({
                     url: $rootScope.FBURL + "angularcrud/" + id + "/dayList/" + day + ".json?format=export",
@@ -236,7 +240,8 @@ angular.module("angularcrud")
                     data: {
                         fans: fans,
                         dehus: dehus,
-                        equipment: equipment
+                        equipment: equipment,
+                        labor: labor
                     },
                     method: "PATCH"
                 }).success(function (data, status, headers, config) {
@@ -296,6 +301,47 @@ angular.module("angularcrud")
                 //    }, name.toLowerCase());
                 //}
                 //$location.path("/");
+            },
+            uploadImage: function (job, image) {
+
+                var fileReader = new FileReader();
+
+                fileReader.onload = function (fileLoadedEvent) {
+
+                    var srcData = fileLoadedEvent.target.result; // <--- data: base64
+                    var imageList = job.images;
+                    if (!imageList) {
+                        imageList = [];
+                    }
+                    var data = {};
+                    data.data = srcData;
+                    data.day = 'aDay';
+                    data.room = 'aRoom';
+                    imageList.push(data);
+
+
+                    $http({
+                        url: $rootScope.FBURL + "angularcrud/" + job.contactId + ".json?format=export",
+                        data: {
+                            images: imageList
+                        },
+                        method: "PATCH"
+                    }).success(function (data) {
+
+                    });
+
+                };
+
+                fileReader.readAsDataURL(image);
+
+            },
+            getImage: function (i, successCallback) {
+                console.log('b')
+                $http({
+                    url: $rootScope.FBURL + "pictures/pic/" + ".json?format=export",
+
+                    method: "GET"
+                }).success(successCallback);
             }
         }
     })

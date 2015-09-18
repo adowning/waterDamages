@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module("angularcrud", ["ui.bootstrap", "ngRoute", "ngMessages", "firebase", 'LocalForageModule', 'ajoslin.promise-tracker']);
+var app = angular.module("angularcrud", ["ngFileUpload", "ui.bootstrap", "ngRoute", "ngMessages", "firebase", 'LocalForageModule', 'ajoslin.promise-tracker']);
 
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
@@ -54,6 +54,7 @@ app.constant('_', window._);
 app.constant("moment", moment);
 app.constant("GMaps", GMaps);
 app.constant("DATAKEY", "AngularCrudData");
+//app.constant("Spinner", Spinner);
 
 app.run(function ($window, $rootScope, $location, fireFactory) {
 
@@ -163,7 +164,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, D
             }
 
             $scope.submit = function () {
-                if($scope.equipmentBeingAdded) {
+                if ($scope.equipmentBeingAdded) {
                     var newEquipment = {};
                     newEquipment.id = $scope.equipmentBeingAdded.id.$viewValue;
                     newEquipment.purchaseDate = {}
@@ -194,7 +195,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, D
                     }
                     return;
                 }
-                if($scope.selectedEquipmentToEdit) {
+                if ($scope.selectedEquipmentToEdit) {
                     $scope.selectedEquipmentToEdit.purchaseDate.value = $scope.purchaseDate.value;
 
                     var tempDate = new moment($scope.purchaseDate.value)
@@ -285,7 +286,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, D
                 data[job].dehuList = dehuList;
 
                 var d = new Date(data[job].startDate)
-                if(tempDate){
+                if (tempDate) {
                     var tempDate = new moment(d.toISOString())
                     data[job].prettyStartDate = tempDate.format('MM/DD/YYYY');
                 }
@@ -534,13 +535,33 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
                 $scope.job.account.phone2, $scope.job.account.email, $scope.job.account.city, $scope.job.account.zip,
                 $scope.job.startDate, $scope.job.rooms, $scope.job.dayList);
         };
+
+        $scope.upload = function (f) {
+            console.log('asdf')
+            console.log('$scopcid' + $scope.job.contactId)
+            fireFactory.uploadImage($scope.job, f);
+
+        };
+
+        $scope.getImage = function (i) {
+
+            fireFactory.getImage(i, function (data) {
+                var image = new Image();
+                image.src = data;
+                document.body.appendChild(image);
+            });
+
+        }
+
     });
+
 
     //now load other jobs so when adding equipment
     //we can see if it is already being used
     fireFactory.getAll(function (data) {
         $scope.allJobs = data;
     });
+
 
     $("#menu-list").removeClass("active");
     $("#menu-new").removeClass("active");
@@ -746,6 +767,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
             console.log('removing equipment length = ' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
         };
 
+
         $scope.addEquipment = function (equipment) {
 
             var found = false;
@@ -789,13 +811,57 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
             } else {
                 alert('this equipment is already being used')
             }
-            //console.log('ADDING equipment length = ' +
-            // $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
-
-            //remove equipment from shop
         };
         $scope.changeSelectedEquipmentToAdd = function (equipment) {
             $scope.selectedEquipment = equipment;
+        }
+
+        $scope.addLabor = function (labor) {
+
+            console.table($scope.todaysEquipment.rooms[$scope.currentRoomNum].labor)
+            for (var a = $scope.todaysEquipment.rooms.length - 1; a >= 0; a--) {
+
+                if (!$scope.todaysEquipment.rooms[a].labor) {
+                    $scope.todaysEquipment.rooms[a].labor = [];
+                }else{
+                    //for(var i = 0; i < $scope.todaysEquipment.rooms[a].labor.length; i++){
+                    //    if($scope.todaysEquipment.rooms[a].labor[i].name === labor.name){
+                    //        console.log('trying to add labor that already exists' + )
+                    //    }
+                    //}
+                }
+            }
+            console.log($scope.todaysEquipment.rooms[$scope.currentRoomNum].labor.length)
+
+            $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor.push(labor);
+
+        };
+        $scope.removeLabor = function (labor) {
+            console.log('asdf')
+            for (var a = $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor.length - 1; a >= 0; a--) {
+                console.log('x' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor[a].name)
+                if($scope.todaysEquipment.rooms[$scope.currentRoomNum].labor[a].name === labor.name){
+                    $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor.splice(a, 1);
+                }
+                //for(var i = 0; i < $scope.todaysEquipment.rooms[a].labor.length; i++){
+                //    var thisName =  $scope.todaysEquipment.rooms[a].labor[i].name;
+                //    var nameCheckingFor =  labor.name;
+                //    if(thisName === nameCheckingFor){
+                //        console.log('match')
+                //        $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor.splice(i, 1);
+                //
+                //    }
+                //
+                //}
+                //if ($scope.todaysEquipment.rooms[a].labor.name === labor.name) {
+                //    console.log('sweet removing' + labor.name)
+                //}
+            }
+
+        };
+
+        $scope.changeSelectedLaborToAdd = function (labor) {
+            $scope.selectedLabor = labor;
         }
 
         $scope.submitForm = function () {
@@ -815,6 +881,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
                 $scope.todaysEquipment.rooms[$scope.currentRoomNum].fans,
                 $scope.todaysEquipment.rooms[$scope.currentRoomNum].dehus,
                 $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment,
+                $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor,
                 time
             )
             console.log('reloading route')
