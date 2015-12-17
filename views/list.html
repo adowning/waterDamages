@@ -5,9 +5,15 @@
 
 <!--<div id="map"></div>-->
 <div class="container bootcards-container push-right">
+    <div ng-show="loading"><span us-spinner></span>
+        <br>
+        <br>
+        <br>
+        <span us-spinner spinner-key="spinner-1"></span></div>
 
     <!-- This is where you come in... -->
     <!-- I've added some sample data below so you can get a feel for the required markup -->
+    <div ng-show="!loading">
     <div class="row">
         <!--<div style="height:100px;"  id="map"></div>-->
 
@@ -179,7 +185,7 @@
                                     <table class="table table-condensed">
                                         <thead>
                                         <tr>
-                                            <th>Status</th>
+                                            <th>OnSite</th>
                                             <th>ID</th>
                                             <th>Type</th>
                                             <th>Model</th>
@@ -189,7 +195,7 @@
                                         <tbody>
                                         <tr ng-repeat="equip in company.shop">
 
-                                            <td>{{equip.status}}</td>
+                                            <td>{{equip.onSite}}</td>
                                             <td>{{equip.id}}</td>
                                             <td>{{equip.type}}</td>
                                             <td>{{equip.model}}</td>
@@ -746,5 +752,6 @@
 
             </script>
         </div>
+    </div>
     </div>
 </div>

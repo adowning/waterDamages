@@ -17,7 +17,7 @@
 
                 <select data-ng-model="selectedItem" ng-change="changedCurrentRoomValue(selectedItem)"
                         data-ng-options="job.dayList[dayNum].rooms.indexOf(selectedItem) as selectedItem.name for selectedItem in job.dayList[dayNum].rooms"
-                ">
+                ">equipmentForm
                 </select>
             </div>
         </div>
@@ -55,10 +55,11 @@
                                     <!--</div>-->
 
                                 <!--</div>-->
+                                <!-- TODO important... make it so that if this day is not today then dont do filter -->
                                 <div ng-show="showAdd">
 <br>
                                     <select data-ng-model="sItem" ng-change="changeSelectedEquipmentToAdd(sItem)"
-                                            data-ng-options="sItem as sItem.id for sItem in company.shop">
+                                            data-ng-options="sItem as sItem.id  for sItem in activeEquipmentList">
                                     </select>
                                     <!-- TODO put a ng-show here ... cant have a add w/o a selection -->
                                     <button type="button" ng-click="addEquipment(sItem)"
@@ -85,9 +86,9 @@
                                 </select>
                                 <!--TODO we are here-->
                                 <div ng-show="lItem.type == 'area'">
-                                    <input type="number" min="0" step="1" />
+                                    <input type="number" ng-model="value" min="0" step="1" />
                                 </div>
-                                <button type="button" ng-click="addLabor(lItem)"
+                                <button type="button" ng-click="addLabor(lItem, value)"
                                         class="btn btn-default btn-sm">
                                     Add Labor
                                 </button>

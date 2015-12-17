@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module("angularcrud", ["ngFileUpload", "ui.bootstrap", "ngRoute", "ngMessages", "firebase", 'LocalForageModule', 'ajoslin.promise-tracker']);
+var app = angular.module("angularcrud", ["ngFileUpload", "angularSpinner", "ui.bootstrap", "ngRoute", "ngMessages", "firebase", 'LocalForageModule', 'ajoslin.promise-tracker']);
 
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
@@ -90,8 +90,22 @@ app.run(function ($window, $rootScope, $location, fireFactory) {
     //$rootScope.FBURL = localStorage.getItem("FBURL");
 });
 
-app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
+app.filter('active', function () {
+    return function (sItem) {
+        console.log('sItem' + sItem.onSite)
+        if (!sItem.onSite) {
+            return sItem.id;
+        } else {
+
+        }
+    };
+});
+
+app.controller("ListCtrl", function ($scope, usSpinnerService,  $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
     // Vars are set at rootScope, $scope will recursively search up to rootScope
+    $scope.loading = true;
+    usSpinnerService.spin('spinner-1');
+
     if ($scope.FBURL === null) {
         $location.path("/settings");
     } else {
@@ -236,6 +250,7 @@ app.controller("ListCtrl", function ($scope, $route, moment, GMaps, $location, D
                         tempArray.push(data.shop[i]);
                     }
                 }
+                $scope.loading = false;
             }
             $scope.shopFans = shopFans;
             $scope.shopDehus = shopDehus;
@@ -450,7 +465,7 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
         $scope.showFields = false;
         $scope.currentRoom = "none";
         $scope.roomChanged = false;
-        console.log('rooms ' + data.dayList[0].rooms);
+
         $scope.changedCurrentRoomValue = function (roomNum) {
             console.log('changed room value')
             $scope.showFields = true;
@@ -470,6 +485,8 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
             $scope.dayNum = day;
             $scope.todaysEquipment = $scope.job.dayList[$scope.dayNum];
             $scope.showFields = false;
+
+            $scope.dayToCheckDate = $scope.job.dayList[day].date;
 
             var modalInstance = $modal.open({
                 templateUrl: 'views/editequipment-form.html',
@@ -520,6 +537,14 @@ app.controller("ViewJobEquipmentCtrl", function ($modal, $scope, $location, $rou
 
             var date = new moment($scope.job.dayList.slice(-1)[0].date);//gets last date in array
             date.add('days', 1)
+
+            console.log('here' + moment().diff(date))
+
+            if (moment().diff(date) < 0) {
+                alert('Cannot add days in the future')
+                return;
+            }
+
             var newDay = {};
             newDay.rooms = [];
             newDay.date = date.toString();
@@ -714,11 +739,8 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
     fireFactory.getShopEquipment(function (data) {
         $scope.showAdd = false;
         $scope.company = data;
+        var dateToCheck = $scope.dayToCheckDate;
         var time = new moment().toString();
-        console.log('time ' + time)
-        //TODO something needs to be done about entering company equipment so we dont get nubmers skipped in the array
-        //for now...
-        //incase we have missing numbers in our array lets not pass them into scope
         var tempArray = [];
 
         for (var i = 0; i < data.equipment.length; i++) {
@@ -726,23 +748,52 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
                 tempArray.push(data.equipment[i]);
             }
         }
-        $scope.company.equipment = tempArray;
+        //$scope.company.equipment = tempArray;
 
         var tempArray = [];
         if (data.shop) {
             for (var i = 0; i < data.shop.length; i++) {
                 if (data.shop[i]) {
                     tempArray.push(data.shop[i]);
-                    console.log('pushing ' + data.shop[i].id)
                 }
             }
         }
 
-        $scope.company.shop = tempArray;
-        if ($scope.company.shop.length > 0) {
+        if (tempArray.length > 0) {
             $scope.showAdd = true;
         }
 
+        for (var job in $scope.allJobs) {
+            var thisJob = $scope.allJobs[job];
+            if (thisJob.dayList) {
+                for (var x = 0; x < thisJob.dayList.length; x++) {
+                    var thisDay = thisJob.dayList[x];
+                    if (thisDay) {
+                        for (var a = thisDay.rooms.length - 1; a >= 0; a--) {
+                            if (thisDay.rooms[a]) {
+                                if (thisDay.rooms[a].equipment) {
+                                    for (var i = thisDay.rooms[a].equipment.length - 1; i >= 0; i--) {
+                                        var id = thisDay.rooms[a].equipment[i].id;
+                                        var inputDate = new Date(thisDay.date);
+                                        var date2Check = new Date(dateToCheck);
+
+                                        if (inputDate.setHours(0, 0, 0, 0) == date2Check.setHours(0, 0, 0, 0)) {
+                                            for (var x = 0; x < tempArray.length; x++) {
+
+                                                if (tempArray[x].id == id) {
+                                                    tempArray.splice(x, 1)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $scope.activeEquipmentList = tempArray;
         $scope.form = {}
         $scope.cancel = function () {
             console.log('canceled out ')
@@ -757,13 +808,23 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
             for (var i = $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length - 1; i >= 0; i--) {
                 if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment[i].id == equipment.id) {
                     $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.splice(i, 1);
-                    $scope.company.shop.push(equipment)
-                    found = true;
+                    //var thisDay = $scope.todaysEquipment.date;
+                    //var inputDate = new Date(thisDay);
+                    //var todaysDate = new Date();
+                    //
+                    //if (inputDate && todaysDate) {
+                    //    if (inputDate.setHours(0, 0, 0, 0) == todaysDate.setHours(0, 0, 0, 0)) {
+                    //        //Date equals today's date
+                    //        console.log('putting back in shop')
+                    //        //$scope.company.shop.push(equipment)
+                    //        equipment.onSite = false;
+                    //    }
+                    //}
+                    //
+                    //found = true;
                 }
             }
-            if (!found) {
-                alert("Error: equipment not found")
-            }
+
             console.log('removing equipment length = ' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length)
         };
 
@@ -777,7 +838,11 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
                     $scope.todaysEquipment.rooms[a].equipment = [];
                 }
             }
+            var inputDate = null;
+            var todaysDate = null;
+
             for (var job in $scope.allJobs) {
+                //console.log('new Date(thisDay.date)' + new Date(thisDay.date))
                 var thisJob = $scope.allJobs[job];
                 if (thisJob.dayList) {
                     for (var x = 0; x < thisJob.dayList.length; x++) {
@@ -787,9 +852,20 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
                                 if (thisDay.rooms[a]) {
                                     if (thisDay.rooms[a].equipment) {
                                         for (var i = thisDay.rooms[a].equipment.length - 1; i >= 0; i--) {
+
+
                                             if (thisDay.rooms[a].equipment[i].id == equipment.id) {
-                                                found = true;
+                                                inputDate = new Date(thisDay.date);
+                                                todaysDate = new Date($scope.todaysEquipment.date);
+                                            } else {
+                                                console.log('false')
                                             }
+                                            if (inputDate && todaysDate) {
+                                                if (inputDate.setHours(0, 0, 0, 0) == todaysDate.setHours(0, 0, 0, 0)) {
+                                                    found = true;
+                                                }
+                                            }
+
                                         }
                                     }
                                 }
@@ -798,32 +874,28 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
                     }
                 }
             }
-            //make sure the equipment is in the shop
-            var inShop = false;
-            for (var x = 0; x < $scope.company.shop.length; x++) {
-                if ($scope.company.shop[x].id == equipment.id) {
-                    $scope.company.shop.splice(x, 1);
-                    inShop = true;
-                }
-            }
-            if (!found && inShop) {
+            if (!found ) {
                 $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.push(equipment);
             } else {
-                alert('this equipment is already being used')
+                 alert('this equipment is already being used')
             }
         };
         $scope.changeSelectedEquipmentToAdd = function (equipment) {
             $scope.selectedEquipment = equipment;
         }
 
-        $scope.addLabor = function (labor) {
-
-            console.table($scope.todaysEquipment.rooms[$scope.currentRoomNum].labor)
+        $scope.addLabor = function (labor, value) {
+            if (value > 0) {
+                labor.value = value;
+            } else {
+                //TODO give error msg here  back to client
+                return;
+            }
             for (var a = $scope.todaysEquipment.rooms.length - 1; a >= 0; a--) {
 
                 if (!$scope.todaysEquipment.rooms[a].labor) {
                     $scope.todaysEquipment.rooms[a].labor = [];
-                }else{
+                } else {
                     //for(var i = 0; i < $scope.todaysEquipment.rooms[a].labor.length; i++){
                     //    if($scope.todaysEquipment.rooms[a].labor[i].name === labor.name){
                     //        console.log('trying to add labor that already exists' + )
@@ -840,7 +912,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
             console.log('asdf')
             for (var a = $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor.length - 1; a >= 0; a--) {
                 console.log('x' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor[a].name)
-                if($scope.todaysEquipment.rooms[$scope.currentRoomNum].labor[a].name === labor.name){
+                if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].labor[a].name === labor.name) {
                     $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor.splice(a, 1);
                 }
                 //for(var i = 0; i < $scope.todaysEquipment.rooms[a].labor.length; i++){

@@ -36,9 +36,13 @@
             <div class="alert alert-warning" ng-show="job.workCompleted && job.reviewed && !job.invoiced" role="alert">
                 Job needs invoiced.
             </div>
-        <div class="alert alert-success" ng-show="job.workCompleted && job.reviewed && job.invoiced" role="alert">
-            Complete
+            <div class="alert alert-success" ng-show="job.workCompleted && job.reviewed && job.invoiced" role="alert">
+                Complete
+            </div>
+        <div class="alert alert-success" ng-show="!job.workCompleted" role="alert">
+            Active
         </div>
+            {{job.workCompleted}}{{job.reviewed}}{{ job.invoiced}}
 </div>
     </div>
 
