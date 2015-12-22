@@ -8,7 +8,10 @@ app.config(['$routeProvider', function ($routeProvider) {
             controller: "ListCtrl",
             templateUrl: "./views/list.html"
         })
-
+        .when("/rugs", {
+            controller: "RugsCtrl",
+            templateUrl: "./views/rugs.html"
+        })
         .when("/edit/:contactId", {
             controller: "EditCtrl",
             templateUrl: "./views/edit.html"
@@ -100,7 +103,6 @@ app.filter('active', function () {
         }
     };
 });
-
 app.controller("ListCtrl", function ($scope, usSpinnerService,  $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
     // Vars are set at rootScope, $scope will recursively search up to rootScope
     $scope.loading = true;
@@ -276,9 +278,15 @@ app.controller("ListCtrl", function ($scope, usSpinnerService,  $route, moment, 
                 var fanList = [];
                 var object = data[job];
                 var dayList = object.dayList;
+                var today = new Date();
+
                 if (dayList) {
                     for (var i = 0; i < dayList.length; i++) {
+                        var dayOnSite = new Date(dayList[i].date);
+
                         var theseRooms = dayList[i].rooms;
+                        if (today.setHours(0, 0, 0, 0) == dayOnSite.setHours(0, 0, 0, 0)) {
+
                         for (var y = 0; y < theseRooms.length; y++) {
                             var equipmentList = theseRooms[y].equipment;
                             if (equipmentList) {
@@ -296,6 +304,8 @@ app.controller("ListCtrl", function ($scope, usSpinnerService,  $route, moment, 
                             }
                         }
                     }
+                    }
+
                 }
                 data[job].fanList = fanList;
                 data[job].dehuList = dehuList;
@@ -781,6 +791,7 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
                                             for (var x = 0; x < tempArray.length; x++) {
 
                                                 if (tempArray[x].id == id) {
+                                                    console.log('removing' + id)
                                                     tempArray.splice(x, 1)
                                                 }
                                             }
