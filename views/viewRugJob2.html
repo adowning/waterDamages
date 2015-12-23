@@ -1,0 +1,73 @@
+<div class="alert alert-warning" ng-hide="online">Working Offline. Changes will be saved when an Internet connection is
+    restored.
+</div>
+
+<div id="contactCard" disabled="true">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left">
+                Basic Info</h3>
+        </div>
+        <div class="panel-body clearfix">
+
+            Job # {{job.orderNumber}} <br>
+            {{job.account.accountName}}<br> {{job.account.address1}}<br>
+            {{job.account.city}}
+            , {{job.account.zip}}<br><br>
+            <a href="tel://" +{{job.phone1}}>
+                <h4 class="list-group-item-heading"> {{job.account.phone1}}</h4>
+            </a>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left">
+                Status </h3>
+        </div>
+        <div class="panel-body clearfix">
+
+            <!--<div class="alert alert-warning" ng-show="!job.startDate">This job needs a start date.</div>-->
+            <!--<div class="alert alert-warning" ng-show="job.rooms.length < 1 || !job.rooms">This job needs at least one-->
+                <!--room.-->
+            <!--</div>-->
+            <!--<div class="alert alert-warning" ng-show="job.workCompleted && !job.reviewed" role="alert">-->
+                <!--Job needs reviewed-->
+            <!--</div>-->
+            <!--<div class="alert alert-warning" ng-show="job.workCompleted && job.reviewed && !job.invoiced" role="alert">-->
+                <!--Job needs invoiced.-->
+            <!--</div>-->
+            <!--<div class="alert alert-success" ng-show="job.workCompleted && job.reviewed && job.invoiced" role="alert">-->
+                <!--Complete-->
+            <!--</div>-->
+            <div class="alert alert-success"  role="alert">
+                {{job.rugStatus}}
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<a class="btn btn-primary" href="#/viewJobBasics/{{job.contactId}}"
+<span>Edit Basic Info</span></a><span>   </span>
+<span ng-show="job.startDate && job.rooms.length >= 1 && job.dayList.length >= 1">
+    <a class="btn btn-primary" href="#/viewJobEquipment/{{job.contactId}}"
+    <span>Edit Job</span></a>
+    <span>   </span>
+    </span>
+<!--<span ng-show="job.startDate && job.rooms.length >= 1 && job.dayList.length >= 1">-->
+<!--<a class="btn btn-primary " ng-click="editWork()"-->
+<!--<span>Edit Work Performed</span></a>-->
+<!--</span>-->
+<div class="alert alert-success" ng-show="job.workCompleted && job.reviewed && job.invoiced" role="alert">
+
+    <a class="btn btn-primary " ng-click="deleteJob()"
+    <span>Close Job</span></a>
+</div>
+<a class="btn btn-danger " ng-click="deleteJob()"
+<span>Delete Job</span></a>
+</div>
+
+

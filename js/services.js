@@ -8,6 +8,15 @@ angular.module("angularcrud")
                 $http.get($rootScope.FBURL + "angularcrud/" + ".json?format=export").success(successCallback);
 
             },
+            getRugJobs: function (successCallback) {
+                //TODO hacky
+                $rootScope.FBURL = "https://andrewscleaning.firebaseio.com/"
+                $http.get($rootScope.FBURL + "rugs/" + ".json?format=export").success(successCallback);
+
+            },
+            getRugById: function (id, successCallback) {
+                $http.get($rootScope.FBURL + "rugs/" + id + ".json?format=export").success(successCallback);
+            },
             getById: function (id, successCallback) {
                 $http.get($rootScope.FBURL + "angularcrud/" + id + ".json?format=export").success(successCallback);
             },
@@ -15,6 +24,108 @@ angular.module("angularcrud")
 
                 $http.delete($rootScope.FBURL + "angularcrud/" + id + ".json?format=export").success(function () {
                     $location.path("/");
+                });
+            },
+            addRugJob: function (jobID, currentJobs) {
+
+                var thisJob = {};
+                $.ajax({
+                    type: "GET",
+                    url: "https://api.servicemonster.net/v1/orders?q=" + jobID,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    error: function (error) {
+                        console.log(error)
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", "Basic ZTZleGc0Nkw6bUM0RHM5MXFnZXdPUzFv");
+                    },
+                    complete: function () {
+                        console.log('completed')
+                    },
+                    success: function (json) {
+
+                        thisJob = json.items[0];
+                        $.ajax({
+                            type: "GET",
+                            url: "https://api.servicemonster.net/v1/accounts/" + thisJob.accountID,
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            error: function (error) {
+                                console.log(error)
+                            },
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("Authorization", "Basic ZTZleGc0Nkw6bUM0RHM5MXFnZXdPUzFv");
+                            },
+                            complete: function (account) {
+
+                                if ($rootScope.online) {
+
+                                    if (!currentJobs || currentJobs == undefined) {
+                                        thisJob.active = true;
+                                        thisJob.rugStatus = 'Not Started';
+                                        $http.post($rootScope.FBURL + "rugs/" + ".json?format=export", thisJob)
+                                            .success(function () {
+                                                console.log('trying to refresh')
+                                                $location.path("/rugs");
+                                            });
+
+                                    } else {
+                                        var exists = false;
+
+                                        for (var x in currentJobs) {
+                                            if (currentJobs[x].accountID == thisJob.accountID) {
+                                                exists = true;
+                                            }
+                                        }
+                                        if (!exists) {
+                                            thisJob.active = true;
+                                            thisJob.rugStatus = 'Not Started';
+                                            $http.post($rootScope.FBURL + "rugs/" + ".json?format=export", thisJob)
+                                                .success(function () {
+                                                    console.log('trying to refresh 2')
+                                                    $location.path("/rugs");
+                                                });
+                                        } else {
+                                            console.log('job exists not doing shit')
+                                            return "exists";
+                                        }
+                                        return;
+                                    }
+
+
+                                }
+                                else {
+                                    account.job = thisJob;
+                                    //forageFactory.addJob(job);
+                                }
+                            },
+                            success: function (account) {
+
+                                var companyID = thisJob.companyID;
+                                var createdBy = thisJob.createdBy;
+                                var accountID = thisJob.accountID;
+                                var orderNumber = thisJob.orderNumber;
+                                var orderType = thisJob.orderType;
+                                var rugStatus = thisJob.rugStatus;
+                                console.log('rs' + thisJob.rugStatus)
+                                thisJob.rugStatus = 'Not started';
+                                thisJob = {};
+                                thisJob.accountName = account.accountName;
+                                thisJob.accountID = accountID;
+                                thisJob.reviewed = false;
+                                thisJob.workCompleted = false;
+                                thisJob.invoiced = false;
+                                thisJob.companyID = companyID;
+                                thisJob.orderNumber = orderNumber;
+                                thisJob.account = account;
+                                thisJob.createdBy = createdBy;
+                                thisJob.orderType = orderType;
+
+                                $location.path("/");
+                            }
+                        });
+                    }
                 });
             },
             addJob: function (jobID, currentJobs) {

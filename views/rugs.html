@@ -1,0 +1,159 @@
+<!-- fixed top navbar -->
+
+
+<!-- slide in off canvas menu (mobile only) -->
+
+<!--<div id="map"></div>-->
+<div class="container bootcards-container push-right">
+    <div ng-show="loading"><span us-spinner></span>
+        <br>
+        <br>
+        <br>
+        <span us-spinner spinner-key="spinner-1"></span></div>
+
+    <!-- This is where you come in... -->
+    <!-- I've added some sample data below so you can get a feel for the required markup -->
+    <div ng-show="!loading">
+        <div class="row">
+            <!--<div style="height:100px;"  id="map"></div>-->
+
+            <!-- left list column -->
+            <div class="col-sm-5 bootcards-list" id="list" data-title="Contacts">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="search-form">
+                            <div class="row">
+                                <div class="col-xs-8">
+                                    <div class="form-group">
+                                        <input type="text" ng-model="jobLookup" class="form-control"
+                                               placeholder="Job Number">
+                                        <i class="fa fa-search"></i>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <a class="btn btn-primary btn-block"
+                                       ng-click="addNewRugJob(jobLookup)"
+                                    >
+                                        <i class="fa fa-plus"></i>
+                                        <span>Add</span>
+
+                                    </a>
+                                    <!--<a class="btn btn-primary btn-block"     data-toggle="modal"
+                                       data-target="#newJobModal"
+                                       data-toggle="modal"
+                                                >
+                                        <i class="fa fa-plus"></i>
+                                        <span>Add</span>
+
+                                    </a>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--panel body-->
+
+                    <div class="list-group">
+
+                        <div class="list-group">
+
+                            <a class="list-group-item" href="#/viewRugJob2/{{id}}" ng-repeat="(id, job) in contacts">
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <i class="fa fa-3x fa-building-o pull-left"></i>
+                                        <h4 class="list-group-item-heading">{{job.account.accountName}}</h4>
+                                        <!--<p class="list-group-item-text">{{job.address}}</p>-->
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div ng-show="job.startDate">
+                                            <p class="list-group-item-text">{{job.prettyStartDate}}</p>
+                                            <div ng-show="!job.rooms">
+                                                <span style="color:red">Needs a room</span>
+                                            </div>
+
+                                        </div>
+                                        <div ng-show="!job.startDate">
+                                            <span style="color:red">Needs startdate</span>
+                                        </div>
+
+
+                                        <p class="list-group-item-text">{{job.account.address1}}, {{job.account.city}}
+                                            {{job.account.zip}}</p>
+                                    </div>
+                                </div>
+                                <!--<div class="well">-->
+                                <!--<small class="pull-left">fans: {{job.fans}} dehus: {{job.dehus}} other: xx</small>-->
+
+                                <!--</div>-->
+                            </a>
+
+                        </div>
+                    </div>
+                    <!--list-group-->
+
+                    <div class="panel-footer">
+                        <small class="pull-left">
+                            <lable>Totals:</lable>
+                            <b> fans {{fansTotal}} dehus {{dehusTotal}} other: xx</b></small>
+                        <a class="btn btn-link btn-xs pull-right" href="#">
+                            Footer link</a>
+                    </div>
+                </div>
+                <!--panel-->
+
+            </div>
+
+                <!--<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>-->
+                <!--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>-->
+                <!--<script src="//cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>-->
+
+                <!--&lt;!&ndash; Bootcards JS &ndash;&gt;-->
+                <!--<script src="../src/js/bootcards.js"></script>-->
+
+                <!--&lt;!&ndash;recommended: FTLabs FastClick library&ndash;&gt;-->
+                <!--<script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>-->
+                <!--<script type="text/javascript">-->
+
+                    <!--bootcards.init({-->
+                        <!--offCanvasBackdrop: true,-->
+                        <!--offCanvasHideOnMainClick: true,-->
+                        <!--enableTabletPortraitMode: true,-->
+                        <!--disableRubberBanding: true,-->
+                        <!--disableBreakoutSelector: 'a.no-break-out'-->
+                    <!--});-->
+                    <!--//enable FastClick-->
+                    <!--window.addEventListener('load', function () {-->
+                        <!--FastClick.attach(document.body);-->
+                    <!--}, false);-->
+                    <!--//activate the sub-menu options in the offcanvas menu-->
+                    <!--$('.collapse').collapse();-->
+                    <!--//theme switcher: only needed for this sample page to set the active CSS-->
+                    <!--$('input[name=themeSwitcher]').on('change', function (ev) {-->
+                        <!--var theme = $(ev.target).val();-->
+                        <!--var themeCSSLoaded = false;-->
+                        <!--$.each(document.styleSheets, function (idx, css) {-->
+                            <!--var href = css.href;-->
+                            <!--if (href.indexOf('bootcards') > -1) {-->
+                                <!--if (href.indexOf(theme) > -1) {-->
+                                    <!--themeCSSLoaded = true;-->
+                                    <!--css.disabled = false;-->
+                                <!--} else {-->
+                                    <!--css.disabled = true;-->
+                                <!--}-->
+                            <!--}-->
+                        <!--});-->
+                        <!--if (!themeCSSLoaded) {-->
+                            <!--$("<link/>", {-->
+                                <!--rel: "stylesheet",-->
+                                <!--type: "text/css",-->
+                                <!--href: "//cdnjs.cloudflare.com/ajax/libs/bootcards/1.1.1/css/bootcards-" + theme + ".min.css"-->
+                            <!--}).appendTo("head");-->
+                        <!--}-->
+
+                    <!--});-->
+
+                <!--</script>-->
+            </div>
+        </div>
+    </div>
+</div>

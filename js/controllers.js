@@ -17,6 +17,11 @@ app.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./views/edit.html"
         })
 
+        .when("/viewRugJob2/:contactId", {
+            controller: "ViewRugJobCtrl",
+            templateUrl: "./views/viewRugJob2.html"
+        })
+
         .when("/view/:contactId", {
             controller: "ViewJobCtrl",
             templateUrl: "./views/viewJob.html"
@@ -102,6 +107,253 @@ app.filter('active', function () {
 
         }
     };
+});
+
+app.controller("RugsCtrl", function ($scope, usSpinnerService,  $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
+    // Vars are set at rootScope, $scope will recursively search up to rootScope
+    $scope.loading = true;
+    usSpinnerService.spin('spinner-1');
+
+    if ($scope.FBURL === null) {
+        $location.path("/settings");
+    } else {
+        var map = {};
+
+
+        fireFactory.getShopEquipment(function (data) {
+            $scope.company = data;
+
+            $scope.changeSelectedEquipmentToEdit = function (equip) {
+                $scope.selectedEquipmentToEdit = equip;
+
+                var m = new moment($scope.selectedEquipmentToEdit.purchaseDate.value)
+
+                $scope.purchaseDate = {
+                    value: new Date(m.format('YYYY, MM, DD').toString())
+                };
+
+                $scope.selectionIdBeforeChange = equip.id;
+            }
+
+            $scope.equipTypes = [
+                {type: 'fan'},
+                {type: 'dehu'},
+                {type: 'other'}
+            ];
+            $scope.equipStatus = [
+                {status: 'Active'},
+                {status: 'Broken'},
+                {status: 'Lost'}
+            ];
+
+            $scope.adding = false;
+
+            $scope.delete = function () {
+                console.log('deleting ' + $scope.selectionIdBeforeChange);
+                for (var i = 0; i < $scope.company.shop.length; i++) {
+                    if ($scope.company.shop[i].id === $scope.selectionIdBeforeChange) {
+                        $scope.company.shop.splice(i, 1);
+                    }
+                }
+                fireFactory.updateShopEquipment(
+                    $scope.company.shop
+                )
+                var millisecondsToWait = 1500;
+                setTimeout(function () {
+                    $route.reload();
+
+                }, millisecondsToWait);
+
+            }
+            $scope.add = function () {
+                $scope.selectedEquipmentToEdit = {};
+                $scope.adding = true;
+            }
+            $scope.addingEquipment = function (asdf) {
+                //console.log('adding ' + $scope.selectedEquipmentToEdit.id);
+                $scope.equipmentBeingAdded = asdf;
+                var m = new moment($scope.equipmentBeingAdded.purchaseDate.value)
+
+                $scope.purchaseDate = {
+                    value: new Date(m.format('YYYY, MM, DD').toString())
+                };
+                console.log('asdf' + asdf)
+            }
+            $scope.cancel = function () {
+                console.log('canceling ');
+                $route.reload();
+
+            }
+
+            $scope.submit = function () {
+                if ($scope.equipmentBeingAdded) {
+                    var newEquipment = {};
+                    newEquipment.id = $scope.equipmentBeingAdded.id.$viewValue;
+                    newEquipment.purchaseDate = {}
+                    newEquipment.purchaseDate.value = $scope.equipmentBeingAdded.purchaseDate.$viewValue;
+                    newEquipment.type = $scope.equipmentBeingAdded.type.$viewValue;
+                    newEquipment.model = $scope.equipmentBeingAdded.model.$viewValue;
+                    newEquipment.status = $scope.equipmentBeingAdded.status.$viewValue;
+
+                    var tempDate = new moment($scope.equipmentBeingAdded.purchaseDate.$viewValue)
+                    newEquipment.prettyPurchaseDate = tempDate.format('MM/DD/YYYY');
+                    $scope.company.shop.push(newEquipment)
+
+                    if ($scope.equipmentBeingAdded.id.$viewValue && $scope.equipmentBeingAdded.type.$viewValue &&
+                        $scope.equipmentBeingAdded.model.$viewValue
+                        && $scope.equipmentBeingAdded.purchaseDate.$viewValue && $scope.equipmentBeingAdded.status.$viewValue) {
+                        fireFactory.updateShopEquipment(
+                            $scope.company.shop
+                        )
+                        var millisecondsToWait = 1500;
+                        setTimeout(function () {
+                            $route.reload();
+
+                        }, millisecondsToWait);
+
+                    } else {
+                        alert('Error: Not all equipment information was filled out, please redo form.')
+                        return;
+                    }
+                    return;
+                }
+                if ($scope.selectedEquipmentToEdit) {
+                    $scope.selectedEquipmentToEdit.purchaseDate.value = $scope.purchaseDate.value;
+
+                    var tempDate = new moment($scope.purchaseDate.value)
+                    $scope.selectedEquipmentToEdit.prettyPurchaseDate = tempDate.format('MM/DD/YYYY');
+
+                    if ($scope.selectedEquipmentToEdit.purchaseDate.value && $scope.selectedEquipmentToEdit.id &&
+                        $scope.selectedEquipmentToEdit.type
+                        && $scope.selectedEquipmentToEdit.model && $scope.selectedEquipmentToEdit.status) {
+                        fireFactory.updateShopEquipment(
+                            $scope.company.shop
+                        )
+                        var millisecondsToWait = 1500;
+                        setTimeout(function () {
+                            $route.reload();
+
+                        }, millisecondsToWait);
+
+                    } else {
+                        alert('Error: Not all equipment information was filled out, please redo form.')
+                    }
+                }
+            };
+            var tempArray = [];
+            var shopFans = [];
+            var shopDehus = [];
+            if (data.shop) {
+                for (var i = 0; i < data.shop.length; i++) {
+                    if (data.shop[i]) {
+                        if (data.shop[i].type == 'fan' && data.shop[i].status == "Active") {
+                            shopFans.push(data.shop[i].id)
+                        }
+                        if (data.shop[i].type == 'dehu' && data.shop[i].status == "Active") {
+                            shopDehus.push(data.shop[i].id)
+
+                        }
+                        var tempDate = new moment(data.shop[i].purchaseDate)
+                        data.shop[i].prettyDate = tempDate.format('MM/DD/YYYY');
+                        tempArray.push(data.shop[i]);
+                    }
+                }
+                $scope.loading = false;
+            }
+            $scope.shopFans = shopFans;
+            $scope.shopDehus = shopDehus;
+            $scope.company.shop = tempArray;
+        });
+        fireFactory.getRugJobs(function (data) {
+
+            for (var job in data) {
+                console.table(job)
+
+                var fansTotal = 0;
+                var dehusTotal = 0;
+                var addresses = [];
+                var dehuList = [];
+                var fanList = [];
+                var object = data[job];
+                var dayList = object.dayList;
+                var today = new Date();
+
+                if (dayList) {
+                    for (var i = 0; i < dayList.length; i++) {
+                        var dayOnSite = new Date(dayList[i].date);
+
+                        var theseRooms = dayList[i].rooms;
+                        if (today.setHours(0, 0, 0, 0) == dayOnSite.setHours(0, 0, 0, 0)) {
+
+                            for (var y = 0; y < theseRooms.length; y++) {
+                                var equipmentList = theseRooms[y].equipment;
+                                if (equipmentList) {
+                                    for (var x = 0; x < equipmentList.length; x++) {
+                                        var equipment = equipmentList[x];
+                                        if (equipment.type == 'dehu') {
+                                            dehuList.push(equipment.id)
+                                            dehusTotal++;
+                                        }
+                                        if (equipment.type == 'fan') {
+                                            fansTotal++;
+                                            fanList.push(equipment.id)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+                data[job].fanList = fanList;
+                data[job].dehuList = dehuList;
+
+                var d = new Date(data[job].startDate)
+                if (tempDate) {
+                    var tempDate = new moment(d.toISOString())
+                    data[job].prettyStartDate = tempDate.format('MM/DD/YYYY');
+                }
+
+console.log('status' + job.rugStatus)
+//                var address = {};
+//                address.add = data[job].account.address1 + " " + data[job].account.city + ", " + data[job].account.zip;
+//                address.name = data[job].accountName;
+//                address.fanList = fanList;
+//                address.dehuList = dehuList;
+//                addresses.push(address)
+//console.log(addresses.length)
+            }
+
+            $scope.contacts = data;
+
+        });
+
+        //$scope.fansTotal = fansTotal;
+        //$scope.dehusTotal = dehusTotal;
+        $scope.alertMe = function () {
+            setTimeout(function () {
+                map.refresh();
+
+            });
+        };
+        // Set our menu tab active and all others inactive
+        $("#menu-list").addClass("active");
+        $("#menu-new").removeClass("active");
+        $("#menu-loaddata").removeClass("active");
+        $("#menu-settings").removeClass("active");
+    }
+    $scope.addNewRugJob = function (jobID) {
+        //TODO this needs to refresh page after job added .. such a fucking hack lol
+        console.log('adding new job ' + $scope.contacts)
+        fireFactory.addRugJob(jobID, $scope.contacts);
+        var millisecondsToWait = 1500;
+        setTimeout(function () {
+            $route.reload();
+
+        }, millisecondsToWait);
+
+    }
+
 });
 app.controller("ListCtrl", function ($scope, usSpinnerService,  $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
     // Vars are set at rootScope, $scope will recursively search up to rootScope
@@ -361,6 +613,49 @@ app.controller("ListCtrl", function ($scope, usSpinnerService,  $route, moment, 
 
     }
 
+});
+
+app.controller("ViewRugJobCtrl", function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
+    fireFactory.getRugById($routeParams.contactId, function (data) {
+        $scope.job = data;
+        $scope.job.contactId = $routeParams.contactId;
+    });
+    $scope.deleteJob = function () {
+        console.log('deleting ' + $scope.job)
+        var dehus = 0;
+        var fans = 0;
+        var object = $scope.job;
+        var dayList = object.dayList;
+        if (dayList) {
+            for (var j = 0; j < dayList.length; j++) {
+                var theseRooms = dayList[j].rooms;
+                for (var y = 0; y < theseRooms.length; y++) {
+                    var equipmentList = theseRooms[y].equipment;
+                    if (equipmentList) {
+                        for (var x = 0; x < equipmentList.length; x++) {
+                            var equipment = equipmentList[x];
+                            if (equipment.type == 'dehu') {
+                                dehus++;
+                            }
+                            if (equipment.type == 'fan') {
+                                fans++;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        if (fans > 0 || dehus > 0) {
+            alert('you cannot delete a job that still has equipment on it')
+        } else {
+            fireFactory.delete($scope.job.contactId)
+        }
+    }
+    $("#menu-list").removeClass("active");
+    $("#menu-new").removeClass("active");
+    $("#menu-loaddata").removeClass("active");
+    $("#menu-settings").removeClass("active");
 });
 
 app.controller("ViewJobCtrl", function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
