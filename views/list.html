@@ -14,279 +14,285 @@
     <!-- This is where you come in... -->
     <!-- I've added some sample data below so you can get a feel for the required markup -->
     <div ng-show="!loading">
-    <div class="row">
-        <!--<div style="height:100px;"  id="map"></div>-->
+        <div class="row">
+            <!--<div style="height:100px;"  id="map"></div>-->
 
-        <!-- left list column -->
-        <div class="col-sm-5 bootcards-list" id="list" data-title="Contacts">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="search-form">
-                        <div class="row">
-                            <div class="col-xs-8">
-                                <div class="form-group">
-                                    <input type="text" ng-model="jobLookup" class="form-control"
-                                           placeholder="Job Number">
-                                    <i class="fa fa-search"></i>
+            <!-- left list column -->
+            <div class="col-sm-5 bootcards-list" id="list" data-title="Contacts">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="search-form">
+                            <div class="row">
+                                <div class="col-xs-8">
+                                    <div class="form-group">
+                                        <input type="text" ng-model="jobLookup" class="form-control"
+                                               placeholder="Job Number">
+                                        <i class="fa fa-search"></i>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-4">
-                                <a class="btn btn-primary btn-block"
-                                   ng-click="addNewJob(jobLookup)"
-                                >
-                                    <i class="fa fa-plus"></i>
-                                    <span>Add</span>
+                                <div class="col-xs-4">
+                                    <a class="btn btn-primary btn-block"
+                                       ng-click="addNewJob(jobLookup)"
+                                    >
+                                        <i class="fa fa-plus"></i>
+                                        <span>Add</span>
 
-                                </a>
-                                <!--<a class="btn btn-primary btn-block"     data-toggle="modal"
-                                   data-target="#newJobModal"
-                                   data-toggle="modal"
-                                            >
-                                    <i class="fa fa-plus"></i>
-                                    <span>Add</span>
+                                    </a>
+                                    <!--<a class="btn btn-primary btn-block"     data-toggle="modal"
+                                       data-target="#newJobModal"
+                                       data-toggle="modal"
+                                                >
+                                        <i class="fa fa-plus"></i>
+                                        <span>Add</span>
 
-                                </a>-->
+                                    </a>-->
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!--panel body-->
-
-                <div class="list-group">
+                    <!--panel body-->
 
                     <div class="list-group">
 
-                        <a class="list-group-item" href="#/view/{{id}}" ng-repeat="(id, job) in contacts">
+                        <div class="list-group">
 
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <i class="fa fa-3x fa-building-o pull-left"></i>
-                                    <h4 class="list-group-item-heading">{{job.account.accountName}}</h4>
-                                    <!--<p class="list-group-item-text">{{job.address}}</p>-->
-                                </div>
-                                <div class="col-sm-6">
-                                    <div ng-show="job.startDate">
-                                        <p class="list-group-item-text">{{job.prettyStartDate}}</p>
-                                        <div ng-show="!job.rooms">
-                                            <span style="color:red">Needs a room</span>
+                            <a class="list-group-item" href="#/view/{{id}}" ng-repeat="(id, job) in contacts">
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <i class="fa fa-3x fa-building-o pull-left"></i>
+                                        <h4 class="list-group-item-heading">{{job.account.accountName}}</h4>
+                                        <!--<p class="list-group-item-text">{{job.address}}</p>-->
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div ng-show="job.startDate">
+                                            <p class="list-group-item-text">{{job.prettyStartDate}}</p>
+                                            <div ng-show="!job.rooms">
+                                                <span style="color:red">Needs a room</span>
+                                            </div>
+
+                                        </div>
+                                        <div ng-show="!job.startDate">
+                                            <span style="color:red">Needs startdate</span>
                                         </div>
 
-                                    </div>
-                                    <div ng-show="!job.startDate">
-                                        <span style="color:red">Needs startdate</span>
-                                    </div>
 
-
-                                    <p class="list-group-item-text">{{job.account.address1}}, {{job.account.city}}
-                                        {{job.account.zip}}</p>
+                                        <p class="list-group-item-text">{{job.account.address1}}, {{job.account.city}}
+                                            {{job.account.zip}}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <!--<div class="well">-->
-                            <!--<small class="pull-left">fans: {{job.fans}} dehus: {{job.dehus}} other: xx</small>-->
+                                <!--<div class="well">-->
+                                <!--<small class="pull-left">fans: {{job.fans}} dehus: {{job.dehus}} other: xx</small>-->
 
-                            <!--</div>-->
-                        </a>
+                                <!--</div>-->
+                            </a>
 
+                        </div>
+                    </div>
+                    <!--list-group-->
+
+                    <div class="panel-footer">
+                        <small class="pull-left">
+                            <lable>Totals:</lable>
+                            <b> fans {{fansTotal}} dehus {{dehusTotal}} other: xx</b></small>
+                        <a class="btn btn-link btn-xs pull-right" href="#">
+                            Footer link</a>
                     </div>
                 </div>
-                <!--list-group-->
+                <!--panel-->
 
-                <div class="panel-footer">
-                    <small class="pull-left">
-                        <lable>Totals:</lable>
-                        <b> fans {{fansTotal}} dehus {{dehusTotal}} other: xx</b></small>
-                    <a class="btn btn-link btn-xs pull-right" href="#">
-                        Footer link</a>
-                </div>
             </div>
-            <!--panel-->
+            <!--list-->
 
-        </div>
-        <!--list-->
+            <!--list details column-->
+            <div class="col-sm-7 bootcards-cards hidden-xs">
+                <div class="panel panel-default bootcards-richtext">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Equipment Locations</h3>
+                    </div>
+                    <div class="panel-body">
 
-        <!--list details column-->
-        <div class="col-sm-7 bootcards-cards hidden-xs">
-            <div class="panel panel-default bootcards-richtext">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Equipment Locations</h3>
-                </div>
-                <div class="panel-body">
+                        <tabset justified="true">
+                            <tab heading="List">
+                                <div class="panel panel-default bootcards-richtext">
+                                    <div class="panel-body">
+                                        <table class="table table-condensed">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Fans</th>
+                                                <th>Dehus</th>
+                                                <th>Misc</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="(id, job) in contacts">
+                                                <td>{{job.accountName}}</td>
+                                                <td data-toggle="tooltip" data-placement="right"
+                                                    title="{{job.fanList}}">
+                                                    {{job.fanList.length}}
+                                                </td>
+                                                <td data-toggle="tooltip" data-placement="right"
+                                                    title="{{job.dehuList}}">
+                                                    {{job.dehuList.length}}
+                                                </td>
 
-                    <tabset justified="true">
-                        <tab heading="List">
-                            <div class="panel panel-default bootcards-richtext">
-                                <div class="panel-body">
-                            <table class="table table-condensed">
-                                <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Fans</th>
-                                    <th>Dehus</th>
-                                    <th>Misc</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="(id, job) in contacts">
-                                    <td>{{job.accountName}}</td>
-                                    <td data-toggle="tooltip" data-placement="right" title="{{job.fanList}}">
-                                        {{job.fanList.length}}
-                                    </td>
-                                    <td data-toggle="tooltip" data-placement="right" title="{{job.dehuList}}">
-                                        {{job.dehuList.length}}
-                                    </td>
+                                                <td>x</td>
+                                            </tr>
+                                            <tr>
+                                                <td>SHOP</td>
+                                                <td data-toggle="tooltip" data-placement="right" title="{{shopFans}}">
+                                                    {{shopFans.length}}
+                                                </td>
 
-                                    <td>x</td>
-                                </tr>
-                                <tr>
-                                    <td>SHOP</td>
-                                    <td data-toggle="tooltip" data-placement="right" title="{{shopFans}}">
-                                        {{shopFans.length}}
-                                    </td>
+                                                <td data-toggle="tooltip" data-placement="right" title="{{shopDehus}}">
+                                                    {{shopDehus.length}}
+                                                </td>
 
-                                    <td data-toggle="tooltip" data-placement="right" title="{{shopDehus}}">
-                                        {{shopDehus.length}}
-                                    </td>
-
-                                    <td>x</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                                    </div></div>
-                        </tab>
-
-                        <tab heading="Map" select="alertMe()">
-                            <!--<div style="heigth:400px; width:400px; min-height:400px;min-width:400px;max-heigth:400px; max-width:400px;"  id="map"></div>-->
-
-                            <div id="map"></div>
-
-
-                            <!--</div>-->
-                        </tab>
-                    </tabset>
-                </div>
-            </div>
-
-            <div class="panel panel-default bootcards-richtext">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Edit Shop Equipment</h3>
-                </div>
-                <div class="panel-body">
-
-                    <tabset justified="true">
-
-                        <tab heading="List">
-                            <div ng-show="company.shop.length < 1">
-                                <div class="alert alert-danger" role="alert">You have no equipment in your shop.</div>
-                            </div>
-                            <div ng-show="company.shop.length >= 1">
-
-                            <div class="panel panel-default bootcards-richtext">
-                                <div class="panel-body">
-                                    <table class="table table-condensed">
-                                        <thead>
-                                        <tr>
-                                            <!--<th>OnSite</th>-->
-                                            <th>ID</th>
-                                            <th>Type</th>
-                                            <th>Model</th>
-                                            <th>Purchase Date</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr ng-repeat="equip in company.shop">
-
-                                            <!--<td>{{equip.onSite}}</td>-->
-                                            <td>{{equip.id}}</td>
-                                            <td>{{equip.type}}</td>
-                                            <td>{{equip.model}}</td>
-                                            <td>{{equip.prettyPurchaseDate}}</td>
-
-                                        </tr>
-                                        </tbody>
-                                    </table>
-
+                                                <td>x</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            </tab>
+
+                            <tab heading="Map" select="alertMe()">
+                                <!--<div style="heigth:400px; width:400px; min-height:400px;min-width:400px;max-heigth:400px; max-width:400px;"  id="map"></div>-->
+
+                                <div id="map"></div>
+
+
+                                <!--</div>-->
+                            </tab>
+                        </tabset>
+                    </div>
+                </div>
+
+                <div class="panel panel-default bootcards-richtext">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Edit Shop Equipment</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <tabset justified="true">
+
+                            <tab heading="List">
+                                <div ng-show="company.shop.length < 1">
+                                    <div class="alert alert-danger" role="alert">You have no equipment in your shop.
+                                    </div>
                                 </div>
-                        </tab>
-                        <tab heading="Edit or Add">
-                            <br>
+                                <div ng-show="company.shop.length >= 1">
 
-                            <div ng-show="!selectedEquipmentToEdit">
-                                <label>Edit</label>
-                                <select data-ng-model="sItem" ng-change="changeSelectedEquipmentToEdit(sItem)"
-                                        data-ng-options="sItem as sItem.id for sItem in company.shop">
-                                </select>
-                            </div>
-                            <br>
+                                    <div class="panel panel-default bootcards-richtext">
+                                        <div class="panel-body">
+                                            <table class="table table-condensed">
+                                                <thead>
+                                                <tr>
+                                                    <!--<th>OnSite</th>-->
+                                                    <th>ID</th>
+                                                    <th>Type</th>
+                                                    <th>Model</th>
+                                                    <th>Purchase Date</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="equip in company.shop">
 
-                            <div ng-show="!selectedEquipmentToEdit">
-                                <label>Add</label>
-                                <button class="btn btn-primary" ng-click="add()">Add
-                                </button>
-                            </div>
-                            <div ng-show="selectedEquipmentToEdit">
-                                <form name="form.equipEditForm" ng-submit="submit()" novalidate>
-                                    <div class="form-group">
+                                                    <!--<td>{{equip.onSite}}</td>-->
+                                                    <td>{{equip.id}}</td>
+                                                    <td>{{equip.type}}</td>
+                                                    <td>{{equip.model}}</td>
+                                                    <td>{{equip.prettyPurchaseDate}}</td>
 
-                                        <label>ID</label>
-                                        <input type="text" name="id" class="form-control"
-                                               ng-model="selectedEquipmentToEdit.id" value="selectedEquipmentToEdit.id"
-                                               required>
+                                                </tr>
+                                                </tbody>
+                                            </table>
 
-                                        <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
-                                           class="help-block">An id is required.</p>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
+                                </div>
+                            </tab>
+                            <tab heading="Edit or Add">
+                                <br>
 
-                                        <label>Type</label>
-                                        <select name="type" ng-model="selectedEquipmentToEdit.type" required>
-                                            <option ng-repeat="obj in equipTypes" value="{{obj.type}}">{{obj.type}}
-                                            </option>
-                                        </select>
+                                <div ng-show="!selectedEquipmentToEdit">
+                                    <label>Edit</label>
+                                    <select data-ng-model="sItem" ng-change="changeSelectedEquipmentToEdit(sItem)"
+                                            data-ng-options="sItem as sItem.id for sItem in company.shop">
+                                    </select>
+                                </div>
+                                <br>
 
-                                        <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
-                                           class="help-block">An id is required.</p>
-                                    </div>
-                                    <div class="form-group">
+                                <div ng-show="!selectedEquipmentToEdit">
+                                    <label>Add</label>
+                                    <button class="btn btn-primary" ng-click="add()">Add
+                                    </button>
+                                </div>
+                                <div ng-show="selectedEquipmentToEdit">
+                                    <form name="form.equipEditForm" ng-submit="submit()" novalidate>
+                                        <div class="form-group">
 
-                                        <label>Model</label>
-                                        <input type="text" name="model" class="form-control"
-                                               ng-model="selectedEquipmentToEdit.model"
-                                               value="selectedEquipmentToEdit.model"
-                                               required>
+                                            <label>ID</label>
+                                            <input type="text" name="id" class="form-control"
+                                                   ng-model="selectedEquipmentToEdit.id"
+                                                   value="selectedEquipmentToEdit.id"
+                                                   required>
 
-                                        <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
-                                           class="help-block">An id is required.</p>
-                                    </div>
-                                    <div class="form-group">
+                                            <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
+                                               class="help-block">An id is required.</p>
+                                        </div>
+                                        <div class="form-group">
 
-                                        <label>Date of Purchase</label>
-                                        <!--<input type="date" name="purchaseDate" class="form-control"-->
-                                        <!--ng-model="selectedEquipmentToEdit.purchaseDate"-->
-                                        <!--value="selectedEquipmentToEdit.purchaseDate"-->
-                                        <!--required>-->
-                                        <input type="date" id="purchaseDate" class="form-control" name="purchaseDate"
-                                               ng-model="purchaseDate.value"
+                                            <label>Type</label>
+                                            <select name="type" ng-model="selectedEquipmentToEdit.type" required>
+                                                <option ng-repeat="obj in equipTypes" value="{{obj.type}}">{{obj.type}}
+                                                </option>
+                                            </select>
 
-                                               placeholder="yyyy-MM-dd" required/>
+                                            <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
+                                               class="help-block">An id is required.</p>
+                                        </div>
+                                        <div class="form-group">
 
-                                        <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
-                                           class="help-block">An id is required.</p>
-                                    </div>
-                                    <div class="form-group">
+                                            <label>Model</label>
+                                            <input type="text" name="model" class="form-control"
+                                                   ng-model="selectedEquipmentToEdit.model"
+                                                   value="selectedEquipmentToEdit.model"
+                                                   required>
 
-                                        <label>Status</label>
-                                        <select name="status" ng-model="selectedEquipmentToEdit.status" required>
-                                            <option ng-repeat="obj in equipStatus" value="{{obj.status}}">
-                                                {{obj.status}}
-                                            </option>
-                                        </select>
+                                            <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
+                                               class="help-block">An id is required.</p>
+                                        </div>
+                                        <div class="form-group">
 
-                                        <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
-                                           class="help-block">An id is required.</p>
+                                            <label>Date of Purchase</label>
+                                            <!--<input type="date" name="purchaseDate" class="form-control"-->
+                                            <!--ng-model="selectedEquipmentToEdit.purchaseDate"-->
+                                            <!--value="selectedEquipmentToEdit.purchaseDate"-->
+                                            <!--required>-->
+                                            <input type="date" id="purchaseDate" class="form-control"
+                                                   name="purchaseDate"
+                                                   ng-model="purchaseDate.value"
 
-                                    </div>
+                                                   placeholder="yyyy-MM-dd" required/>
+
+                                            <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
+                                               class="help-block">An id is required.</p>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <label>Status</label>
+                                            <select name="status" ng-model="selectedEquipmentToEdit.status" required>
+                                                <option ng-repeat="obj in equipStatus" value="{{obj.status}}">
+                                                    {{obj.status}}
+                                                </option>
+                                            </select>
+
+                                            <p ng-show="form.equipEditForm.id.$invalid && !form.equipEditForm.id.$pristine"
+                                               class="help-block">An id is required.</p>
+
+                                        </div>
 <span ng-show="adding">
      <button class="btn btn-success" ng-click="addingEquipment(form.equipEditForm)"
              ng-disabled="form.equipEditForm.$invalid">Add
@@ -297,461 +303,461 @@
                                             ng-disabled="form.equipEditForm.$invalid">Update
                                     </button>
 </span>
-                                    <button class="btn btn-primary" ng-click="cancel()
+                                        <button class="btn btn-primary" ng-click="cancel()
                                     ">Cancel
-                                    </button>
+                                        </button>
 <span ng-show="!adding">
 
                                     <button class="btn btn-danger" ng-click="delete()
                                     ">Delete
                                     </button>
     </span>
-                                </form>
-                            </div>
-                        </tab>
-                        <tab heading="Options">Long Labeled Justified content</tab>
-                    </tabset>
+                                    </form>
+                                </div>
+                            </tab>
+                            <tab heading="Options">Long Labeled Justified content</tab>
+                        </tabset>
+                    </div>
+
                 </div>
 
-            </div>
+                <!--contact details -->
+                <!--<div id="contactCard">-->
 
-            <!--contact details -->
-            <!--<div id="contactCard">-->
+                <!--<div class="panel panel-default">-->
+                <!--<div class="panel-heading clearfix">-->
+                <!--<h3 class="panel-title pull-left">Contact Details</h3>-->
 
-            <!--<div class="panel panel-default">-->
-            <!--<div class="panel-heading clearfix">-->
-            <!--<h3 class="panel-title pull-left">Contact Details</h3>-->
+                <!--<div class="btn-group pull-right visible-xs">-->
+                <!--<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#editModal">-->
+                <!--<i class="fa fa-pencil"></i><span>Edit</span>-->
+                <!--</a>-->
+                <!--</div>-->
+                <!--<a class="btn btn-primary pull-right hidden-xs" href="#" data-toggle="modal"-->
+                <!--data-target="#editModal">-->
+                <!--<i class="fa fa-pencil"></i><span>Edit</span>-->
+                <!--</a>-->
+                <!--</div>-->
+                <!--<div class="list-group">-->
+                <!--<div class="list-group-item">-->
+                <!--&lt;!&ndash;<img src="img/Sofia Acey.jpg" class="img-rounded pull-left">&ndash;&gt;-->
+                <!--<label>Name</label>-->
+                <!--<h4 class="list-group-item-heading">Acey, Sofia</h4>-->
+                <!--</div>-->
 
-            <!--<div class="btn-group pull-right visible-xs">-->
-            <!--<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#editModal">-->
-            <!--<i class="fa fa-pencil"></i><span>Edit</span>-->
-            <!--</a>-->
-            <!--</div>-->
-            <!--<a class="btn btn-primary pull-right hidden-xs" href="#" data-toggle="modal"-->
-            <!--data-target="#editModal">-->
-            <!--<i class="fa fa-pencil"></i><span>Edit</span>-->
-            <!--</a>-->
-            <!--</div>-->
-            <!--<div class="list-group">-->
-            <!--<div class="list-group-item">-->
-            <!--&lt;!&ndash;<img src="img/Sofia Acey.jpg" class="img-rounded pull-left">&ndash;&gt;-->
-            <!--<label>Name</label>-->
-            <!--<h4 class="list-group-item-heading">Acey, Sofia</h4>-->
-            <!--</div>-->
+                <!--<div class="list-group-item">-->
+                <!--<label>Company</label>-->
+                <!--<h4 class="list-group-item-heading">Masung Corp.</h4>-->
+                <!--</div>-->
 
-            <!--<div class="list-group-item">-->
-            <!--<label>Company</label>-->
-            <!--<h4 class="list-group-item-heading">Masung Corp.</h4>-->
-            <!--</div>-->
+                <!--<div class="list-group-item">-->
+                <!--<label>Job Title</label>-->
+                <!--<h4 class="list-group-item-heading">Finance Director (ZCT)</h4>-->
+                <!--</div>-->
 
-            <!--<div class="list-group-item">-->
-            <!--<label>Job Title</label>-->
-            <!--<h4 class="list-group-item-heading">Finance Director (ZCT)</h4>-->
-            <!--</div>-->
+                <!--<div class="list-group-item">-->
+                <!--<label>Department</label>-->
+                <!--<h4 class="list-group-item-heading">Finance</h4>-->
+                <!--</div>-->
 
-            <!--<div class="list-group-item">-->
-            <!--<label>Department</label>-->
-            <!--<h4 class="list-group-item-heading">Finance</h4>-->
-            <!--</div>-->
+                <!--<a class="list-group-item" href="tel://+1 650-555-0055">-->
+                <!--<label>Phone</label>-->
+                <!--<h4 class="list-group-item-heading">+1 650-555-0055</h4>-->
+                <!--</a>-->
 
-            <!--<a class="list-group-item" href="tel://+1 650-555-0055">-->
-            <!--<label>Phone</label>-->
-            <!--<h4 class="list-group-item-heading">+1 650-555-0055</h4>-->
-            <!--</a>-->
+                <!--<a class="list-group-item" href="mailto:Sofia.Acey@masung.com">-->
+                <!--<label>Email</label>-->
+                <!--<h4 class="list-group-item-heading">Sofia.Acey@masung.com</h4>-->
+                <!--</a>-->
 
-            <!--<a class="list-group-item" href="mailto:Sofia.Acey@masung.com">-->
-            <!--<label>Email</label>-->
-            <!--<h4 class="list-group-item-heading">Sofia.Acey@masung.com</h4>-->
-            <!--</a>-->
+                <!--</div>-->
 
-            <!--</div>-->
+                <!--<div class="panel-footer">-->
+                <!--<small class="pull-left">Built with Bootcards - Base Card</small>-->
+                <!--<a class="btn btn-link btn-xs pull-right" href="#">-->
+                <!--Card footer link</a>-->
+                <!--</div>-->
+                <!--</div>-->
 
-            <!--<div class="panel-footer">-->
-            <!--<small class="pull-left">Built with Bootcards - Base Card</small>-->
-            <!--<a class="btn btn-link btn-xs pull-right" href="#">-->
-            <!--Card footer link</a>-->
-            <!--</div>-->
-            <!--</div>-->
+                <!--</div>-->
+                <!--&lt;!&ndash;contact card&ndash;&gt;-->
 
-            <!--</div>-->
-            <!--&lt;!&ndash;contact card&ndash;&gt;-->
+                <!--&lt;!&ndash;rich text card sample&ndash;&gt;-->
+                <!--<div class="panel panel-default bootcards-richtext">-->
+                <!--<div class="panel-heading">-->
+                <!--<h3 class="panel-title">Rich Text Card Heading</h3>-->
+                <!--</div>-->
+                <!--<div class="panel-body">-->
+                <!--<p class="lead">Lead body copy vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor-->
+                <!--auctor. Duis mollis, est non commodo luctus.</p>-->
 
-            <!--&lt;!&ndash;rich text card sample&ndash;&gt;-->
-            <!--<div class="panel panel-default bootcards-richtext">-->
-            <!--<div class="panel-heading">-->
-            <!--<h3 class="panel-title">Rich Text Card Heading</h3>-->
-            <!--</div>-->
-            <!--<div class="panel-body">-->
-            <!--<p class="lead">Lead body copy vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor-->
-            <!--auctor. Duis mollis, est non commodo luctus.</p>-->
+                <!--<h1>Heading 1</h1>-->
 
-            <!--<h1>Heading 1</h1>-->
+                <!--<h2>Heading 2</h2>-->
 
-            <!--<h2>Heading 2</h2>-->
+                <!--<h3>Heading 3</h3>-->
+                <!--<h4>Heading 4</h4>-->
+                <!--<h5>Heading 5</h5>-->
+                <!--<h6>Heading 6</h6>-->
 
-            <!--<h3>Heading 3</h3>-->
-            <!--<h4>Heading 4</h4>-->
-            <!--<h5>Heading 5</h5>-->
-            <!--<h6>Heading 6</h6>-->
+                <!--<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lobortis pretium nisl. Etiam at-->
+                <!--vestibulum purus, sit amet blandit mi. Duis enim lectus, tempus nec varius sed, sollicitudin-->
+                <!--quis velit. Fusce quis sem porttitor, euismod ante vitae, ultricies erat.</p>-->
+                <!--<ul>-->
+                <!--<li>Duis cursus dui et turpis gravida sollicitudin.</li>-->
+                <!--<li>Donec eget mauris feugiat, euismod purus nec, feugiat neque.</li>-->
+                <!--<li>Nunc erat est, molestie eget magna in, consectetur euismod lorem.</li>-->
+                <!--</ul>-->
+                <!--<ol>-->
+                <!--<li>Sed luctus congue orci quis tempus.</li>-->
+                <!--<li>Praesent in viverra lorem.</li>-->
+                <!--<li>Suspendisse augue lacus, porta quis imperdiet at, posuere vel nulla.</li>-->
+                <!--</ol>-->
+                <!--<div>-->
+                <!--&lt;!&ndash; Standard button &ndash;&gt;-->
+                <!--<button type="button" class="btn btn-default">Default</button>-->
+                <!--&lt;!&ndash; Provides extra visual weight and identifies the primary action in a set of buttons &ndash;&gt;-->
+                <!--<button type="button" class="btn btn-primary">Primary</button>-->
+                <!--&lt;!&ndash; Indicates a successful or positive action &ndash;&gt;-->
+                <!--<button type="button" class="btn btn-success">Success</button>-->
+                <!--&lt;!&ndash; Contextual button for informational alert messages &ndash;&gt;-->
+                <!--<button type="button" class="btn btn-info">Info</button>-->
+                <!--&lt;!&ndash; Indicates caution should be taken with this action &ndash;&gt;-->
+                <!--<button type="button" class="btn btn-warning">Warning</button>-->
+                <!--&lt;!&ndash; Indicates a dangerous or potentially negative action &ndash;&gt;-->
+                <!--<button type="button" class="btn btn-danger">Danger</button>-->
+                <!--&lt;!&ndash; Deemphasize a button by making it look like a link while maintaining button behavior &ndash;&gt;-->
+                <!--<button type="button" class="btn btn-link">Link</button>-->
+                <!--<button type="button" class="btn btn-primary" disabled="disabled">Disabled</button>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="panel-footer">-->
+                <!--<small>Built with Bootcards - Rich Text Card</small>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--&lt;!&ndash;end rich text card&ndash;&gt;-->
 
-            <!--<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lobortis pretium nisl. Etiam at-->
-            <!--vestibulum purus, sit amet blandit mi. Duis enim lectus, tempus nec varius sed, sollicitudin-->
-            <!--quis velit. Fusce quis sem porttitor, euismod ante vitae, ultricies erat.</p>-->
-            <!--<ul>-->
-            <!--<li>Duis cursus dui et turpis gravida sollicitudin.</li>-->
-            <!--<li>Donec eget mauris feugiat, euismod purus nec, feugiat neque.</li>-->
-            <!--<li>Nunc erat est, molestie eget magna in, consectetur euismod lorem.</li>-->
-            <!--</ul>-->
-            <!--<ol>-->
-            <!--<li>Sed luctus congue orci quis tempus.</li>-->
-            <!--<li>Praesent in viverra lorem.</li>-->
-            <!--<li>Suspendisse augue lacus, porta quis imperdiet at, posuere vel nulla.</li>-->
-            <!--</ol>-->
-            <!--<div>-->
-            <!--&lt;!&ndash; Standard button &ndash;&gt;-->
-            <!--<button type="button" class="btn btn-default">Default</button>-->
-            <!--&lt;!&ndash; Provides extra visual weight and identifies the primary action in a set of buttons &ndash;&gt;-->
-            <!--<button type="button" class="btn btn-primary">Primary</button>-->
-            <!--&lt;!&ndash; Indicates a successful or positive action &ndash;&gt;-->
-            <!--<button type="button" class="btn btn-success">Success</button>-->
-            <!--&lt;!&ndash; Contextual button for informational alert messages &ndash;&gt;-->
-            <!--<button type="button" class="btn btn-info">Info</button>-->
-            <!--&lt;!&ndash; Indicates caution should be taken with this action &ndash;&gt;-->
-            <!--<button type="button" class="btn btn-warning">Warning</button>-->
-            <!--&lt;!&ndash; Indicates a dangerous or potentially negative action &ndash;&gt;-->
-            <!--<button type="button" class="btn btn-danger">Danger</button>-->
-            <!--&lt;!&ndash; Deemphasize a button by making it look like a link while maintaining button behavior &ndash;&gt;-->
-            <!--<button type="button" class="btn btn-link">Link</button>-->
-            <!--<button type="button" class="btn btn-primary" disabled="disabled">Disabled</button>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="panel-footer">-->
-            <!--<small>Built with Bootcards - Rich Text Card</small>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--&lt;!&ndash;end rich text card&ndash;&gt;-->
+                <!--</div>-->
+                <!--&lt;!&ndash;list-details&ndash;&gt;-->
 
-            <!--</div>-->
-            <!--&lt;!&ndash;list-details&ndash;&gt;-->
-
-            <!--</div>-->
-            <!--&lt;!&ndash;row&ndash;&gt;-->
+                <!--</div>-->
+                <!--&lt;!&ndash;row&ndash;&gt;-->
 
 
-            <!--</div>&lt;!&ndash;container&ndash;&gt;-->
+                <!--</div>&lt;!&ndash;container&ndash;&gt;-->
 
-            <!--&lt;!&ndash; fixed tabbed footer &ndash;&gt;-->
-            <!--<div class="navbar navbar-default navbar-fixed-bottom">-->
+                <!--&lt;!&ndash; fixed tabbed footer &ndash;&gt;-->
+                <!--<div class="navbar navbar-default navbar-fixed-bottom">-->
 
-            <!--<div class="container">-->
+                <!--<div class="container">-->
 
-            <!--<div class="bootcards-desktop-footer clearfix">-->
-            <!--<p class="pull-left">Bootcards</p>-->
-            <!--</div>-->
+                <!--<div class="bootcards-desktop-footer clearfix">-->
+                <!--<p class="pull-left">Bootcards</p>-->
+                <!--</div>-->
 
-            <!--<div class="btn-group">-->
-            <!--<a href="#" class="btn btn-default">-->
-            <!--<i class="fa fa-2x fa-dashboard"></i>Dashboard-->
-            <!--</a>-->
-            <!--<a href="starter-template.html" class="btn btn-default active">-->
-            <!--<i class="fa fa-2x fa-users"></i>Contacts-->
-            <!--</a>-->
-            <!--<a href="az-picker.html" class="btn btn-default">-->
-            <!--<i class="fa fa-2x fa-font"></i>AZ Picker-->
-            <!--</a>-->
-            <!--</div>-->
-            <!--</div>-->
+                <!--<div class="btn-group">-->
+                <!--<a href="#" class="btn btn-default">-->
+                <!--<i class="fa fa-2x fa-dashboard"></i>Dashboard-->
+                <!--</a>-->
+                <!--<a href="starter-template.html" class="btn btn-default active">-->
+                <!--<i class="fa fa-2x fa-users"></i>Contacts-->
+                <!--</a>-->
+                <!--<a href="az-picker.html" class="btn btn-default">-->
+                <!--<i class="fa fa-2x fa-font"></i>AZ Picker-->
+                <!--</a>-->
+                <!--</div>-->
+                <!--</div>-->
 
-            <!--</div>&lt;!&ndash;footer&ndash;&gt;-->
+                <!--</div>&lt;!&ndash;footer&ndash;&gt;-->
 
-            <!--&lt;!&ndash;  new job modal&ndash;&gt;-->
-            <!--<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">-->
-            <!--<div class="modal-dialog">-->
-            <!--<div class="modal-content">-->
+                <!--&lt;!&ndash;  new job modal&ndash;&gt;-->
+                <!--<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">-->
+                <!--<div class="modal-dialog">-->
+                <!--<div class="modal-content">-->
 
-            <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="/contacts/{{contact.id}}" data-pjax="#main">&ndash;&gt;-->
-            <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="" data-pjax="#main">&ndash;&gt;-->
+                <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="/contacts/{{contact.id}}" data-pjax="#main">&ndash;&gt;-->
+                <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="" data-pjax="#main">&ndash;&gt;-->
 
-            <!--<div class="modal-header">-->
+                <!--<div class="modal-header">-->
 
-            <!--<div class="btn-group pull-left">-->
-            <!--<button class="btn btn-danger" data-dismiss="modal">-->
-            <!--Cancel-->
-            <!--</button>-->
-            <!--</div>-->
+                <!--<div class="btn-group pull-left">-->
+                <!--<button class="btn btn-danger" data-dismiss="modal">-->
+                <!--Cancel-->
+                <!--</button>-->
+                <!--</div>-->
 
-            <!--<div class="btn-group pull-right">-->
-            <!--<button class="btn btn-success" data-dismiss="modal">-->
-            <!--<i class="fa fa-check"></i>Save-->
-            <!--</button>-->
-            <!--</div>-->
+                <!--<div class="btn-group pull-right">-->
+                <!--<button class="btn btn-success" data-dismiss="modal">-->
+                <!--<i class="fa fa-check"></i>Save-->
+                <!--</button>-->
+                <!--</div>-->
 
-            <!--<h4 class="modal-title">-->
-            <!--Edit Contact-->
-            <!--</h4>-->
-            <!--</div>-->
+                <!--<h4 class="modal-title">-->
+                <!--Edit Contact-->
+                <!--</h4>-->
+                <!--</div>-->
 
-            <!--<div class="modal-body">-->
-            <!--<input type="hidden" name="companyId" value="{{contact.companyId}}">-->
-            <!--<input type="hidden" name="_method" value="put">-->
+                <!--<div class="modal-body">-->
+                <!--<input type="hidden" name="companyId" value="{{contact.companyId}}">-->
+                <!--<input type="hidden" name="_method" value="put">-->
 
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">First Name</label>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">First Name</label>-->
 
-            <!--<div class="col-xs-8">-->
-            <!--<input type="text" name="firstName" class="form-control" placeholder="First Name"-->
-            <!--value="Sofia">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">Last Name</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="text" name="firstName" class="form-control" placeholder="First Name"-->
+                <!--value="Sofia">-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">Last Name</label>-->
 
-            <!--<div class="col-xs-8">-->
-            <!--<input type="text" name="lastName" class="form-control" placeholder="Last Name"-->
-            <!--value="Acey">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">Company</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="text" name="lastName" class="form-control" placeholder="Last Name"-->
+                <!--value="Acey">-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">Company</label>-->
 
-            <!--<div class="col-xs-8">-->
-            <!--<input type="text" name="department" class="form-control" placeholder="Department"-->
-            <!--value="Masung Corp.">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">Phone</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="text" name="department" class="form-control" placeholder="Department"-->
+                <!--value="Masung Corp.">-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">Phone</label>-->
 
-            <!--<div class="col-xs-8">-->
-            <!--<input type="text" name="phone" class="form-control"-->
-            <!--placeholder="Phone"-->
-            <!--value="+1 650-555-0055">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">Email</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="text" name="phone" class="form-control"-->
+                <!--placeholder="Phone"-->
+                <!--value="+1 650-555-0055">-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">Email</label>-->
 
-            <!--<div class="col-xs-8">-->
-            <!--<input type="email" name="email" class="form-control" placeholder="Email"-->
-            <!--value="Sofia.Acey@masung.com">-->
-            <!--</div>-->
-            <!--</div>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="email" name="email" class="form-control" placeholder="Email"-->
+                <!--value="Sofia.Acey@masung.com">-->
+                <!--</div>-->
+                <!--</div>-->
 
-            <!--</div>-->
-            <!--</form>-->
+                <!--</div>-->
+                <!--</form>-->
 
-            <!--<div class="modal-footer">-->
-            <!--<button type="button" class="btn btn-danger btn-block"-->
-            <!--onclick="bootcards.confirmDelete('contact'); return false;">-->
-            <!--<i class="fa fa-trash-o"></i>-->
-            <!--Delete Contact-->
-            <!--</button>-->
-            <!--</div>-->
+                <!--<div class="modal-footer">-->
+                <!--<button type="button" class="btn btn-danger btn-block"-->
+                <!--onclick="bootcards.confirmDelete('contact'); return false;">-->
+                <!--<i class="fa fa-trash-o"></i>-->
+                <!--Delete Contact-->
+                <!--</button>-->
+                <!--</div>-->
 
-            <!--</div>-->
-            <!--&lt;!&ndash;modal-content&ndash;&gt;-->
-            <!--</div>-->
-            <!--</div>&lt;!&ndash;modal&ndash;&gt;-->
+                <!--</div>-->
+                <!--&lt;!&ndash;modal-content&ndash;&gt;-->
+                <!--</div>-->
+                <!--</div>&lt;!&ndash;modal&ndash;&gt;-->
 
-            <!--edit job modal-->
-            <!--<div class="modal fade" id="newJobModal" tabindex="-1" role="dialog" aria-labelledby="newJobModal" aria-hidden="true">-->
-            <!--<div id="messages" class="alert alert-success" data-ng-show="messages" data-ng-bind="messages"></div>-->
-            <!--<div class="modal-dialog">-->
-            <!--<div class="modal-content">-->
-            <!--<form name="helpForm" novalidate role="form">-->
-            <!--<div id="name" class="form-group">-->
-            <!--<label for="name">Your Name </label>-->
-            <!--<span class="label label-danger"-->
-            <!--data-ng-show="submitted && helpForm.name.$error.required">Required!</span>-->
-            <!--<input type="text" name="name"  data-ng-model="job.firstname" class="form-control" required/>-->
-            <!--</div>-->
+                <!--edit job modal-->
+                <!--<div class="modal fade" id="newJobModal" tabindex="-1" role="dialog" aria-labelledby="newJobModal" aria-hidden="true">-->
+                <!--<div id="messages" class="alert alert-success" data-ng-show="messages" data-ng-bind="messages"></div>-->
+                <!--<div class="modal-dialog">-->
+                <!--<div class="modal-content">-->
+                <!--<form name="helpForm" novalidate role="form">-->
+                <!--<div id="name" class="form-group">-->
+                <!--<label for="name">Your Name </label>-->
+                <!--<span class="label label-danger"-->
+                <!--data-ng-show="submitted && helpForm.name.$error.required">Required!</span>-->
+                <!--<input type="text" name="name"  data-ng-model="job.firstname" class="form-control" required/>-->
+                <!--</div>-->
 
-            <!--<div id="email" class="form-group">-->
-            <!--<label for="email">Your E-mail address</label>-->
-            <!--<span class="label label-danger" data-ng-show="submitted && helpForm.email.$error.required">Required!</span>-->
-            <!--<span class="label label-danger"-->
-            <!--data-ng-show="submitted && helpForm.$error.email">Invalid email!</span>-->
-            <!--<input type="email" name="email" data-ng-model="email" class="form-control" required/>-->
-            <!--</div>-->
+                <!--<div id="email" class="form-group">-->
+                <!--<label for="email">Your E-mail address</label>-->
+                <!--<span class="label label-danger" data-ng-show="submitted && helpForm.email.$error.required">Required!</span>-->
+                <!--<span class="label label-danger"-->
+                <!--data-ng-show="submitted && helpForm.$error.email">Invalid email!</span>-->
+                <!--<input type="email" name="email" data-ng-model="email" class="form-control" required/>-->
+                <!--</div>-->
 
-            <!-- -->
+                <!-- -->
 
-            <!--<div id="url" class="form-group">-->
-            <!--<label for="url">URL of Relevant Page</label>-->
-            <!--<span class="label label-danger"-->
-            <!--data-ng-show="submitted && helpForm.$error.url">Invalid URL format!</span>-->
-            <!--<input type="url" name="url" data-ng-model="url" class="form-control"/>-->
-            <!--</div>-->
+                <!--<div id="url" class="form-group">-->
+                <!--<label for="url">URL of Relevant Page</label>-->
+                <!--<span class="label label-danger"-->
+                <!--data-ng-show="submitted && helpForm.$error.url">Invalid URL format!</span>-->
+                <!--<input type="url" name="url" data-ng-model="url" class="form-control"/>-->
+                <!--</div>-->
 
-            <!--<div id="comments" class="form-group">-->
-            <!--<label for="comments">Description</label>-->
-            <!--<span class="label label-danger" data-ng-show="submitted && helpForm.comments.$error.required">Required!</span>-->
-            <!--<textarea name="comments" data-ng-model="comments" class="form-control" required></textarea>-->
-            <!--</div>-->
+                <!--<div id="comments" class="form-group">-->
+                <!--<label for="comments">Description</label>-->
+                <!--<span class="label label-danger" data-ng-show="submitted && helpForm.comments.$error.required">Required!</span>-->
+                <!--<textarea name="comments" data-ng-model="comments" class="form-control" required></textarea>-->
+                <!--</div>-->
 
-            <!--<button data-ng-disabled="progress.active()" data-ng-click="submit(helpForm)" class="btn btn-default">-->
-            <!--Submit-->
-            <!--</button>-->
-            <!--</form>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="modal fade" id="newJobModal" tabindex="-1" role="dialog" aria-labelledby="newJobModal" aria-hidden="true">-->
-            <!--<div class="modal-dialog">-->
-            <!--<div class="modal-content">-->
+                <!--<button data-ng-disabled="progress.active()" data-ng-click="submit(helpForm)" class="btn btn-default">-->
+                <!--Submit-->
+                <!--</button>-->
+                <!--</form>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="modal fade" id="newJobModal" tabindex="-1" role="dialog" aria-labelledby="newJobModal" aria-hidden="true">-->
+                <!--<div class="modal-dialog">-->
+                <!--<div class="modal-content">-->
 
-            <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="/contacts/{{contact.id}}" data-pjax="#main">&ndash;&gt;-->
-            <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="" data-pjax="#main">&ndash;&gt;-->
+                <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="/contacts/{{contact.id}}" data-pjax="#main">&ndash;&gt;-->
+                <!--&lt;!&ndash;<form class="form-horizontal" method="POST" action="" data-pjax="#main">&ndash;&gt;-->
 
-            <!--<div class="modal-header">-->
+                <!--<div class="modal-header">-->
 
-            <!--<div class="btn-group pull-left">-->
-            <!--<button class="btn btn-danger" data-dismiss="modal">-->
-            <!--Cancel-->
-            <!--</button>-->
-            <!--</div>-->
+                <!--<div class="btn-group pull-left">-->
+                <!--<button class="btn btn-danger" data-dismiss="modal">-->
+                <!--Cancel-->
+                <!--</button>-->
+                <!--</div>-->
 
-            <!--<div class="btn-group pull-right">-->
-            <!--<button class="btn btn-success" data-dismiss="modal" ng-click="savingNewJob()">-->
-            <!--<i class="fa fa-check"></i>Save-->
-            <!--</button>-->
-            <!--</div>-->
+                <!--<div class="btn-group pull-right">-->
+                <!--<button class="btn btn-success" data-dismiss="modal" ng-click="savingNewJob()">-->
+                <!--<i class="fa fa-check"></i>Save-->
+                <!--</button>-->
+                <!--</div>-->
 
-            <!--<h4 class="modal-title">-->
-            <!--New Job-->
-            <!--</h4>-->
-            <!--</div>-->
+                <!--<h4 class="modal-title">-->
+                <!--New Job-->
+                <!--</h4>-->
+                <!--</div>-->
 
-            <!--<div class="modal-body">-->
-            <!--<input type="hidden" name="companyId" value="{{contact.companyId}}">-->
-            <!--<input type="hidden" name="companyId" value="">-->
-            <!--<input type="hidden" name="_method" value="put">-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">Job#</label>-->
-            <!--<div class="col-xs-8">-->
-            <!--<input type="text" name="jobNumber" class="form-control" placeholder="Job#"-->
-            <!--value="">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">First Name</label>-->
-            <!--<div class="col-xs-8">-->
-            <!--<input type="text" name="firstName" class="form-control" placeholder="First Name"-->
-            <!--value="">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">Last Name</label>-->
-            <!--<div class="col-xs-8">-->
-            <!--<input type="text" name="lastName" class="form-control" placeholder="Last Name"-->
-            <!--value="">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">Phone</label>-->
-            <!--<div class="col-xs-8">-->
-            <!--<input type="text" name="phone" class="form-control"-->
-            <!--placeholder="Phone"-->
-            <!--value="">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">Phone 2</label>-->
-            <!--<div class="col-xs-8">-->
-            <!--<input type="text" name="phone2" class="form-control"-->
-            <!--placeholder="Phone"-->
-            <!--value="">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-xs-4 control-label">Email</label>-->
-            <!--<div class="col-xs-8">-->
-            <!--<input type="email" name="email" class="form-control" placeholder="Email"-->
-            <!--value="">-->
-            <!--</div>-->
-            <!--</div>-->
+                <!--<div class="modal-body">-->
+                <!--<input type="hidden" name="companyId" value="{{contact.companyId}}">-->
+                <!--<input type="hidden" name="companyId" value="">-->
+                <!--<input type="hidden" name="_method" value="put">-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">Job#</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="text" name="jobNumber" class="form-control" placeholder="Job#"-->
+                <!--value="">-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">First Name</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="text" name="firstName" class="form-control" placeholder="First Name"-->
+                <!--value="">-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">Last Name</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="text" name="lastName" class="form-control" placeholder="Last Name"-->
+                <!--value="">-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">Phone</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="text" name="phone" class="form-control"-->
+                <!--placeholder="Phone"-->
+                <!--value="">-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">Phone 2</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="text" name="phone2" class="form-control"-->
+                <!--placeholder="Phone"-->
+                <!--value="">-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                <!--<label class="col-xs-4 control-label">Email</label>-->
+                <!--<div class="col-xs-8">-->
+                <!--<input type="email" name="email" class="form-control" placeholder="Email"-->
+                <!--value="">-->
+                <!--</div>-->
+                <!--</div>-->
 
-            <!--</div>-->
-            <!--</form>-->
+                <!--</div>-->
+                <!--</form>-->
 
-            <!--<div class="modal-footer">-->
-            <!--<button type="button" class="btn btn-danger btn-block"-->
-            <!--onclick="bootcards.confirmDelete('contact'); return false;">-->
-            <!--<i class="fa fa-trash-o"></i>-->
-            <!--Delete Contact-->
-            <!--</button>-->
-            <!--</div>-->
+                <!--<div class="modal-footer">-->
+                <!--<button type="button" class="btn btn-danger btn-block"-->
+                <!--onclick="bootcards.confirmDelete('contact'); return false;">-->
+                <!--<i class="fa fa-trash-o"></i>-->
+                <!--Delete Contact-->
+                <!--</button>-->
+                <!--</div>-->
 
-            <!--</div>&lt;!&ndash;modal-content&ndash;&gt;-->
-            <!--</div>-->
-            <!--</div>&lt;!&ndash;modal&ndash;&gt;-->
+                <!--</div>&lt;!&ndash;modal-content&ndash;&gt;-->
+                <!--</div>-->
+                <!--</div>&lt;!&ndash;modal&ndash;&gt;-->
 
-            <!-- Bootstrap & jQuery core JavaScript
-            ================================================== -->
-            <!-- Placed at the end of the document so the pages load faster -->
-            <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-            <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-            <script src="//cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>
+                <!-- Bootstrap & jQuery core JavaScript
+                ================================================== -->
+                <!-- Placed at the end of the document so the pages load faster -->
+                <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+                <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+                <script src="//cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>
 
-            <!-- Bootcards JS -->
-            <script src="../src/js/bootcards.js"></script>
+                <!-- Bootcards JS -->
+                <script src="../src/js/bootcards.js"></script>
 
-            <!--recommended: FTLabs FastClick library-->
-            <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
-            <script type="text/javascript">
-                /*
-                 * Initialize Bootcards.
-                 *
-                 * Parameters:
-                 * - offCanvasBackdrop (boolean): show a backdrop when the offcanvas is shown
-                 * - offCanvasHideOnMainClick (boolean): hide the offcanvas menu on clicking outside the off canvas
-                 * - enableTabletPortraitMode (boolean): enable single pane mode for tablets in portraitmode
-                 * - disableRubberBanding (boolean): disable the iOS rubber banding effect
-                 * - disableBreakoutSelector (string) : for iOS apps that are added to the home screen:
-                 jQuery selector to target links for which a fix should be added to not
-                 allow those links to break out of fullscreen mode.
-                 */
+                <!--recommended: FTLabs FastClick library-->
+                <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
+                <script type="text/javascript">
+                    /*
+                     * Initialize Bootcards.
+                     *
+                     * Parameters:
+                     * - offCanvasBackdrop (boolean): show a backdrop when the offcanvas is shown
+                     * - offCanvasHideOnMainClick (boolean): hide the offcanvas menu on clicking outside the off canvas
+                     * - enableTabletPortraitMode (boolean): enable single pane mode for tablets in portraitmode
+                     * - disableRubberBanding (boolean): disable the iOS rubber banding effect
+                     * - disableBreakoutSelector (string) : for iOS apps that are added to the home screen:
+                     jQuery selector to target links for which a fix should be added to not
+                     allow those links to break out of fullscreen mode.
+                     */
 
-                bootcards.init({
-                    offCanvasBackdrop: true,
-                    offCanvasHideOnMainClick: true,
-                    enableTabletPortraitMode: true,
-                    disableRubberBanding: true,
-                    disableBreakoutSelector: 'a.no-break-out'
-                });
-                //enable FastClick
-                window.addEventListener('load', function () {
-                    FastClick.attach(document.body);
-                }, false);
-                //activate the sub-menu options in the offcanvas menu
-                $('.collapse').collapse();
-                //theme switcher: only needed for this sample page to set the active CSS
-                $('input[name=themeSwitcher]').on('change', function (ev) {
-                    var theme = $(ev.target).val();
-                    var themeCSSLoaded = false;
-                    $.each(document.styleSheets, function (idx, css) {
-                        var href = css.href;
-                        if (href.indexOf('bootcards') > -1) {
-                            if (href.indexOf(theme) > -1) {
-                                themeCSSLoaded = true;
-                                css.disabled = false;
-                            } else {
-                                css.disabled = true;
-                            }
-                        }
+                    bootcards.init({
+                        offCanvasBackdrop: true,
+                        offCanvasHideOnMainClick: true,
+                        enableTabletPortraitMode: true,
+                        disableRubberBanding: true,
+                        disableBreakoutSelector: 'a.no-break-out'
                     });
-                    if (!themeCSSLoaded) {
-                        $("<link/>", {
-                            rel: "stylesheet",
-                            type: "text/css",
-                            href: "//cdnjs.cloudflare.com/ajax/libs/bootcards/1.1.1/css/bootcards-" + theme + ".min.css"
-                        }).appendTo("head");
-                    }
+                    //enable FastClick
+                    window.addEventListener('load', function () {
+                        FastClick.attach(document.body);
+                    }, false);
+                    //activate the sub-menu options in the offcanvas menu
+                    $('.collapse').collapse();
+                    //theme switcher: only needed for this sample page to set the active CSS
+                    $('input[name=themeSwitcher]').on('change', function (ev) {
+                        var theme = $(ev.target).val();
+                        var themeCSSLoaded = false;
+                        $.each(document.styleSheets, function (idx, css) {
+                            var href = css.href;
+                            if (href.indexOf('bootcards') > -1) {
+                                if (href.indexOf(theme) > -1) {
+                                    themeCSSLoaded = true;
+                                    css.disabled = false;
+                                } else {
+                                    css.disabled = true;
+                                }
+                            }
+                        });
+                        if (!themeCSSLoaded) {
+                            $("<link/>", {
+                                rel: "stylesheet",
+                                type: "text/css",
+                                href: "//cdnjs.cloudflare.com/ajax/libs/bootcards/1.1.1/css/bootcards-" + theme + ".min.css"
+                            }).appendTo("head");
+                        }
 
-                });
+                    });
 
-            </script>
+                </script>
+            </div>
         </div>
-    </div>
     </div>
 </div>

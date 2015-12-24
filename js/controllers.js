@@ -109,7 +109,7 @@ app.filter('active', function () {
     };
 });
 
-app.controller("RugsCtrl", function ($scope, usSpinnerService,  $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
+app.controller("RugsCtrl", function ($scope, usSpinnerService, $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
     // Vars are set at rootScope, $scope will recursively search up to rootScope
     $scope.loading = true;
     usSpinnerService.spin('spinner-1');
@@ -314,7 +314,7 @@ app.controller("RugsCtrl", function ($scope, usSpinnerService,  $route, moment, 
                     data[job].prettyStartDate = tempDate.format('MM/DD/YYYY');
                 }
 
-console.log('status' + job.rugStatus)
+                console.log('status' + job.rugStatus)
 //                var address = {};
 //                address.add = data[job].account.address1 + " " + data[job].account.city + ", " + data[job].account.zip;
 //                address.name = data[job].accountName;
@@ -355,7 +355,7 @@ console.log('status' + job.rugStatus)
     }
 
 });
-app.controller("ListCtrl", function ($scope, usSpinnerService,  $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
+app.controller("ListCtrl", function ($scope, usSpinnerService, $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
     // Vars are set at rootScope, $scope will recursively search up to rootScope
     $scope.loading = true;
     usSpinnerService.spin('spinner-1');
@@ -539,23 +539,23 @@ app.controller("ListCtrl", function ($scope, usSpinnerService,  $route, moment, 
                         var theseRooms = dayList[i].rooms;
                         if (today.setHours(0, 0, 0, 0) == dayOnSite.setHours(0, 0, 0, 0)) {
 
-                        for (var y = 0; y < theseRooms.length; y++) {
-                            var equipmentList = theseRooms[y].equipment;
-                            if (equipmentList) {
-                                for (var x = 0; x < equipmentList.length; x++) {
-                                    var equipment = equipmentList[x];
-                                    if (equipment.type == 'dehu') {
-                                        dehuList.push(equipment.id)
-                                        dehusTotal++;
-                                    }
-                                    if (equipment.type == 'fan') {
-                                        fansTotal++;
-                                        fanList.push(equipment.id)
+                            for (var y = 0; y < theseRooms.length; y++) {
+                                var equipmentList = theseRooms[y].equipment;
+                                if (equipmentList) {
+                                    for (var x = 0; x < equipmentList.length; x++) {
+                                        var equipment = equipmentList[x];
+                                        if (equipment.type == 'dehu') {
+                                            dehuList.push(equipment.id)
+                                            dehusTotal++;
+                                        }
+                                        if (equipment.type == 'fan') {
+                                            fansTotal++;
+                                            fanList.push(equipment.id)
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
                     }
 
                 }
@@ -646,12 +646,36 @@ app.controller("ViewRugJobCtrl", function ($modal, $scope, $location, $routePara
             }
 
         }
+        ;
+
+
         if (fans > 0 || dehus > 0) {
             alert('you cannot delete a job that still has equipment on it')
         } else {
             fireFactory.delete($scope.job.contactId)
         }
     }
+
+    $scope.addRug = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'views/addrug-form.html',
+            controller: AddRugInstanceCtrl,
+            scope: $scope,
+            resolve: {
+                userForm: function () {
+                    return $scope.userForm;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+            //TODO this doesnt feel right
+            $location.path('/')
+        }, function () {
+            console.info('Modal dismissed at: ' + new Date());
+        });
+    };
     $("#menu-list").removeClass("active");
     $("#menu-new").removeClass("active");
     $("#menu-loaddata").removeClass("active");
@@ -962,7 +986,7 @@ app.controller("ViewCtrl", function ($modal, $scope, $location, $routeParams, fi
 });
 
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
+var AddRugInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
     $scope.form = {}
     $scope.cancel = function () {
     }
@@ -974,6 +998,146 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
     $scope.htmlStartDate = {
         value: new Date(m.format('YYYY, MM, DD').toString())
     };
+    console.log('opening modal')
+
+    $(document).ready(function() {
+        var spinner = new Spinner({color: '#ddd'});
+        var firebaseRef = 'https://firepano.firebaseio.com/';
+        console.log('qscript ran')
+        $scope.handleFileSelect = function (evt) {
+            console.log('asdf')
+            var f = evt.target.files[0];
+            var reader = new FileReader();
+            reader.onload = (function (theFile) {
+                return function (e) {
+                    var filePayload = e.target.result;
+// Generate a location that can't be guessed using the file's contents and a random number
+                    var hash = CryptoJS.SHA256(Math.random() + CryptoJS.SHA256(filePayload));
+                    var f = new Firebase(firebaseRef + 'pano/' + hash + '/filePayload');
+                    spinner.spin(document.getElementById('spin'));
+// Set the file payload to Firebase and register an onComplete handler to stop the spinner and show the preview
+                    f.set(filePayload, function () {
+                        spinner.stop();
+                        document.getElementById("pano").src = e.target.result;
+                        $('#file-upload').hide();
+// Update the location bar so the URL can be shared with others
+                        window.location.hash = hash;
+                    });
+                };
+            })(f);
+            reader.readAsDataURL(f);
+        }
+
+        $(function () {
+            $('#spin').append(spinner);
+
+            var idx = window.location.href.indexOf('#');
+            var hash = (idx > 0) ? window.location.href.slice(idx + 1) : '';
+            if (hash === '') {
+// No hash found, so render the file upload button.
+                $('#file-upload').show();
+                document.getElementById("file-upload").addEventListener('change', handleFileSelect, false);
+            } else {
+// A hash was passed in, so let's retrieve and render it.
+                spinner.spin(document.getElementById('spin'));
+                var f = new Firebase(firebaseRef + '/pano/' + hash + '/filePayload');
+                f.once('value', function (snap) {
+                    var payload = snap.val();
+                    if (payload != null) {
+                        document.getElementById("pano").src = payload;
+                    } else {
+                        $('#body').append("Not found");
+                    }
+                    spinner.stop();
+                });
+            }
+        })
+    });
+
+    //$(function() {
+    //    $('#spin').append(spinner);
+    //
+    //    var idx = window.location.href.indexOf('#');
+    //    var hash = (idx > 0) ? window.location.href.slice(idx + 1) : '';
+    //    if (hash === '') {
+    //        // No hash found, so render the file upload button.
+    //        $('#file-upload').show();
+    //        document.getElementById("file-upload").addEventListener('change', handleFileSelect, false);
+    //    } else {
+    //        // A hash was passed in, so let's retrieve and render it.
+    //        spinner.spin(document.getElementById('spin'));
+    //        var f = new Firebase(firebaseRef + '/pano/' + hash + '/filePayload');
+    //        f.once('value', function(snap) {
+    //            var payload = snap.val();
+    //            if (payload != null) {
+    //                document.getElementById("pano").src = payload;
+    //            } else {
+    //                $('#body').append("Not found");
+    //            }
+    //            spinner.stop();
+    //        });
+    //    }
+    $scope.removeRoom = function (room) {
+        $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
+        $scope.roomChanged = true;
+    }
+    $scope.submitForm = function () {
+
+        if ($scope.form.userForm.$valid) {
+            if ($scope.form.userForm.startDate.$modelValue) {
+                var sd = new moment($scope.form.userForm.startDate.$modelValue);
+                console.log(sd.toString())
+                console.table($scope.job.dayList)
+                if ($scope.job.dayList) {
+                    for (var i = 0; i < $scope.job.dayList.length; i++) {
+                        //console.log('daylist = ' + new moment($scope.job.dayList[i].date).toString())
+                        var sd = new moment($scope.form.userForm.startDate.$modelValue);
+
+                        var dateToCheck = new moment(sd.add('day', i).toString());
+                        //console.log('dtc = ' + dateToCheck.toString())
+                        $scope.job.dayList[i].date = dateToCheck.toString();
+                    }
+                } else {
+                    var sd = new moment($scope.form.userForm.startDate.$modelValue);
+
+                }
+                var sd = new moment($scope.form.userForm.startDate.$modelValue);
+                $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+                    $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+                    $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue, $scope.form.userForm.city.$modelValue,
+                    $scope.form.userForm.zip.$modelValue,
+                    sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
+                $modalInstance.close('closed');
+                return;
+            }
+            if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
+                $modalInstance.close('closed');
+                alert('This job needs a start Date')
+                return;
+            }
+            if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
+                $modalInstance.close('closed');
+                alert('This job needs at least one room')
+                return;
+            }
+
+        } else {
+            $route.reload();
+
+        }
+    };
+
+    $scope.cancel = function () {
+        console.log('just canceled')
+        $modalInstance.dismiss('cancel');
+    };
+};
+
+var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
+    $scope.form = {}
+    $scope.cancel = function () {
+    }
+
     $scope.addRoom = function (room) {
         if (room.$modelValue) {
             if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
@@ -1180,10 +1344,10 @@ var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equip
                     }
                 }
             }
-            if (!found ) {
+            if (!found) {
                 $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.push(equipment);
             } else {
-                 alert('this equipment is already being used')
+                alert('this equipment is already being used')
             }
         };
         $scope.changeSelectedEquipmentToAdd = function (equipment) {

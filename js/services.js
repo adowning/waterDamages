@@ -110,7 +110,6 @@ angular.module("angularcrud")
                                 var rugStatus = thisJob.rugStatus;
                                 console.log('rs' + thisJob.rugStatus)
                                 thisJob.rugStatus = 'Not started';
-                                thisJob = {};
                                 thisJob.accountName = account.accountName;
                                 thisJob.accountID = accountID;
                                 thisJob.reviewed = false;

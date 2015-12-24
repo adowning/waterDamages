@@ -25,21 +25,7 @@
                 Status </h3>
         </div>
         <div class="panel-body clearfix">
-
-            <!--<div class="alert alert-warning" ng-show="!job.startDate">This job needs a start date.</div>-->
-            <!--<div class="alert alert-warning" ng-show="job.rooms.length < 1 || !job.rooms">This job needs at least one-->
-                <!--room.-->
-            <!--</div>-->
-            <!--<div class="alert alert-warning" ng-show="job.workCompleted && !job.reviewed" role="alert">-->
-                <!--Job needs reviewed-->
-            <!--</div>-->
-            <!--<div class="alert alert-warning" ng-show="job.workCompleted && job.reviewed && !job.invoiced" role="alert">-->
-                <!--Job needs invoiced.-->
-            <!--</div>-->
-            <!--<div class="alert alert-success" ng-show="job.workCompleted && job.reviewed && job.invoiced" role="alert">-->
-                <!--Complete-->
-            <!--</div>-->
-            <div class="alert alert-success"  role="alert">
+            <div class="alert alert-success" role="alert">
                 {{job.rugStatus}}
             </div>
 
@@ -57,17 +43,13 @@
     <span>Edit Job</span></a>
     <span>   </span>
     </span>
-<!--<span ng-show="job.startDate && job.rooms.length >= 1 && job.dayList.length >= 1">-->
-<!--<a class="btn btn-primary " ng-click="editWork()"-->
-<!--<span>Edit Work Performed</span></a>-->
-<!--</span>-->
-<div class="alert alert-success" ng-show="job.workCompleted && job.reviewed && job.invoiced" role="alert">
 
-    <a class="btn btn-primary " ng-click="deleteJob()"
-    <span>Close Job</span></a>
-</div>
+    <a class="btn btn-primary " ng-click="addRug()"
+    <span>Add Rug</span></a>
 <a class="btn btn-danger " ng-click="deleteJob()"
 <span>Delete Job</span></a>
 </div>
 
+<script>
 
+</script>
