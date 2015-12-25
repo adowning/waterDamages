@@ -3,10 +3,13 @@ angular.module("angularcrud")
     .factory("fireFactory", function ($rootScope, moment, $http, $location, $firebase) {
         return {
             getAll: function (successCallback) {
-                //TODO hacky
                 $rootScope.FBURL = "https://andrewscleaning.firebaseio.com/"
                 $http.get($rootScope.FBURL + "angularcrud/" + ".json?format=export").success(successCallback);
-
+            },
+            getRugImages: function (jobId, rugId, successCallback) {
+                console.log(jobId+rugId)
+                $rootScope.FBURL = "https://andrewscleaning.firebaseio.com/"
+                $http.get($rootScope.FBURL + + 'rug_images/' + jobId +'/' + rugId + '/' + ".json?format=export").success(successCallback);
             },
             getRugJobs: function (successCallback) {
                 //TODO hacky
@@ -26,39 +29,36 @@ angular.module("angularcrud")
                     $location.path("/");
                 });
             },
-            addRugImage: function (file, id){
-                console.log('file' + file)
-                var f = file[0];
+            addRugImage: function (files, data){
+                var f = files[0];
                 var reader = new FileReader();
-                var num = Math.floor(Math.random() * (100000000000 - 1)) + 1;
-                console.log('num' + num)
-                id += '_' + $rootScope.rugId + '_' + num;
-                console.log(id)
-
+                //var id = data.jobId + '_number_' + ( data.rugCount + 1 );
 
                 reader.onload = (function(theFile) {
                     return function(e) {
                         var filePayload = e.target.result;
-                        // Generate a location that can't be guessed using the file's contents and a random number
-                        //var hash = CryptoJS.SHA256(Math.random() + CryptoJS.SHA256(filePayload));
-                        var f = new Firebase($rootScope.FBURL + 'rug_images/' + id + '/filePayload');
-                        //spinner.spin(document.getElementById('spin'));
-                        // Set the file payload to Firebase and register an onComplete handler to stop the spinner and show the preview
+                        var f = new Firebase('https://andrewscleaning.firebaseio.com/' + 'rug_images/' +data.jobId +'/' + data.rugId + '/' + (data.rugCount) + '/filePayload');
+
                         f.set(filePayload, function() {
-                            //spinner.stop();
-                            //document.getElementById("pano").src = e.target.result;
-                            //$('#file-upload').hide();
-                            // Update the location bar so the URL can be shared with others
-                            //window.location.hash = hash;
+
                         });
                     };
                 })(f);
                 reader.readAsDataURL(f);
-                //$http.post($rootScope.FBURL + "rugs/" + ".json?format=export", file)
-                //    .success(function () {
-                //        console.log('trying to refresh 2')
-                //        $location.path("/rugs");
-                //    });
+
+            },
+            addRug: function (jobId, rugs) {
+
+                if (!rugs) {
+                    rugs = [];
+                }
+                $http({
+                    url: $rootScope.FBURL + "rugs/" + jobId + ".json?format=export",
+                    data: {
+                        rugs: rugs
+                    },
+                    method: "PATCH"
+                });
             },
             addRugJob: function (jobID, currentJobs) {
 

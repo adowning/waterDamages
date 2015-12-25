@@ -10,7 +10,7 @@ app.config(['$routeProvider', function ($routeProvider) {
         })
         .when('/rugs', {
             controller: 'RugsCtrl',
-            templateUrl: './views/rugs.html'
+            templateUrl: './views/rugs/rugs.html'
         })
         .when('/edit/:contactId', {
             controller: 'EditCtrl',
@@ -19,7 +19,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 
         .when('/viewRugJob2/:contactId', {
             controller: 'ViewRugJobCtrl',
-            templateUrl: './views/viewRugJob2.html'
+            templateUrl: './views/rugs/viewRugJob2.html'
         })
 
         .when('/view/:contactId', {
