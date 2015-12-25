@@ -2,7 +2,7 @@
 
 var app = angular.module('angularcrud', ['lvl.directives.fileupload', 'ngFileUpload', 'angularSpinner', 'ui.bootstrap', 'ngRoute', 'ngMessages', 'firebase', 'LocalForageModule', 'ajoslin.promise-tracker']);
 
-app.config(['$routeProvider', function($routeProvider) {
+app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
         .when('/', {
             controller: 'ListCtrl',
@@ -63,11 +63,11 @@ app.constant('moment', moment);
 app.constant('GMaps', GMaps);
 app.constant('DATAKEY', 'AngularCrudData');
 
-app.run(function($window, $rootScope, $location, fireFactory) {
+app.run(function ($window, $rootScope, $location, fireFactory) {
 
     // Function to run when we transition to being online
     function onOnline() {
-        $rootScope.$apply(function() {
+        $rootScope.$apply(function () {
             // If we were previously offline, push all local changes to the server
             //if (!$rootScope.online) {
             //    $rootScope.online = false;
@@ -78,7 +78,7 @@ app.run(function($window, $rootScope, $location, fireFactory) {
 
     // Function to run when we transition to being offline
     function onOffline() {
-        $rootScope.$apply(function() {
+        $rootScope.$apply(function () {
             $rootScope.online = false;
         });
     }
@@ -97,8 +97,8 @@ app.run(function($window, $rootScope, $location, fireFactory) {
     //$rootScope.FBURL = localStorage.getItem("FBURL");
 });
 
-app.filter('active', function() {
-    return function(sItem) {
+app.filter('active', function () {
+    return function (sItem) {
         console.log('sItem' + sItem.onSite);
         if (!sItem.onSite) {
             return sItem.id;
@@ -108,7 +108,7 @@ app.filter('active', function() {
     };
 });
 
-app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
+app.controller('RugsCtrl', function ($scope, usSpinnerService, $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
     // Vars are set at rootScope, $scope will recursively search up to rootScope
     $scope.loading = true;
     usSpinnerService.spin('spinner-1');
@@ -119,10 +119,10 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
         var map = {};
 
 
-        fireFactory.getShopEquipment(function(data) {
+        fireFactory.getShopEquipment(function (data) {
             $scope.company = data;
 
-            $scope.changeSelectedEquipmentToEdit = function(equip) {
+            $scope.changeSelectedEquipmentToEdit = function (equip) {
                 $scope.selectedEquipmentToEdit = equip;
 
                 var m = new moment($scope.selectedEquipmentToEdit.purchaseDate.value);
@@ -151,7 +151,7 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
 
             $scope.adding = false;
 
-            $scope.delete = function() {
+            $scope.delete = function () {
                 console.log('deleting ' + $scope.selectionIdBeforeChange);
                 for (var i = 0; i < $scope.company.shop.length; i++) {
                     if ($scope.company.shop[i].id === $scope.selectionIdBeforeChange) {
@@ -162,17 +162,17 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
                     $scope.company.shop
                 );
                 var millisecondsToWait = 1500;
-                setTimeout(function() {
+                setTimeout(function () {
                     $route.reload();
 
                 }, millisecondsToWait);
 
             };
-            $scope.add = function() {
+            $scope.add = function () {
                 $scope.selectedEquipmentToEdit = {};
                 $scope.adding = true;
             };
-            $scope.addingEquipment = function(asdf) {
+            $scope.addingEquipment = function (asdf) {
                 //console.log('adding ' + $scope.selectedEquipmentToEdit.id);
                 $scope.equipmentBeingAdded = asdf;
                 var m = new moment($scope.equipmentBeingAdded.purchaseDate.value);
@@ -182,13 +182,13 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
                 };
                 console.log('asdf' + asdf);
             };
-            $scope.cancel = function() {
+            $scope.cancel = function () {
                 console.log('canceling ');
                 $route.reload();
 
             };
 
-            $scope.submit = function() {
+            $scope.submit = function () {
                 if ($scope.equipmentBeingAdded) {
                     var newEquipment = {};
                     newEquipment.id = $scope.equipmentBeingAdded.id.$viewValue;
@@ -208,7 +208,7 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
                             $scope.company.shop
                         );
                         var millisecondsToWait = 1500;
-                        setTimeout(function() {
+                        setTimeout(function () {
                             $route.reload();
 
                         }, millisecondsToWait);
@@ -231,7 +231,7 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
                             $scope.company.shop
                         );
                         var millisecondsToWait = 1500;
-                        setTimeout(function() {
+                        setTimeout(function () {
                             $route.reload();
 
                         }, millisecondsToWait);
@@ -265,7 +265,7 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
             $scope.shopDehus = shopDehus;
             $scope.company.shop = tempArray;
         });
-        fireFactory.getRugJobs(function(data) {
+        fireFactory.getRugJobs(function (data) {
 
             for (var job in data) {
                 console.table(job);
@@ -323,8 +323,8 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
 
         //$scope.fansTotal = fansTotal;
         //$scope.dehusTotal = dehusTotal;
-        $scope.alertMe = function() {
-            setTimeout(function() {
+        $scope.alertMe = function () {
+            setTimeout(function () {
                 map.refresh();
 
             });
@@ -335,12 +335,13 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
         $('#menu-loaddata').removeClass('active');
         $('#menu-settings').removeClass('active');
     }
-    $scope.addNewRugJob = function(jobID) {
+    $scope.addNewRugJob = function (jobID) {
         //TODO this needs to refresh page after job added .. such a fucking hack lol
         console.log('adding new job ' + $scope.contacts);
+
         fireFactory.addRugJob(jobID, $scope.contacts);
         var millisecondsToWait = 1500;
-        setTimeout(function() {
+        setTimeout(function () {
             $route.reload();
 
         }, millisecondsToWait);
@@ -348,7 +349,7 @@ app.controller('RugsCtrl', function($scope, usSpinnerService, $route, moment, GM
     };
 
 });
-app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
+app.controller('ListCtrl', function ($scope, usSpinnerService, $route, moment, GMaps, $location, DATAKEY, $localForage, fireFactory) {
     // Vars are set at rootScope, $scope will recursively search up to rootScope
     $scope.loading = true;
     usSpinnerService.spin('spinner-1');
@@ -359,10 +360,10 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
         var map = {};
 
 
-        fireFactory.getShopEquipment(function(data) {
+        fireFactory.getShopEquipment(function (data) {
             $scope.company = data;
 
-            $scope.changeSelectedEquipmentToEdit = function(equip) {
+            $scope.changeSelectedEquipmentToEdit = function (equip) {
                 $scope.selectedEquipmentToEdit = equip;
 
                 var m = new moment($scope.selectedEquipmentToEdit.purchaseDate.value);
@@ -391,7 +392,7 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
 
             $scope.adding = false;
 
-            $scope.delete = function() {
+            $scope.delete = function () {
                 console.log('deleting ' + $scope.selectionIdBeforeChange);
                 for (var i = 0; i < $scope.company.shop.length; i++) {
                     if ($scope.company.shop[i].id === $scope.selectionIdBeforeChange) {
@@ -402,17 +403,17 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
                     $scope.company.shop
                 );
                 var millisecondsToWait = 1500;
-                setTimeout(function() {
+                setTimeout(function () {
                     $route.reload();
 
                 }, millisecondsToWait);
 
             };
-            $scope.add = function() {
+            $scope.add = function () {
                 $scope.selectedEquipmentToEdit = {};
                 $scope.adding = true;
             };
-            $scope.addingEquipment = function(asdf) {
+            $scope.addingEquipment = function (asdf) {
                 //console.log('adding ' + $scope.selectedEquipmentToEdit.id);
                 $scope.equipmentBeingAdded = asdf;
                 var m = new moment($scope.equipmentBeingAdded.purchaseDate.value);
@@ -422,13 +423,13 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
                 };
                 console.log('asdf' + asdf);
             };
-            $scope.cancel = function() {
+            $scope.cancel = function () {
                 console.log('canceling ');
                 $route.reload();
 
             };
 
-            $scope.submit = function() {
+            $scope.submit = function () {
                 if ($scope.equipmentBeingAdded) {
                     var newEquipment = {};
                     newEquipment.id = $scope.equipmentBeingAdded.id.$viewValue;
@@ -448,7 +449,7 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
                             $scope.company.shop
                         );
                         var millisecondsToWait = 1500;
-                        setTimeout(function() {
+                        setTimeout(function () {
                             $route.reload();
 
                         }, millisecondsToWait);
@@ -471,7 +472,7 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
                             $scope.company.shop
                         );
                         var millisecondsToWait = 1500;
-                        setTimeout(function() {
+                        setTimeout(function () {
                             $route.reload();
 
                         }, millisecondsToWait);
@@ -505,7 +506,7 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
             $scope.shopDehus = shopDehus;
             $scope.company.shop = tempArray;
         });
-        fireFactory.getAll(function(data) {
+        fireFactory.getAll(function (data) {
 
             map = new GMaps({
                 div: '#map',
@@ -572,9 +573,10 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
                 addresses.push(address);
 
             }
-            map.setCenter(32.311730, -95.264658, function(callback) {});
+            map.setCenter(32.311730, -95.264658, function (callback) {
+            });
             for (var i = 0; i < addresses.length; i++) {
-                geoCode(addresses[i], GMaps, map, function() {
+                geoCode(addresses[i], GMaps, map, function () {
 
                 });
             }
@@ -583,8 +585,8 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
             $scope.contacts = data;
 
         });
-        $scope.alertMe = function() {
-            setTimeout(function() {
+        $scope.alertMe = function () {
+            setTimeout(function () {
                 map.refresh();
 
             });
@@ -595,12 +597,12 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
         $('#menu-loaddata').removeClass('active');
         $('#menu-settings').removeClass('active');
     }
-    $scope.addNewJob = function(jobID) {
+    $scope.addNewJob = function (jobID) {
         //TODO this needs to refresh page after job added .. such a fucking hack lol
         console.log('adding new job ' + $scope.contacts);
         fireFactory.addJob(jobID, $scope.contacts);
         var millisecondsToWait = 1500;
-        setTimeout(function() {
+        setTimeout(function () {
             $route.reload();
 
         }, millisecondsToWait);
@@ -608,36 +610,36 @@ app.controller('ListCtrl', function($scope, usSpinnerService, $route, moment, GM
     };
 
 });
-app.controller('ViewRugJobCtrl', function($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
-    fireFactory.getRugById($routeParams.contactId, function(data) {
+app.controller('ViewRugJobCtrl', function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
+    fireFactory.getRugById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
     });
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $(function () {
 
             var idx = window.location.href.indexOf('#');
 
-                // A hash was passed in, so let's retrieve and render it.
-                var f = new Firebase('https://andrewscleaning.firebaseio.com/' + 'pano/' + 'asdf' + '/filePayload');
-                f.once('value', function (snap) {
-                    var payload = snap.val();
-                    if (payload != null) {
-                        console.log('not null' + payload)
-                        document.getElementById('pano').src = payload;
+            // A hash was passed in, so let's retrieve and render it.
+            var f = new Firebase('https://andrewscleaning.firebaseio.com/' + 'pano/' + 'asdf' + '/filePayload');
+            f.once('value', function (snap) {
+                var payload = snap.val();
+                if (payload != null) {
+                    console.log('not null' + payload)
+                    document.getElementById('pano').src = payload;
 
-                    } else {
-                        $('#body').append('Not found');
-                        console.log('null')
-                    }
-                    //spinner.stop();
-                });
+                } else {
+                    $('#body').append('Not found');
+                    console.log('null')
+                }
+                //spinner.stop();
+            });
 
         });
     });
 
-    $scope.deleteJob = function() {
+    $scope.deleteJob = function () {
         console.log('deleting ' + $scope.job);
         var dehus = 0;
         var fans = 0;
@@ -672,23 +674,23 @@ app.controller('ViewRugJobCtrl', function($modal, $scope, $location, $routeParam
         }
     };
 
-    $scope.addRug = function() {
+    $scope.addRug = function () {
         var modalInstance = $modal.open({
             templateUrl: 'views/addrug-form.html',
             controller: AddRugInstanceCtrl,
             scope: $scope,
             resolve: {
-                userForm: function() {
+                userForm: function () {
                     return $scope.userForm;
                 }
             }
         });
 
-        modalInstance.result.then(function(selectedItem) {
+        modalInstance.result.then(function (selectedItem) {
             $scope.selected = selectedItem;
             //TODO this doesnt feel right
             $location.path('/');
-        }, function() {
+        }, function () {
             console.info('Modal dismissed at: ' + new Date());
         });
     };
@@ -697,12 +699,12 @@ app.controller('ViewRugJobCtrl', function($modal, $scope, $location, $routeParam
     $('#menu-loaddata').removeClass('active');
     $('#menu-settings').removeClass('active');
 });
-app.controller('ViewJobCtrl', function($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
-    fireFactory.getById($routeParams.contactId, function(data) {
+app.controller('ViewJobCtrl', function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
+    fireFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
     });
-    $scope.deleteJob = function() {
+    $scope.deleteJob = function () {
         console.log('deleting ' + $scope.job);
         var dehus = 0;
         var fans = 0;
@@ -739,8 +741,8 @@ app.controller('ViewJobCtrl', function($modal, $scope, $location, $routeParams, 
     $('#menu-loaddata').removeClass('active');
     $('#menu-settings').removeClass('active');
 });
-app.controller('ViewJobBasicsCtrl', function($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
-    fireFactory.getById($routeParams.contactId, function(data) {
+app.controller('ViewJobBasicsCtrl', function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
+    fireFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
         if ($scope.job.rooms) {
@@ -771,24 +773,24 @@ app.controller('ViewJobBasicsCtrl', function($modal, $scope, $location, $routePa
         //	$scope.$apply();
         //}
 
-        $scope.showForm = function() {
+        $scope.showForm = function () {
 
             var modalInstance = $modal.open({
                 templateUrl: 'views/modal-form.html',
                 controller: ModalInstanceCtrl,
                 scope: $scope,
                 resolve: {
-                    userForm: function() {
+                    userForm: function () {
                         return $scope.userForm;
                     }
                 }
             });
 
-            modalInstance.result.then(function(selectedItem) {
+            modalInstance.result.then(function (selectedItem) {
                 $scope.selected = selectedItem;
                 //TODO this doesnt feel right
                 $location.path('/');
-            }, function() {
+            }, function () {
                 console.info('Modal dismissed at: ' + new Date());
             });
         };
@@ -799,16 +801,16 @@ app.controller('ViewJobBasicsCtrl', function($modal, $scope, $location, $routePa
     $('#menu-loaddata').removeClass('active');
     $('#menu-settings').removeClass('active');
 });
-app.controller('ViewJobEquipmentCtrl', function($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
+app.controller('ViewJobEquipmentCtrl', function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
 
-    fireFactory.getById($routeParams.contactId, function(data) {
+    fireFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
         $scope.showFields = false;
         $scope.currentRoom = 'none';
         $scope.roomChanged = false;
 
-        $scope.changedCurrentRoomValue = function(roomNum) {
+        $scope.changedCurrentRoomValue = function (roomNum) {
             console.log('changed room value');
             $scope.showFields = true;
             var roomObject = $scope.job.dayList[$scope.dayNum].rooms[roomNum];
@@ -823,7 +825,7 @@ app.controller('ViewJobEquipmentCtrl', function($modal, $scope, $location, $rout
             $scope.$apply();
         }
 
-        $scope.showForm = function(day) {
+        $scope.showForm = function (day) {
             $scope.dayNum = day;
             $scope.todaysEquipment = $scope.job.dayList[$scope.dayNum];
             $scope.showFields = false;
@@ -835,22 +837,22 @@ app.controller('ViewJobEquipmentCtrl', function($modal, $scope, $location, $rout
                 controller: EquipmentInstanceCtrl,
                 scope: $scope,
                 resolve: {
-                    equipmentForm: function() {
+                    equipmentForm: function () {
                         return $scope.equipmentForm;
                     }
                 }
             });
 
-            modalInstance.result.then(function(selectedItem) {
+            modalInstance.result.then(function (selectedItem) {
                 $scope.selected = selectedItem;
                 //TODO this doesnt feel right
                 $location.path('/');
-            }, function() {
+            }, function () {
                 console.info('Modal dismissed at: ' + new Date());
             });
         };
 
-        $scope.showLaborForm = function(day) {
+        $scope.showLaborForm = function (day) {
             console.log('showing labor');
             $scope.dayNum = day;
             //$scope.todaysEquipment = $scope.job.dayList[$scope.dayNum];
@@ -861,21 +863,21 @@ app.controller('ViewJobEquipmentCtrl', function($modal, $scope, $location, $rout
                 controller: LaborInstanceCtrl,
                 scope: $scope,
                 resolve: {
-                    laborForm: function() {
+                    laborForm: function () {
                         return $scope.laborForm;
                     }
                 }
             });
 
-            modalInstance.result.then(function(selectedItem) {
+            modalInstance.result.then(function (selectedItem) {
                 $scope.selected = selectedItem;
                 //TODO this doesnt feel right
                 $location.path('/');
-            }, function() {
+            }, function () {
                 console.info('Modal dismissed at: ' + new Date());
             });
         };
-        $scope.addDay = function() {
+        $scope.addDay = function () {
 
             var date = new moment($scope.job.dayList.slice(-1)[0].date); //gets last date in array
             date.add('days', 1);
@@ -903,16 +905,16 @@ app.controller('ViewJobEquipmentCtrl', function($modal, $scope, $location, $rout
                 $scope.job.startDate, $scope.job.rooms, $scope.job.dayList);
         };
 
-        $scope.upload = function(f) {
+        $scope.upload = function (f) {
             console.log('asdf');
             console.log('$scopcid' + $scope.job.contactId);
             fireFactory.uploadImage($scope.job, f);
 
         };
 
-        $scope.getImage = function(i) {
+        $scope.getImage = function (i) {
 
-            fireFactory.getImage(i, function(data) {
+            fireFactory.getImage(i, function (data) {
                 var image = new Image();
                 image.src = data;
                 document.body.appendChild(image);
@@ -925,7 +927,7 @@ app.controller('ViewJobEquipmentCtrl', function($modal, $scope, $location, $rout
 
     //now load other jobs so when adding equipment
     //we can see if it is already being used
-    fireFactory.getAll(function(data) {
+    fireFactory.getAll(function (data) {
         $scope.allJobs = data;
     });
 
@@ -935,8 +937,8 @@ app.controller('ViewJobEquipmentCtrl', function($modal, $scope, $location, $rout
     $('#menu-loaddata').removeClass('active');
     $('#menu-settings').removeClass('active');
 });
-app.controller('ViewCtrl', function($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
-    fireFactory.getById($routeParams.contactId, function(data) {
+app.controller('ViewCtrl', function ($modal, $scope, $location, $routeParams, fireFactory, $filter, $http) {
+    fireFactory.getById($routeParams.contactId, function (data) {
         $scope.job = data;
         $scope.job.contactId = $routeParams.contactId;
         if ($scope.job.rooms) {
@@ -967,24 +969,24 @@ app.controller('ViewCtrl', function($modal, $scope, $location, $routeParams, fir
             $scope.$apply();
         }
 
-        $scope.showForm = function() {
+        $scope.showForm = function () {
 
             var modalInstance = $modal.open({
                 templateUrl: 'views/modal-form.html',
                 controller: ModalInstanceCtrl,
                 scope: $scope,
                 resolve: {
-                    userForm: function() {
+                    userForm: function () {
                         return $scope.userForm;
                     }
                 }
             });
 
-            modalInstance.result.then(function(selectedItem) {
+            modalInstance.result.then(function (selectedItem) {
                 $scope.selected = selectedItem;
                 //TODO this doesnt feel right
                 $location.path('/');
-            }, function() {
+            }, function () {
                 console.info('Modal dismissed at: ' + new Date());
             });
         };
@@ -997,118 +999,109 @@ app.controller('ViewCtrl', function($modal, $scope, $location, $routeParams, fir
     $('#menu-settings').removeClass('active');
 });
 
-var AddRugInstanceCtrl = function($scope, $modalInstance, userForm, $route) {
+var AddRugInstanceCtrl = function ($rootScope, $scope, $modalInstance, userForm, $route) {
     $scope.form = {};
-    $scope.cancel = function() {};
-    $scope.roomChanged = false;
-    var m = new moment($scope.job.startDate);
-
-    $scope.htmlStartDate2 = m.format('yyyy, MM, dd').toString();
-
-    $scope.htmlStartDate = {
-        value: new Date(m.format('YYYY, MM, DD').toString())
+    $scope.cancel = function () {
     };
-    console.log('opening modal');
 
-
-    var spinner = new Spinner({
-        color: '#ddd'
-    });
-    var firebaseRef = 'https://firepano.firebaseio.com/';
-
-    $scope.handleFileSelect = function(evt) {
-        console.table(evt)
-        console.table($scope.file)
-        var f = evt.target.files[0];
-        var reader = new FileReader();
-        reader.onload = (function(theFile) {
-            return function(e) {
-                var filePayload = e.target.result;
-                // Generate a location that can't be guessed using the file's contents and a random number
-                var hash = CryptoJS.SHA256(Math.random() + CryptoJS.SHA256(filePayload));
-                var f = new Firebase(firebaseRef + 'pano/' + hash + '/filePayload');
-                spinner.spin(document.getElementById('spin'));
-                // Set the file payload to Firebase and register an onComplete handler to stop the spinner and show the preview
-                f.set(filePayload, function() {
-                    spinner.stop();
-                    document.getElementById('pano').src = e.target.result;
-                    $('#file-upload').hide();
-                    // Update the location bar so the URL can be shared with others
-                    window.location.hash = hash;
-                });
-            };
-        })(f);
-        reader.readAsDataURL(f);
-    };
-    $(document).ready(function() {
-        $(function() {
-            $('#spin').append(spinner);
-
-            var idx = window.location.href.indexOf('#');
-            var hash = (idx > 0) ? window.location.href.slice(idx + 1) : '';
-            if (hash === '') {
-                // No hash found, so render the file upload button.
-                $('#file-upload').show();
-                document.getElementById('file-upload').addEventListener('change', handleFileSelect, false);
-            } else {
-                // A hash was passed in, so let's retrieve and render it.
-                spinner.spin(document.getElementById('spin'));
-                var f = new Firebase(firebaseRef + '/pano/' + hash + '/filePayload');
-                f.once('value', function(snap) {
-                    var payload = snap.val();
-                    if (payload != null) {
-                        document.getElementById('pano').src = payload;
-                    } else {
-                        $('#body').append('Not found');
-                    }
-                    spinner.stop();
-                });
-            }
-        });
-        $scope.progress = function(percentDone) {
-            console.log("progress: " + percentDone + "%");
-        };
-        $scope.done = function(files, data) {
-            console.log("upload complete");
-            console.log("data: " + JSON.stringify(data));
-            writeFiles(files);
-        };
-        $scope.getData = function(files) {
-            return {msg: "from the client", date: new Date()};
-        };
-        $scope.error = function(files, type, msg) {
-            console.log("Upload error: " + msg);
-            console.log("Error type:" + type);
-            writeFiles(files);
-        }
-
-        $scope.fileAdded = function(file){
-            console.log('file: '+file.name+' selected');
-        }
-
-        function writeFiles(files)
-        {
-            var msg = "Files<ul>";
-            for (var i = 0; i < files.length; i++) {
-                msg += "<li>" + files[i].name + "</li>";
-            }
-            msg += "</ul>";
-            console.log(msg);
-        }
-        //var elem = document.getElementById("console");
-        //var console = angular.element(elem);
-        //function log(msg) {
-        //    console.log('asdf')
-        //    console.log(msg)
-        //    var html = console.html();
-        //    if (html.length) {
-        //        html += "<br />";
-        //    }
-        //    html += msg;
-        //    console.html(html);
-        //    elem.scrollTop = elem.scrollHeight;
-        //}
-    });
+    $scope.getData = function(){
+        return 'asdf';
+    }
+    var rugId = Math.floor(Math.random() * (100000000000 - 1)) + 1;
+    $rootScope.rugId = rugId;
+    console.log('id' + $scope.job.contactId)
+    $rootScope.contactId = $scope.job.contactId;
+    //    console.table("xxxx");
+    //    var f = evt.target.files[0];
+    //    var reader = new FileReader();
+    //    reader.onload = (function () {
+    //        return function (e) {
+    //            var filePayload = e.target.result;
+    //            // Generate a location that can't be guessed using the file's contents and a random number
+    //            //var hash = CryptoJS.SHA256(Math.random() + CryptoJS.SHA256(filePayload));
+    //            var f = new Firebase(firebaseRef + 'pano/' + hash + '/filePayload');
+    //            //spinner.spin(document.getElementById('spin'));
+    //            // Set the file payload to Firebase and register an onComplete handler to stop the spinner and show the preview
+    //            f.set(filePayload, function () {
+    //                spinner.stop();
+    //                document.getElementById('pano').src = e.target.result;
+    //                //$('#file-upload').hide();
+    //                // Update the location bar so the URL can be shared with others
+    //                //window.location.hash = hash;
+    //            });
+    //        };
+    //    })(f);
+    //    reader.readAsDataURL(f);
+    //};
+    //$(document).ready(function() {
+    //    $(function() {
+    //        $('#spin').append(spinner);
+    //
+    //        var idx = window.location.href.indexOf('#');
+    //        var hash = (idx > 0) ? window.location.href.slice(idx + 1) : '';
+    //        if (hash === '') {
+    //            // No hash found, so render the file upload button.
+    //            $('#file-upload').show();
+    //            document.getElementById('file-upload').addEventListener('change', handleFileSelect, false);
+    //        } else {
+    //            // A hash was passed in, so let's retrieve and render it.
+    //            spinner.spin(document.getElementById('spin'));
+    //            var f = new Firebase(firebaseRef + '/pano/' + hash + '/filePayload');
+    //            f.once('value', function(snap) {
+    //                var payload = snap.val();
+    //                if (payload != null) {
+    //                    document.getElementById('pano').src = payload;
+    //                } else {
+    //                    $('#body').append('Not found');
+    //                }
+    //                spinner.stop();
+    //            });
+    //        }
+    //    });
+    //    $scope.progress = function(percentDone) {
+    //        console.log("progress: " + percentDone + "%");
+    //    };
+    //    $scope.done = function(files, data) {
+    //        console.log("upload complete");
+    //        console.log("data: " + JSON.stringify(data));
+    //        writeFiles(files);
+    //    };
+    //    $scope.getData = function(files) {
+    //        return {msg: "from the client", date: new Date()};
+    //    };
+    //    $scope.error = function(files, type, msg) {
+    //        console.log("Upload error: " + msg);
+    //        console.log("Error type:" + type);
+    //        writeFiles(files);
+    //    }
+    //
+    //    $scope.fileAdded = function(file){
+    //        console.log('file: '+file.name+' selected');
+    //    }
+    //
+    //    function writeFiles(files)
+    //    {
+    //        var msg = "Files<ul>";
+    //        for (var i = 0; i < files.length; i++) {
+    //            msg += "<li>" + files[i].name + "</li>";
+    //        }
+    //        msg += "</ul>";
+    //        console.log(msg);
+    //    }
+    //var elem = document.getElementById("console");
+    //var console = angular.element(elem);
+    //function log(msg) {
+    //    console.log('asdf')
+    //    console.log(msg)
+    //    var html = console.html();
+    //    if (html.length) {
+    //        html += "<br />";
+    //    }
+    //    html += msg;
+    //    console.html(html);
+    //    elem.scrollTop = elem.scrollHeight;
+    //}
+    //});
 
     //$(function() {
     //    $('#spin').append(spinner);
@@ -1133,49 +1126,49 @@ var AddRugInstanceCtrl = function($scope, $modalInstance, userForm, $route) {
     //            spinner.stop();
     //        });
     //    }
-    $scope.removeRoom = function(room) {
+    $scope.removeRoom = function (room) {
         $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
         $scope.roomChanged = true;
     };
-    $scope.submitForm = function() {
-
+    $scope.submitForm = function () {
         if ($scope.form.userForm.$valid) {
-            if ($scope.form.userForm.startDate.$modelValue) {
-                var sd = new moment($scope.form.userForm.startDate.$modelValue);
-                console.log(sd.toString());
-                console.table($scope.job.dayList);
-                if ($scope.job.dayList) {
-                    for (var i = 0; i < $scope.job.dayList.length; i++) {
-                        //console.log('daylist = ' + new moment($scope.job.dayList[i].date).toString())
-                        var sd = new moment($scope.form.userForm.startDate.$modelValue);
+            var rug = {};
+            rug.size = $scope.rug.size;
+            console.log('size' + $scope.rug.size)
+            rug.iD = $rootScope.rugId;
+            console.log('size' + rug.iD)
 
-                        var dateToCheck = new moment(sd.add('day', i).toString());
-                        //console.log('dtc = ' + dateToCheck.toString())
-                        $scope.job.dayList[i].date = dateToCheck.toString();
-                    }
-                } else {
-                    var sd = new moment($scope.form.userForm.startDate.$modelValue);
-
-                }
-                var sd = new moment($scope.form.userForm.startDate.$modelValue);
-                $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
-                    $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
-                    $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue, $scope.form.userForm.city.$modelValue,
-                    $scope.form.userForm.zip.$modelValue,
-                    sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
-                $modalInstance.close('closed');
-                return;
-            }
-            if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
-                $modalInstance.close('closed');
-                alert('This job needs a start Date');
-                return;
-            }
-            if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
-                $modalInstance.close('closed');
-                alert('This job needs at least one room');
-                return;
-            }
+            //if ($scope.job.dayList) {
+            //        for (var i = 0; i < $scope.job.dayList.length; i++) {
+            //            //console.log('daylist = ' + new moment($scope.job.dayList[i].date).toString())
+            //            var sd = new moment($scope.form.userForm.startDate.$modelValue);
+            //
+            //            var dateToCheck = new moment(sd.add('day', i).toString());
+            //            //console.log('dtc = ' + dateToCheck.toString())
+            //            $scope.job.dayList[i].date = dateToCheck.toString();
+            //        }
+            //    } else {
+            //        var sd = new moment($scope.form.userForm.startDate.$modelValue);
+            //
+            //    }
+            //    var sd = new moment($scope.form.userForm.startDate.$modelValue);
+            //    $scope.df.updateJob($scope.job.contactId, $scope.job.accountID, $scope.form.userForm.name.$modelValue,
+            //        $scope.form.userForm.address.$modelValue, $scope.form.userForm.phone1.$modelValue,
+            //        $scope.form.userForm.phone2.$modelValue, $scope.form.userForm.email.$modelValue, $scope.form.userForm.city.$modelValue,
+            //        $scope.form.userForm.zip.$modelValue,
+            //        sd.toString(), $scope.job.rooms, $scope.job.dayList, $scope.roomChanged);
+            //    $modalInstance.close('closed');
+            //    return;
+            //if (!$scope.form.userForm.startDate.$modelValue && !$scope.job.oldStartDate) {
+            //    $modalInstance.close('closed');
+            //    alert('This job needs a start Date');
+            //    return;
+            //}
+            //if (!$scope.job.rooms || $scope.job.rooms.length < 1) {
+            //    $modalInstance.close('closed');
+            //    alert('This job needs at least one room');
+            //    return;
+            //}
 
         } else {
             $route.reload();
@@ -1183,16 +1176,17 @@ var AddRugInstanceCtrl = function($scope, $modalInstance, userForm, $route) {
         }
     };
 
-    $scope.cancel = function() {
+    $scope.cancel = function () {
         console.log('just canceled');
         $modalInstance.dismiss('cancel');
     };
 };
-var ModalInstanceCtrl = function($scope, $modalInstance, userForm, $route) {
+var ModalInstanceCtrl = function ($scope, $modalInstance, userForm, $route) {
     $scope.form = {};
-    $scope.cancel = function() {};
+    $scope.cancel = function () {
+    };
 
-    $scope.addRoom = function(room) {
+    $scope.addRoom = function (room) {
         if (room.$modelValue) {
             if ($scope.job.rooms.indexOf(room.$modelValue) > -1) {
                 return;
@@ -1202,11 +1196,11 @@ var ModalInstanceCtrl = function($scope, $modalInstance, userForm, $route) {
         }
     };
 
-    $scope.removeRoom = function(room) {
+    $scope.removeRoom = function (room) {
         $scope.job.rooms.splice($scope.job.rooms.indexOf(room), 1);
         $scope.roomChanged = true;
     };
-    $scope.submitForm = function() {
+    $scope.submitForm = function () {
 
         if ($scope.form.userForm.$valid) {
             if ($scope.form.userForm.startDate.$modelValue) {
@@ -1252,13 +1246,13 @@ var ModalInstanceCtrl = function($scope, $modalInstance, userForm, $route) {
         }
     };
 
-    $scope.cancel = function() {
+    $scope.cancel = function () {
         console.log('just canceled');
         $modalInstance.dismiss('cancel');
     };
 };
-var EquipmentInstanceCtrl = function($scope, fireFactory, $modalInstance, equipmentForm, $route) {
-    fireFactory.getShopEquipment(function(data) {
+var EquipmentInstanceCtrl = function ($scope, fireFactory, $modalInstance, equipmentForm, $route) {
+    fireFactory.getShopEquipment(function (data) {
         $scope.showAdd = false;
         $scope.company = data;
         var dateToCheck = $scope.dayToCheckDate;
@@ -1318,7 +1312,7 @@ var EquipmentInstanceCtrl = function($scope, fireFactory, $modalInstance, equipm
         }
         $scope.activeEquipmentList = tempArray;
         $scope.form = {};
-        $scope.cancel = function() {
+        $scope.cancel = function () {
             console.log('canceled out ');
         };
 
@@ -1326,7 +1320,7 @@ var EquipmentInstanceCtrl = function($scope, fireFactory, $modalInstance, equipm
             alert('error: day does not exist.');
             return;
         }
-        $scope.removeEquipment = function(equipment) {
+        $scope.removeEquipment = function (equipment) {
             var found = false;
             for (var i = $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length - 1; i >= 0; i--) {
                 if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment[i].id == equipment.id) {
@@ -1352,7 +1346,7 @@ var EquipmentInstanceCtrl = function($scope, fireFactory, $modalInstance, equipm
         };
 
 
-        $scope.addEquipment = function(equipment) {
+        $scope.addEquipment = function (equipment) {
 
             var found = false;
             for (var a = $scope.todaysEquipment.rooms.length - 1; a >= 0; a--) {
@@ -1403,11 +1397,11 @@ var EquipmentInstanceCtrl = function($scope, fireFactory, $modalInstance, equipm
                 alert('this equipment is already being used');
             }
         };
-        $scope.changeSelectedEquipmentToAdd = function(equipment) {
+        $scope.changeSelectedEquipmentToAdd = function (equipment) {
             $scope.selectedEquipment = equipment;
         };
 
-        $scope.addLabor = function(labor, value) {
+        $scope.addLabor = function (labor, value) {
             if (value > 0) {
                 labor.value = value;
             } else {
@@ -1431,7 +1425,7 @@ var EquipmentInstanceCtrl = function($scope, fireFactory, $modalInstance, equipm
             $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor.push(labor);
 
         };
-        $scope.removeLabor = function(labor) {
+        $scope.removeLabor = function (labor) {
             console.log('asdf');
             for (var a = $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor.length - 1; a >= 0; a--) {
                 console.log('x' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].labor[a].name);
@@ -1455,11 +1449,11 @@ var EquipmentInstanceCtrl = function($scope, fireFactory, $modalInstance, equipm
 
         };
 
-        $scope.changeSelectedLaborToAdd = function(labor) {
+        $scope.changeSelectedLaborToAdd = function (labor) {
             $scope.selectedLabor = labor;
         };
 
-        $scope.submitForm = function() {
+        $scope.submitForm = function () {
             if ($scope.canceled) {
                 $route.reload;
                 return;
@@ -1484,13 +1478,13 @@ var EquipmentInstanceCtrl = function($scope, fireFactory, $modalInstance, equipm
             // async bullshit
             //Fucking hack
             var millisecondsToWait = 1500;
-            setTimeout(function() {
+            setTimeout(function () {
                 $route.reload();
 
             }, millisecondsToWait);
         };
 
-        $scope.cancel = function() {
+        $scope.cancel = function () {
             console.log('just canceled');
             $scope.roomChanged = false;
             $scope.canceled = true;
@@ -1501,8 +1495,8 @@ var EquipmentInstanceCtrl = function($scope, fireFactory, $modalInstance, equipm
     });
 
 };
-var LaborInstanceCtrl = function($scope, fireFactory, $modalInstance, laborForm, $route) {
-    fireFactory.getShopEquipment(function(data) {
+var LaborInstanceCtrl = function ($scope, fireFactory, $modalInstance, laborForm, $route) {
+    fireFactory.getShopEquipment(function (data) {
         $scope.showAdd = false;
         $scope.company = data;
         var time = new moment().toString();
@@ -1535,7 +1529,7 @@ var LaborInstanceCtrl = function($scope, fireFactory, $modalInstance, laborForm,
         }
 
         $scope.form = {};
-        $scope.cancel = function() {
+        $scope.cancel = function () {
             console.log('canceled out ');
         };
 
@@ -1543,7 +1537,7 @@ var LaborInstanceCtrl = function($scope, fireFactory, $modalInstance, laborForm,
             alert('error: day does not exist.');
             return;
         }
-        $scope.removeEquipment = function(equipment) {
+        $scope.removeEquipment = function (equipment) {
             var found = false;
             for (var i = $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length - 1; i >= 0; i--) {
                 if ($scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment[i].id == equipment.id) {
@@ -1558,7 +1552,7 @@ var LaborInstanceCtrl = function($scope, fireFactory, $modalInstance, laborForm,
             console.log('removing equipment length = ' + $scope.todaysEquipment.rooms[$scope.currentRoomNum].equipment.length);
         };
 
-        $scope.addEquipment = function(equipment) {
+        $scope.addEquipment = function (equipment) {
 
             var found = false;
             for (var a = $scope.todaysEquipment.rooms.length - 1; a >= 0; a--) {
@@ -1606,11 +1600,11 @@ var LaborInstanceCtrl = function($scope, fireFactory, $modalInstance, laborForm,
 
             //remove equipment from shop
         };
-        $scope.changeSelectedEquipmentToAdd = function(equipment) {
+        $scope.changeSelectedEquipmentToAdd = function (equipment) {
             $scope.selectedEquipment = equipment;
         };
 
-        $scope.submitForm = function() {
+        $scope.submitForm = function () {
             if ($scope.canceled) {
                 $route.reload;
                 return;
@@ -1634,13 +1628,13 @@ var LaborInstanceCtrl = function($scope, fireFactory, $modalInstance, laborForm,
             // async bullshit
             //Fucking hack
             var millisecondsToWait = 1500;
-            setTimeout(function() {
+            setTimeout(function () {
                 $route.reload();
 
             }, millisecondsToWait);
         };
 
-        $scope.cancel = function() {
+        $scope.cancel = function () {
             console.log('just canceled');
             $scope.roomChanged = false;
             $scope.canceled = true;
@@ -1660,7 +1654,7 @@ function geoCode(address, GMaps, map, callback) {
     currName = address.name;
     GMaps.geocode({
         'address': currAddress,
-        callback: function(results, status) {
+        callback: function (results, status) {
             if (status == 'OK') {
                 var latlng = results[0].geometry.location;
                 map.addMarker({

@@ -26,16 +26,22 @@ angular.module("angularcrud")
                     $location.path("/");
                 });
             },
-            addRugImage: function (file){
+            addRugImage: function (file, id){
                 console.log('file' + file)
                 var f = file[0];
                 var reader = new FileReader();
+                var num = Math.floor(Math.random() * (100000000000 - 1)) + 1;
+                console.log('num' + num)
+                id += '_' + $rootScope.rugId + '_' + num;
+                console.log(id)
+
+
                 reader.onload = (function(theFile) {
                     return function(e) {
                         var filePayload = e.target.result;
                         // Generate a location that can't be guessed using the file's contents and a random number
                         //var hash = CryptoJS.SHA256(Math.random() + CryptoJS.SHA256(filePayload));
-                        var f = new Firebase($rootScope.FBURL + 'pano/' + 'asdf' + '/filePayload');
+                        var f = new Firebase($rootScope.FBURL + 'rug_images/' + id + '/filePayload');
                         //spinner.spin(document.getElementById('spin'));
                         // Set the file payload to Firebase and register an onComplete handler to stop the spinner and show the preview
                         f.set(filePayload, function() {
