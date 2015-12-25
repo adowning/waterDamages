@@ -1,4 +1,3 @@
-
 <div class="modal-header">
     <h3>Add Rug to Job</h3>
 </div>
@@ -7,35 +6,40 @@
         <!-- NAME -->
         <div class="form-group">
             <label>Size</label>
-            <input type="number" name="size" class="form-control" ng-model="job.account.accountName"
-                   value="job.account.accountName" required>
+
+            <input type="number" name="size" class="form-control" ng-model="rug.size"
+                   value="rug.size" required>
             <p ng-show="form.userForm.name.$invalid && !form.userForm.name.$pristine" class="help-block">You name is
                 required.</p>
         </div>
 
-
         <div class="form-group">
             <label>Pictures</label>
-            <div ng-repeat="room in job.rooms track by $index">
-                <h4>{{job.rooms[$index]}}
+            <img id="pano"></div>
 
-                    <!-- TODO (major) make it so we can remove rooms.. gonna be a pain but needed. -->
-                    <!--<button type="button"  ng-click="removeRoom(room)" class="btn btn-default btn-xs">-->
-                    <!--<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>-->
-                    </button></h4>
-            </div>
-            <input id="file-input" type="file" name="file" onChange="handleFileSelect()" ></input>
-
-            <!--<input type="file" name="image" class="form-control" ng-model="room">-->
-            <!--&lt;!&ndash;<input type="text" name="room" class="form-control" ng-model="room">&ndash;&gt;-->
-            <!--<button type="button" class="btn btn-primary" ng-click="addImage(form.userForm.image)">Add</button>-->
-        </div>
+        <lvl-file-upload
+                auto-upload='true'
+                choose-file-button-text='Add Image'
+                upload-file-button-text='Upload files'
+                upload-url='https://andrewscleaning.firebaseio.com/rugs/'
+                max-files='10'
+                max-file-size-mb='5'
+                get-additional-data='getData()'
+                on-done='done(files, data)'
+                on-progress='progress(percentDone)'
+                on-error='error(files, type, msg)'
+                on-file-added='fileAdded(file)'/>
+        <!--<div id='console' style="margin:25px;padding:5px;width:550px;overflow:auto;height:50px;-->
+        <!--background-color:black;color:green;font-family:monospace;font-size:10pt"></div>-->
+        <button id="console" class="btn btn-primary"
+        >OK
+        </button>
 
 
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary"
-                ng-disabled="form.userForm.$invalid || !job.rooms || job.rooms < 1">OK
+        >OK
         </button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
