@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0d6709c0-74f3-425a-8f95-3eb712fca7ce" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/addrug-form.html" afterPath="$PROJECT_DIR$/views/addrug-form.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/viewRugJob2.html" afterPath="$PROJECT_DIR$/views/viewRugJob2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/controllers.js" afterPath="$PROJECT_DIR$/js/controllers.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/rug_controllers.js" afterPath="$PROJECT_DIR$/js/rug_controllers.js" />
     </list>
     <ignored path="AngularCRUD-Firebase.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,11 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="addrug-form.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="addrug-form.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/addrug-form.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.37104824">
-              <caret line="26" column="45" selection-start-line="26" selection-start-column="45" selection-end-line="26" selection-end-column="45" />
+            <state vertical-scroll-proportion="-14.925926">
+              <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -40,21 +38,19 @@
         <entry file="file://$PROJECT_DIR$/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="612" column="0" selection-start-line="612" selection-start-column="0" selection-end-line="612" selection-end-column="0" />
+              <caret line="671" column="0" selection-start-line="671" selection-start-column="0" selection-end-line="671" selection-end-column="0" />
               <folding>
                 <element signature="e#279#1825#0" expanded="false" />
                 <element signature="e#2028#3320#0" expanded="false" />
                 <element signature="e#3357#3528#0" expanded="false" />
-                <element signature="e#3664#13130#0" expanded="false" />
-                <element signature="e#13267#23489#0" expanded="false" />
-                <element signature="e#23602#25125#0" expanded="false" />
-                <element signature="e#25244#27150#0" expanded="false" />
-                <element signature="e#27272#31836#0" expanded="false" />
-                <element signature="e#31946#33794#0" expanded="false" />
-                <element signature="e#33887#41589#0" expanded="false" />
-                <element signature="e#41667#44498#0" expanded="false" />
-                <element signature="e#44598#54735#0" expanded="false" />
-                <element signature="e#54827#60481#0" expanded="false" />
+                <element signature="e#3665#13887#0" expanded="false" />
+                <element signature="e#14000#15523#0" expanded="false" />
+                <element signature="e#15642#17548#0" expanded="false" />
+                <element signature="e#17670#22234#0" expanded="false" />
+                <element signature="e#22344#24192#0" expanded="false" />
+                <element signature="e#24272#27103#0" expanded="false" />
+                <element signature="e#27203#37340#0" expanded="false" />
+                <element signature="e#37432#43086#0" expanded="false" />
                 <element signature="n#!!block;n#geoCode#0" expanded="false" />
               </folding>
             </state>
@@ -73,13 +69,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="rug_controllers.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="rug_controllers.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/rug_controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="27" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
+            <state vertical-scroll-proportion="0.25796178">
+              <caret line="518" column="0" selection-start-line="518" selection-start-column="0" selection-end-line="518" selection-end-column="0" />
               <folding>
-                <element signature="e#157#3081#0" expanded="false" />
+                <element signature="e#177#9643#0" expanded="false" />
+                <element signature="e#9755#12679#0" expanded="false" />
+                <element signature="e#12772#20474#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -478,12 +476,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="-1" width="1368" height="749" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.49770993" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32771823" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.08377239" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16877323" sideWeight="0.4994995" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16877323" sideWeight="0.4994995" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.48854962" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13954712" sideWeight="0.5005005" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32618684" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32721713" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -492,7 +492,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27258804" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.48854962" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Gulp" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32918552" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TypeScript Compiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32872504" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -501,7 +500,6 @@
       <window_info id="Mongo Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -891,44 +889,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/rug_controllers.js">
+    <entry file="file://$PROJECT_DIR$/views/addrug-form.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="27" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
-          <folding>
-            <element signature="e#157#3081#0" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="-14.925926">
+          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/controllers.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="612" column="0" selection-start-line="612" selection-start-column="0" selection-end-line="612" selection-end-column="0" />
+          <caret line="671" column="0" selection-start-line="671" selection-start-column="0" selection-end-line="671" selection-end-column="0" />
           <folding>
             <element signature="e#279#1825#0" expanded="false" />
             <element signature="e#2028#3320#0" expanded="false" />
             <element signature="e#3357#3528#0" expanded="false" />
-            <element signature="e#3664#13130#0" expanded="false" />
-            <element signature="e#13267#23489#0" expanded="false" />
-            <element signature="e#23602#25125#0" expanded="false" />
-            <element signature="e#25244#27150#0" expanded="false" />
-            <element signature="e#27272#31836#0" expanded="false" />
-            <element signature="e#31946#33794#0" expanded="false" />
-            <element signature="e#33887#41589#0" expanded="false" />
-            <element signature="e#41667#44498#0" expanded="false" />
-            <element signature="e#44598#54735#0" expanded="false" />
-            <element signature="e#54827#60481#0" expanded="false" />
+            <element signature="e#3665#13887#0" expanded="false" />
+            <element signature="e#14000#15523#0" expanded="false" />
+            <element signature="e#15642#17548#0" expanded="false" />
+            <element signature="e#17670#22234#0" expanded="false" />
+            <element signature="e#22344#24192#0" expanded="false" />
+            <element signature="e#24272#27103#0" expanded="false" />
+            <element signature="e#27203#37340#0" expanded="false" />
+            <element signature="e#37432#43086#0" expanded="false" />
             <element signature="n#!!block;n#geoCode#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/addrug-form.html">
+    <entry file="file://$PROJECT_DIR$/js/rug_controllers.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.37104824">
-          <caret line="26" column="45" selection-start-line="26" selection-start-column="45" selection-end-line="26" selection-end-column="45" />
-          <folding />
+        <state vertical-scroll-proportion="0.25796178">
+          <caret line="518" column="0" selection-start-line="518" selection-start-column="0" selection-end-line="518" selection-end-column="0" />
+          <folding>
+            <element signature="e#177#9643#0" expanded="false" />
+            <element signature="e#9755#12679#0" expanded="false" />
+            <element signature="e#12772#20474#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
