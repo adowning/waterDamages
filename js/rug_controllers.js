@@ -16,10 +16,31 @@ angular.module('angularcrud')
 
         $scope.getImagesForJob = function () {
 
-            fireFactory.getImagesForJob($scope.contactId, function (data){
-console.log(data)
+            // initial data: [ {name: 'foo', counter: 1}, {name: 'bar', counter: 1}, {name: 'baz', counter: 1} ];
+            var ref = new Firebase('https://andrewscleaning.firebaseio.com/rug_images/-K6FajXNg25_b-FwH1CW/');
+            // sync down from server
+            var list = [];
+            ref.on('value', function(snap) {
+                list = snap.val();
+                console.log(list)
             });
             $scope.loading = false;
+
+            //var images = []
+            //var jobs = [];
+            //fireFactory.getAllImages(function (data){
+            //    var list = [];
+            //    list = data.val();
+            //    console.table(list)
+            //    $scope.images = data;
+            //    jobs = data;
+            //    //console.log(jobs.length)
+            //   for(var x = 0; x < data.length; x++){
+            //       console.log(data[x])
+            //   }
+            //    //console.log(images.length)
+            //});
+            //$scope.loading = false;
         }
 
         // Set our menu tab active and all others inactive

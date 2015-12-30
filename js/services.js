@@ -11,10 +11,10 @@ angular.module("angularcrud")
                 $rootScope.FBURL = "https://andrewscleaning.firebaseio.com/"
                 $http.get($rootScope.FBURL + + 'rug_images/' + jobId +'/' + rugId + '/' + ".json?format=export").success(successCallback);
             },
-            getImagesForJob: function (jobId,  successCallback) {
-console.log('asdf ' + jobId)
-                $rootScope.FBURL = "https://andrewscleaning.firebaseio.com/"
-                $http.get($rootScope.FBURL + + 'rug_images/' + jobId +'/' + ".json?format=export").success(successCallback);
+            getAllImages: function (successCallback) {
+
+                $rootScope.FBURL = "https://andrewscleaning.firebaseio.com/";
+                $http.get($rootScope.FBURL + 'rug_images/' + ".json?format=export").success(successCallback);
             },
             getRugJobs: function (successCallback) {
                 //TODO hacky

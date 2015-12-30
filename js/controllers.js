@@ -244,6 +244,7 @@ app.controller('ListCtrl', function ($scope, usSpinnerService, $route, moment, G
             var tempArray = [];
             var shopFans = [];
             var shopDehus = [];
+            console.log(data.shop)
             if (data.shop) {
                 for (var i = 0; i < data.shop.length; i++) {
                     if (data.shop[i]) {
