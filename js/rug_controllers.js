@@ -17,13 +17,40 @@ angular.module('angularcrud')
         $scope.getImagesForJob = function () {
 
             // initial data: [ {name: 'foo', counter: 1}, {name: 'bar', counter: 1}, {name: 'baz', counter: 1} ];
-            var ref = new Firebase('https://andrewscleaning.firebaseio.com/rug_images/-K6FajXNg25_b-FwH1CW/');
+            var ref = new Firebase('https://andrewscleaning.firebaseio.com/rug_images/');
             // sync down from server
             var list = [];
+            $scope.imageList = [];
             ref.on('value', function(snap) {
                 list = snap.val();
-                console.log(list)
+                var jobs = $.map(list, function(value, index) {
+                    return [value];
+                });
+console.log(jobs.length)
+                var rugsList = [];
+                for(var x = 0; x < jobs.length; x++){
+
+                    var thisRugsList = $.map(jobs[x], function(value, index) {
+                        return [value];
+                    });
+                    for(var y = 0; y < thisRugsList.length; y++){
+                        console.table(thisRugsList[y][0])
+                        $scope.imageList.push(thisRugsList[y][0])
+                    }
+
+                }
+console.log($scope.imageList)
             });
+
+
+
+            //var jobList = [];
+            //console.log(list.length)
+            //for (var job in list){
+            //    jobList.push(job)
+            //    console.log(job)
+            //}
+            //console.log(jobList)
             $scope.loading = false;
 
             //var images = []
