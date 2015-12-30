@@ -7,7 +7,7 @@
 
     <div ng-show="!loading">
         <div class="row">
-            <div class="col-sm-5 bootcards-list" id="list" data-title="Contacts">
+            <div class="col-sm-8 bootcards-list" id="list" data-title="Contacts">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="search-form">
@@ -47,9 +47,13 @@
                                                 <div class="alert {{alert}}" role="alert">
                                                     <a href="#/viewRug/{{id}}id:{{rugId}}">{{rug.rugId}}</a> <span
                                                         href="#" data-toggle="tooltip" title="{{rug.size}}">
-                                                <u>description</u></span>{{rug.description}}
+                                                <u>notes: </u></span>{{rug.notes}}
                                                     size: {{rug.size}}
                                                     status: {{job.rugStatus}}
+                                                    images:
+                                                    <ul class="list-group-item" ng-repeat="(imageId, image) in job.imageList">
+                                                        <a href="#/viewRug/{{id}}id:{{rugId}}">{{rug.rugId}}</a>
+                                                        </ul>
                                                 </div>
                                             </ul>
                                         </div>

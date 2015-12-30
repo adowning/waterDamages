@@ -11,8 +11,16 @@ angular.module('angularcrud')
 
         fireFactory.getRugJobs(function (data) {
             $scope.jobs = data;
-            $scope.loading = false;
+            $scope.getImagesForJob();
         });
+
+        $scope.getImagesForJob = function () {
+
+            fireFactory.getImagesForJob($scope.contactId, function (data){
+console.log(data)
+            });
+            $scope.loading = false;
+        }
 
         // Set our menu tab active and all others inactive
         $('#menu-list').addClass('active');
